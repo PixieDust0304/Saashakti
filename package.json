@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {
     "lint": "node --check packages/scheme-engine/src/index.js && node --check packages/scheme-registry/src/index.js && node --check packages/scheme-registry/src/schema.js && node --check packages/types/src/index.js && node --check infra/scripts/repo-debug.mjs",
-    "typecheck": "pnpm --filter api typecheck",
+    "typecheck": "pnpm --filter api typecheck && pnpm --filter @saashakti/api-client typecheck",
     "test": "node --test packages/scheme-engine/src/index.test.js packages/scheme-registry/src/schema.test.js && pnpm --filter api test",
     "build": "pnpm --filter api build",
     "debug": "node infra/scripts/repo-debug.mjs",

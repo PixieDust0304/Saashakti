@@ -74,6 +74,9 @@ jobs:
       - name: API typecheck
         run: pnpm --filter api typecheck
 
+      - name: API client typecheck
+        run: pnpm --filter @saashakti/api-client typecheck
+
       - name: API build
         run: pnpm --filter api build
 
