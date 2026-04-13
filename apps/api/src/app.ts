@@ -9,6 +9,7 @@ import { registerBeneficiaryRoutes } from './beneficiary/routes.js';
 import { registerMatchingRoutes } from './matching/routes.js';
 import { registerDashboardRoutes } from './dashboard/routes.js';
 import { registerIntakeRoutes } from './intake/routes.js';
+import { ingestionRoutes } from './ingestion/routes.js';
 
 export const buildApp = async (): Promise<FastifyInstance> => {
   const app = Fastify({
@@ -36,6 +37,7 @@ export const buildApp = async (): Promise<FastifyInstance> => {
   await registerMatchingRoutes(app);
   await registerDashboardRoutes(app);
   await registerIntakeRoutes(app);
+  await ingestionRoutes(app);
 
   return app;
 };

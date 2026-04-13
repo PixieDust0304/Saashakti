@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Repo-level QA (lint + scheme tests + debug)
+      - name: Repo-level QA (lint + scheme tests + ingestion smoke + debug)
         run: npm run qa
 
       - name: API typecheck
