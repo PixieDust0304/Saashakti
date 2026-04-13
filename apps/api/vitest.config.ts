@@ -8,5 +8,8 @@ export default defineConfig({
     testTimeout: 30000,
     sequence: { hooks: 'stack' },
     globalSetup: 'tests/global-setup.ts',
+    fileParallelism: false,
+    pool: 'forks',
+    poolOptions: { forks: { singleFork: true } },
   },
 });
