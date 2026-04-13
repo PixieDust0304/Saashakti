@@ -12,7 +12,7 @@ export default defineConfig({
         name: 'सशक्ति — Saashakti',
         short_name: 'सशक्ति',
         description: 'महिला कल्याण योजना मिलान मंच',
-        theme_color: '#E8560C',
+        theme_color: '#ED7023',
         background_color: '#FFF7ED',
         display: 'standalone',
         orientation: 'portrait',
