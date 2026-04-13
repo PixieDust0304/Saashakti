@@ -1,10 +1,33 @@
+# Dependencies
 node_modules/
-.DS_Store
-npm-debug.log*
-pnpm-debug.log*
+.pnp
+.pnp.js
+
+# Build
 dist/
+build/
+*.tsbuildinfo
 coverage/
+
+# Environment
 .env
 .env.local
 .env.*.local
 
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude
+.claude/
+
+# Misc
+*.log
+npm-debug.log*
+pnpm-debug.log*
