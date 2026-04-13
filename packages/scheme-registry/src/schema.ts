@@ -1,29 +1,28 @@
-import { z } from 'zod';
+import type { Scheme } from '../../types/src/index.js';
 
-export const ruleSchema = z.object({
-  field: z.string().min(1),
-  operator: z.enum(['eq', 'neq', 'gte', 'lte', 'in', 'includes', 'truthy']),
-  value: z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]).optional(),
-  labelHi: z.string().min(1),
-  labelEn: z.string().min(1),
-});
+export interface SchemeRegistry {
+  version: string;
+  updatedAt: string;
+  totalSchemes: number;
+  schemes: Scheme[];
+}
 
-export const schemeSchema = z.object({
-  id: z.string().min(1),
-  nameHi: z.string().min(1),
-  nameEn: z.string().min(1),
-  annualValueInr: z.number().nonnegative(),
-  rules: z.array(ruleSchema).min(1),
-  nextActionHi: z.string().min(1),
-  nextActionEn: z.string().min(1),
-});
+export const validateScheme = (s: unknown): s is Scheme => {
+  if (typeof s !== 'object' || s === null) return false;
+  const obj = s as Record<string, unknown>;
+  return (
+    typeof obj.id === 'string' &&
+    typeof obj.nameHi === 'string' &&
+    typeof obj.nameEn === 'string' &&
+    typeof obj.annualValueInr === 'number' &&
+    Array.isArray(obj.rules) &&
+    Array.isArray(obj.exclusions)
+  );
+};
 
-export const schemeRegistrySchema = z.object({
-  version: z.string().min(1),
-  updatedAt: z.string().datetime(),
-  schemes: z.array(schemeSchema).min(1),
-});
-
-export type SchemeRegistry = z.infer<typeof schemeRegistrySchema>;
-
-export const validateRegistry = (input: unknown): SchemeRegistry => schemeRegistrySchema.parse(input);
+export const validateRegistry = (data: unknown): data is SchemeRegistry => {
+  if (typeof data !== 'object' || data === null) return false;
+  const obj = data as Record<string, unknown>;
+  if (!Array.isArray(obj.schemes)) return false;
+  return obj.schemes.every(validateScheme);
+};

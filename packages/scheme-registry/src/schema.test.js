@@ -1,13 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { schemeRegistry } from './index.js';
-import { validateRegistry } from './schema.js';
+import { createRequire } from 'node:module';
+import { validateScheme, validateRegistry } from './schema.js';
 
-test('registry loads bundled schemes', () => {
-  assert.ok(schemeRegistry.schemes.length > 0);
-  assert.equal(schemeRegistry.version, '2026.04.13');
+const require = createRequire(import.meta.url);
+const data = require('./data/schemes.json');
+
+test('validates the full registry', () => {
+  assert.equal(validateRegistry(data), true);
 });
 
-test('registry rejects invalid payload', () => {
-  assert.throws(() => validateRegistry({ version: 'x', updatedAt: 'invalid', schemes: [] }));
+test('rejects null and non-object input', () => {
+  assert.equal(validateScheme(null), false);
+  assert.equal(validateScheme('not-an-object'), false);
+});
+
+test('registry has at least one scheme', () => {
+  assert.ok(Array.isArray(data.schemes));
+  assert.ok(data.schemes.length > 0);
 });

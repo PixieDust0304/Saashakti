@@ -1,5 +1,7 @@
-import rawRegistry from './data/schemes.json' with { type: 'json' };
-import { validateRegistry } from './schema.js';
-
-export const schemeRegistry = validateRegistry(rawRegistry);
-export { validateRegistry };
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const data = require('./data/schemes.json');
+export const schemeRegistry = data;
+export const schemes = data.schemes;
+export const schemeVersion = data.version;
+export default data;

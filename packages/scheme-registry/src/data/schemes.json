@@ -1,42 +1,1113 @@
 {
   "version": "2026.04.13",
   "updatedAt": "2026-04-13T00:00:00.000Z",
+  "totalSchemes": 21,
   "schemes": [
     {
-      "id": "matru-vandana",
+      "id": "cg-mahtari-vandan",
+      "nameHi": "महतारी वंदन योजना",
+      "nameEn": "Mahtari Vandan Yojana",
+      "level": "state",
+      "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
+      "annualValueInr": 12000,
+      "benefitDescriptionHi": "₹1,000 प्रति माह सीधे बैंक खाते में",
+      "benefitDescriptionEn": "₹1,000/month directly to bank account",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 1000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 21,
+          "labelHi": "आयु 21+ वर्ष",
+          "labelEn": "Age 21+ years"
+        },
+        {
+          "field": "age",
+          "operator": "lte",
+          "value": 60,
+          "labelHi": "आयु 60 से कम",
+          "labelEn": "Age under 60"
+        },
+        {
+          "field": "maritalStatus",
+          "operator": "in",
+          "value": [
+            "married",
+            "widowed",
+            "divorced",
+            "deserted"
+          ],
+          "labelHi": "वैवाहिक स्थिति: विवाहित/विधवा/तलाकशुदा/परित्यक्ता",
+          "labelEn": "Marital status: married/widow/divorced/deserted"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "Chhattisgarh resident"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Has bank account"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "familyIsTaxpayer",
+          "value": true,
+          "ruleHi": "परिवार का सदस्य आयकर दाता है",
+          "ruleEn": "Family member is income taxpayer"
+        },
+        {
+          "field": "familyGovtEmployee",
+          "value": true,
+          "ruleHi": "परिवार का सदस्य सरकारी कर्मचारी है",
+          "ruleEn": "Family member is govt employee"
+        },
+        {
+          "field": "familyIsElectedRep",
+          "value": true,
+          "ruleHi": "परिवार का सदस्य सांसद/विधायक है",
+          "ruleEn": "Family member is MP/MLA"
+        },
+        {
+          "field": "familyIsBoardChair",
+          "value": true,
+          "ruleHi": "परिवार का सदस्य बोर्ड अध्यक्ष है",
+          "ruleEn": "Family member is govt board chair"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Passbook",
+        "CG Domicile Certificate",
+        "Marriage Certificate",
+        "Self-declaration Affidavit"
+      ],
+      "nextActionHi": "आवेदन करें: https://mahtarivandan.cgstate.gov.in/",
+      "nextActionEn": "Apply at: https://mahtarivandan.cgstate.gov.in/",
+      "portal": "https://mahtarivandan.cgstate.gov.in/",
+      "tags": [
+        "flagship",
+        "cg_state",
+        "monthly_cash"
+      ],
+      "priorityScore": 100
+    },
+    {
+      "id": "central-pmmvy",
       "nameHi": "प्रधानमंत्री मातृ वंदना योजना",
-      "nameEn": "PM Matru Vandana Yojana",
+      "nameEn": "Pradhan Mantri Matru Vandana Yojana",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
       "annualValueInr": 5000,
+      "benefitDescriptionHi": "पहले बच्चे के लिए ₹5,000; दूसरी बेटी के लिए ₹6,000",
+      "benefitDescriptionEn": "₹5,000 for 1st child; ₹6,000 for 2nd girl child",
+      "benefitFrequency": "one_time_installments",
+      "benefitAmount": 5000,
       "rules": [
-        { "field": "isPregnant", "operator": "truthy", "labelHi": "गर्भवती", "labelEn": "Pregnant" },
-        { "field": "hasBankAccount", "operator": "truthy", "labelHi": "बैंक खाता", "labelEn": "Has bank account" }
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 19,
+          "labelHi": "आयु 19+ वर्ष",
+          "labelEn": "Age 19+ years"
+        },
+        {
+          "field": "maritalStatus",
+          "operator": "in",
+          "value": [
+            "married"
+          ],
+          "labelHi": "वैवाहिक स्थिति: विवाहित",
+          "labelEn": "Marital status: married"
+        },
+        {
+          "field": "isPregnant",
+          "operator": "truthy",
+          "labelHi": "गर्भवती",
+          "labelEn": "Pregnant"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Has bank account"
+        }
       ],
-      "nextActionHi": "आंगनवाड़ी केंद्र में आवेदन जमा करें",
-      "nextActionEn": "Submit application at nearest anganwadi"
+      "exclusions": [
+        {
+          "field": "hasPaidMaternityLeave",
+          "value": true,
+          "ruleHi": "सवेतन मातृत्व अवकाश प्राप्त कर रही हैं",
+          "ruleEn": "Has paid maternity leave"
+        },
+        {
+          "field": "isGovtPsuEmployee",
+          "value": true,
+          "ruleHi": "सरकार/PSU की कर्मचारी",
+          "ruleEn": "Govt/PSU employee"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "MCP Card",
+        "Bank Passbook",
+        "Pregnancy Registration"
+      ],
+      "nextActionHi": "आवेदन करें: https://pmmvy.wcd.gov.in/",
+      "nextActionEn": "Apply at: https://pmmvy.wcd.gov.in/",
+      "portal": "https://pmmvy.wcd.gov.in/",
+      "tags": [
+        "central",
+        "maternity",
+        "pregnant"
+      ],
+      "priorityScore": 95
     },
     {
-      "id": "ujjwala",
-      "nameHi": "प्रधानमंत्री उज्ज्वला योजना",
-      "nameEn": "PM Ujjwala Yojana",
+      "id": "central-pmay-g",
+      "nameHi": "प्रधानमंत्री आवास योजना – ग्रामीण",
+      "nameEn": "Pradhan Mantri Awas Yojana – Gramin",
+      "level": "central",
+      "departmentHi": "ग्रामीण विकास मंत्रालय",
+      "annualValueInr": 130000,
+      "benefitDescriptionHi": "पक्के मकान के लिए ₹1,30,000 (मैदानी); ₹1,50,000 (पहाड़ी)",
+      "benefitDescriptionEn": "₹1,30,000 for pucca house (plains); ₹1,50,000 (hilly)",
+      "benefitFrequency": "one_time_installments",
+      "benefitAmount": 130000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल परिवार",
+          "labelEn": "BPL household"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Has bank account"
+        },
+        {
+          "field": "ownsPuccaHouse",
+          "operator": "falsy",
+          "labelHi": "पक्का मकान नहीं",
+          "labelEn": "No pucca house"
+        },
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण निवासी",
+          "labelEn": "Rural resident"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "ownsPuccaHouse",
+          "value": true,
+          "ruleHi": "पक्का मकान है",
+          "ruleEn": "Owns pucca house"
+        },
+        {
+          "field": "familyIsTaxpayer",
+          "value": true,
+          "ruleHi": "आयकर दाता",
+          "ruleEn": "Taxpayer family"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL Certificate",
+        "Bank Account",
+        "Land Document"
+      ],
+      "nextActionHi": "आवेदन करें: https://pmayg.nic.in/",
+      "nextActionEn": "Apply at: https://pmayg.nic.in/",
+      "portal": "https://pmayg.nic.in/",
+      "tags": [
+        "central",
+        "housing",
+        "rural",
+        "bpl"
+      ],
+      "priorityScore": 90
+    },
+    {
+      "id": "central-ujjwala",
+      "nameHi": "प्रधानमंत्री उज्ज्वला योजना 2.0",
+      "nameEn": "Pradhan Mantri Ujjwala Yojana 2.0",
+      "level": "central",
+      "departmentHi": "पेट्रोलियम एवं प्राकृतिक गैस मंत्रालय",
       "annualValueInr": 1600,
+      "benefitDescriptionHi": "मुफ्त एलपीजी कनेक्शन + पहला रिफिल + चूल्हा",
+      "benefitDescriptionEn": "Free LPG connection + first refill + stove",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 1600,
       "rules": [
-        { "field": "isBpl", "operator": "truthy", "labelHi": "बीपीएल परिवार", "labelEn": "BPL household" },
-        { "field": "hasRationCard", "operator": "truthy", "labelHi": "राशन कार्ड", "labelEn": "Has ration card" }
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल परिवार",
+          "labelEn": "BPL household"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Has bank account"
+        },
+        {
+          "field": "hasLpgConnection",
+          "operator": "falsy",
+          "labelHi": "एलपीजी कनेक्शन नहीं",
+          "labelEn": "No LPG connection"
+        }
       ],
-      "nextActionHi": "CSC केंद्र पर KYC पूरा करें",
-      "nextActionEn": "Complete KYC at CSC center"
+      "exclusions": [
+        {
+          "field": "hasLpgConnection",
+          "value": true,
+          "ruleHi": "पहले से एलपीजी कनेक्शन है",
+          "ruleEn": "Has LPG connection"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL Ration Card",
+        "Bank Account",
+        "Passport Photo"
+      ],
+      "nextActionHi": "आवेदन करें: https://www.pmuy.gov.in/",
+      "nextActionEn": "Apply at: https://www.pmuy.gov.in/",
+      "portal": "https://www.pmuy.gov.in/",
+      "tags": [
+        "central",
+        "lpg",
+        "bpl"
+      ],
+      "priorityScore": 85
     },
     {
-      "id": "shg-credit",
-      "nameHi": "महिला SHG क्रेडिट लिंक",
-      "nameEn": "Women SHG Credit Link",
-      "annualValueInr": 50000,
+      "id": "central-nfsa",
+      "nameHi": "राष्ट्रीय खाद्य सुरक्षा अधिनियम (मुफ्त राशन)",
+      "nameEn": "National Food Security Act (Free Ration)",
+      "level": "central",
+      "departmentHi": "उपभोक्ता मामले, खाद्य एवं सार्वजनिक वितरण मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "प्रति व्यक्ति 5 किलो खाद्यान्न/माह; अंत्योदय को 35 किलो",
+      "benefitDescriptionEn": "5 kg foodgrains/person/month; 35 kg for Antyodaya",
+      "benefitFrequency": "monthly",
+      "benefitAmount": null,
       "rules": [
-        { "field": "isShgMember", "operator": "truthy", "labelHi": "SHG सदस्य", "labelEn": "SHG member" },
-        { "field": "hasBankAccount", "operator": "truthy", "labelHi": "बैंक खाता", "labelEn": "Has bank account" }
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल परिवार",
+          "labelEn": "BPL household"
+        }
       ],
-      "nextActionHi": "SHG बैंक लिंकेज शिविर में जाएँ",
-      "nextActionEn": "Attend SHG-bank linkage camp"
+      "exclusions": [],
+      "documentsRequired": [
+        "Ration Card",
+        "Aadhaar Card"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "central",
+        "food_security",
+        "ration"
+      ],
+      "priorityScore": 88
+    },
+    {
+      "id": "central-pmjdy",
+      "nameHi": "प्रधानमंत्री जन धन योजना",
+      "nameEn": "Pradhan Mantri Jan Dhan Yojana",
+      "level": "central",
+      "departmentHi": "वित्त मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "शून्य बैलेंस खाता + रुपे कार्ड + ₹2L दुर्घटना बीमा + ₹30K जीवन बीमा",
+      "benefitDescriptionEn": "Zero balance account + RuPay card + ₹2L accident + ₹30K life cover",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 10,
+          "labelHi": "आयु 10+ वर्ष",
+          "labelEn": "Age 10+ years"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Passport Photo"
+      ],
+      "nextActionHi": "आवेदन करें: https://pmjdy.gov.in/",
+      "nextActionEn": "Apply at: https://pmjdy.gov.in/",
+      "portal": "https://pmjdy.gov.in/",
+      "tags": [
+        "central",
+        "financial_inclusion",
+        "banking"
+      ],
+      "priorityScore": 80
+    },
+    {
+      "id": "central-sukanya-samriddhi",
+      "nameHi": "सुकन्या समृद्धि योजना",
+      "nameEn": "Sukanya Samriddhi Yojana",
+      "level": "central",
+      "departmentHi": "वित्त मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "बेटी के लिए 8.2% ब्याज बचत खाता; 80C कर-मुक्त",
+      "benefitDescriptionEn": "8.2% savings for girl child; tax-free under 80C",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "बेटी है",
+          "labelEn": "Has girl child"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Girl's Birth Certificate",
+        "Parent Aadhaar",
+        "Address Proof"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "central",
+        "girl_child",
+        "savings"
+      ],
+      "priorityScore": 82
+    },
+    {
+      "id": "central-pmsby",
+      "nameHi": "प्रधानमंत्री सुरक्षा बीमा योजना",
+      "nameEn": "Pradhan Mantri Suraksha Bima Yojana",
+      "level": "central",
+      "departmentHi": "वित्त मंत्रालय",
+      "annualValueInr": 200000,
+      "benefitDescriptionHi": "₹2 लाख दुर्घटना बीमा मात्र ₹20/वर्ष",
+      "benefitDescriptionEn": "₹2 lakh accident insurance for ₹20/year",
+      "benefitFrequency": "annual",
+      "benefitAmount": 200000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "age",
+          "operator": "lte",
+          "value": 70,
+          "labelHi": "आयु 70 से कम",
+          "labelEn": "Age under 70"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Has bank account"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "central",
+        "insurance",
+        "accident"
+      ],
+      "priorityScore": 75
+    },
+    {
+      "id": "central-pmjjby",
+      "nameHi": "प्रधानमंत्री जीवन ज्योति बीमा योजना",
+      "nameEn": "Pradhan Mantri Jeevan Jyoti Bima Yojana",
+      "level": "central",
+      "departmentHi": "वित्त मंत्रालय",
+      "annualValueInr": 200000,
+      "benefitDescriptionHi": "₹2 लाख जीवन बीमा ₹436/वर्ष",
+      "benefitDescriptionEn": "₹2 lakh life insurance for ₹436/year",
+      "benefitFrequency": "annual",
+      "benefitAmount": 200000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "age",
+          "operator": "lte",
+          "value": 50,
+          "labelHi": "आयु 50 से कम",
+          "labelEn": "Age under 50"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Has bank account"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "central",
+        "insurance",
+        "life"
+      ],
+      "priorityScore": 75
+    },
+    {
+      "id": "central-lakhpati-didi",
+      "nameHi": "लखपति दीदी योजना",
+      "nameEn": "Lakhpati Didi Yojana",
+      "level": "central",
+      "departmentHi": "ग्रामीण विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "SHG महिलाओं को ₹1 लाख+ आय के लिए कौशल प्रशिक्षण",
+      "benefitDescriptionEn": "Skill training for SHG women to earn ₹1L+/year",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "isShgMember",
+          "operator": "truthy",
+          "labelHi": "SHG सदस्य",
+          "labelEn": "SHG member"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "SHG Membership Proof",
+        "Bank Account"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "central",
+        "shg",
+        "livelihood"
+      ],
+      "priorityScore": 78
+    },
+    {
+      "id": "central-pm-kisan",
+      "nameHi": "प्रधानमंत्री किसान सम्मान निधि",
+      "nameEn": "PM Kisan Samman Nidhi",
+      "level": "central",
+      "departmentHi": "कृषि मंत्रालय",
+      "annualValueInr": 6000,
+      "benefitDescriptionHi": "₹6,000/वर्ष, ₹2,000 की 3 किस्तों में",
+      "benefitDescriptionEn": "₹6,000/year in 3 installments of ₹2,000",
+      "benefitFrequency": "annual",
+      "benefitAmount": 6000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Has bank account"
+        },
+        {
+          "field": "ownsLand",
+          "operator": "truthy",
+          "labelHi": "कृषि भूमि",
+          "labelEn": "Owns farmland"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "familyIsTaxpayer",
+          "value": true,
+          "ruleHi": "आयकर दाता",
+          "ruleEn": "Income taxpayer"
+        },
+        {
+          "field": "familyGovtEmployee",
+          "value": true,
+          "ruleHi": "सरकारी कर्मचारी",
+          "ruleEn": "Govt employee"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Land Records",
+        "Bank Account"
+      ],
+      "nextActionHi": "आवेदन करें: https://pmkisan.gov.in/",
+      "nextActionEn": "Apply at: https://pmkisan.gov.in/",
+      "portal": "https://pmkisan.gov.in/",
+      "tags": [
+        "central",
+        "farmer",
+        "land"
+      ],
+      "priorityScore": 77
+    },
+    {
+      "id": "central-mgnrega",
+      "nameHi": "मनरेगा (महात्मा गांधी राष्ट्रीय ग्रामीण रोज़गार गारंटी)",
+      "nameEn": "MGNREGA",
+      "level": "central",
+      "departmentHi": "ग्रामीण विकास मंत्रालय",
+      "annualValueInr": 22100,
+      "benefitDescriptionHi": "100 दिन का गारंटी रोज़गार, ~₹221/दिन (छ.ग. दर)",
+      "benefitDescriptionEn": "100 days guaranteed work, ~₹221/day (CG rate)",
+      "benefitFrequency": "daily_wage",
+      "benefitAmount": 221,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण निवासी",
+          "labelEn": "Rural resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Job Card",
+        "Bank Account",
+        "Passport Photo"
+      ],
+      "nextActionHi": "आवेदन करें: https://nrega.nic.in/",
+      "nextActionEn": "Apply at: https://nrega.nic.in/",
+      "portal": "https://nrega.nic.in/",
+      "tags": [
+        "central",
+        "employment",
+        "rural",
+        "guaranteed"
+      ],
+      "priorityScore": 83
+    },
+    {
+      "id": "central-atal-pension",
+      "nameHi": "अटल पेंशन योजना",
+      "nameEn": "Atal Pension Yojana",
+      "level": "central",
+      "departmentHi": "वित्त मंत्रालय",
+      "annualValueInr": 60000,
+      "benefitDescriptionHi": "60 वर्ष बाद ₹1,000-₹5,000/माह पेंशन",
+      "benefitDescriptionEn": "₹1,000-₹5,000/month pension after age 60",
+      "benefitFrequency": "monthly_post_60",
+      "benefitAmount": 5000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "age",
+          "operator": "lte",
+          "value": 40,
+          "labelHi": "आयु 40 से कम",
+          "labelEn": "Age under 40"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Has bank account"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "familyIsTaxpayer",
+          "value": true,
+          "ruleHi": "आयकर दाता",
+          "ruleEn": "Income taxpayer"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account",
+        "Mobile Number"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "central",
+        "pension",
+        "unorganized_sector"
+      ],
+      "priorityScore": 72
+    },
+    {
+      "id": "central-pm-vishwakarma",
+      "nameHi": "प्रधानमंत्री विश्वकर्मा योजना",
+      "nameEn": "PM Vishwakarma Yojana",
+      "level": "central",
+      "departmentHi": "सूक्ष्म, लघु और मध्यम उद्यम मंत्रालय",
+      "annualValueInr": 15000,
+      "benefitDescriptionHi": "₹15,000 टूलकिट + 5% ब्याज पर ₹3 लाख तक लोन + कौशल प्रशिक्षण",
+      "benefitDescriptionEn": "₹15,000 toolkit + loan up to ₹3L at 5% + skill training",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 15000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "isGovtPsuEmployee",
+          "value": true,
+          "ruleHi": "सरकारी कर्मचारी",
+          "ruleEn": "Govt employee"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account",
+        "Caste Certificate (if applicable)",
+        "Skill/Trade Proof"
+      ],
+      "nextActionHi": "आवेदन करें: https://pmvishwakarma.gov.in/",
+      "nextActionEn": "Apply at: https://pmvishwakarma.gov.in/",
+      "portal": "https://pmvishwakarma.gov.in/",
+      "tags": [
+        "central",
+        "artisan",
+        "craft",
+        "loan"
+      ],
+      "priorityScore": 70
+    },
+    {
+      "id": "central-standup-india",
+      "nameHi": "स्टैंड अप इंडिया",
+      "nameEn": "Stand Up India",
+      "level": "central",
+      "departmentHi": "वित्त मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "₹10 लाख से ₹1 करोड़ तक का बैंक लोन SC/ST/महिला उद्यमियों को",
+      "benefitDescriptionEn": "Bank loan ₹10L to ₹1Cr for SC/ST/women entrepreneurs",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Has bank account"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Business Plan",
+        "Bank Account",
+        "Caste Certificate (for SC/ST)",
+        "Address Proof"
+      ],
+      "nextActionHi": "आवेदन करें: https://www.standupmitra.in/",
+      "nextActionEn": "Apply at: https://www.standupmitra.in/",
+      "portal": "https://www.standupmitra.in/",
+      "tags": [
+        "central",
+        "entrepreneur",
+        "loan",
+        "women"
+      ],
+      "priorityScore": 68
+    },
+    {
+      "id": "cg-widow-pension",
+      "nameHi": "छ.ग. विधवा पेंशन योजना",
+      "nameEn": "CG Widow Pension Scheme",
+      "level": "state",
+      "departmentHi": "समाज कल्याण विभाग, छ.ग.",
+      "annualValueInr": 4200,
+      "benefitDescriptionHi": "₹350/माह विधवा पेंशन (₹650/माह केंद्र+राज्य मिलाकर)",
+      "benefitDescriptionEn": "₹350/month widow pension (₹650 combined central+state)",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 350,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "maritalStatus",
+          "operator": "in",
+          "value": [
+            "widowed"
+          ],
+          "labelHi": "वैवाहिक स्थिति: विधवा",
+          "labelEn": "Marital status: widow"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "Chhattisgarh resident"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल परिवार",
+          "labelEn": "BPL household"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Husband's Death Certificate",
+        "BPL Certificate",
+        "Bank Account",
+        "Age Proof"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "widow",
+        "pension",
+        "monthly_cash"
+      ],
+      "priorityScore": 92
+    },
+    {
+      "id": "cg-disability-pension",
+      "nameHi": "छ.ग. विकलांगता पेंशन योजना",
+      "nameEn": "CG Disability Pension Scheme",
+      "level": "state",
+      "departmentHi": "समाज कल्याण विभाग, छ.ग.",
+      "annualValueInr": 6000,
+      "benefitDescriptionHi": "₹500/माह विकलांगता पेंशन",
+      "benefitDescriptionEn": "₹500/month disability pension",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 500,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 6,
+          "labelHi": "आयु 6+ वर्ष",
+          "labelEn": "Age 6+ years"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "Chhattisgarh resident"
+        },
+        {
+          "field": "hasDisability",
+          "operator": "truthy",
+          "labelHi": "विकलांगता",
+          "labelEn": "Has disability"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Disability Certificate (40%+)",
+        "BPL Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "disability",
+        "pension"
+      ],
+      "priorityScore": 87
+    },
+    {
+      "id": "cg-kaushalya-matritva",
+      "nameHi": "कौशल्या मातृत्व योजना",
+      "nameEn": "Kaushalya Matritva Yojana",
+      "level": "state",
+      "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
+      "annualValueInr": 5000,
+      "benefitDescriptionHi": "दूसरी बेटी के जन्म पर ₹5,000 एकमुश्त सहायता",
+      "benefitDescriptionEn": "₹5,000 one-time on birth of second girl child",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 5000,
+      "rules": [
+        {
+          "field": "maritalStatus",
+          "operator": "in",
+          "value": [
+            "married"
+          ],
+          "labelHi": "वैवाहिक स्थिति: विवाहित",
+          "labelEn": "Marital status: married"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "Chhattisgarh resident"
+        },
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "बेटी है",
+          "labelEn": "Has girl child"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Birth Certificate of Girl",
+        "Hospital Delivery Proof",
+        "Bank Account"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "girl_child",
+        "maternity"
+      ],
+      "priorityScore": 80
+    },
+    {
+      "id": "cg-kanya-vivah",
+      "nameHi": "मुख्यमंत्री कन्या विवाह योजना",
+      "nameEn": "Mukhyamantri Kanya Vivah Yojana",
+      "level": "state",
+      "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
+      "annualValueInr": 25000,
+      "benefitDescriptionHi": "विवाह हेतु ₹25,000 सहायता राशि",
+      "benefitDescriptionEn": "₹25,000 marriage assistance",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 25000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+ वर्ष",
+          "labelEn": "Age 18+ years"
+        },
+        {
+          "field": "maritalStatus",
+          "operator": "in",
+          "value": [
+            "unmarried"
+          ],
+          "labelHi": "वैवाहिक स्थिति: अविवाहित",
+          "labelEn": "Marital status: unmarried"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "Chhattisgarh resident"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल परिवार",
+          "labelEn": "BPL household"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL Certificate",
+        "Age Proof",
+        "CG Domicile",
+        "Bank Account"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "marriage",
+        "bpl"
+      ],
+      "priorityScore": 73
+    },
+    {
+      "id": "cg-noni-suraksha",
+      "nameHi": "नोनी सुरक्षा योजना",
+      "nameEn": "Noni Suraksha Yojana",
+      "level": "state",
+      "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "बेटी के जन्म पर FD; 18 वर्ष पूर्ण होने पर परिपक्वता राशि",
+      "benefitDescriptionEn": "FD on girl's birth; maturity amount on turning 18",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "Chhattisgarh resident"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल परिवार",
+          "labelEn": "BPL household"
+        },
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "बेटी है",
+          "labelEn": "Has girl child"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Girl's Birth Certificate",
+        "Parent Aadhaar",
+        "BPL Certificate",
+        "CG Domicile"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "girl_child",
+        "savings",
+        "protection"
+      ],
+      "priorityScore": 76
+    },
+    {
+      "id": "cg-khadyann-sahayata",
+      "nameHi": "मुख्यमंत्री खाद्यान्न सहायता योजना",
+      "nameEn": "Mukhyamantri Khadyann Sahayata Yojana",
+      "level": "state",
+      "departmentHi": "खाद्य विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "राशन कार्ड धारकों को रियायती दर पर अतिरिक्त खाद्यान्न",
+      "benefitDescriptionEn": "Additional foodgrains at subsidized rates for ration card holders",
+      "benefitFrequency": "monthly",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "Chhattisgarh resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Ration Card",
+        "Aadhaar Card"
+      ],
+      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
+      "nextActionEn": "Visit nearest application center",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "food_security",
+        "ration"
+      ],
+      "priorityScore": 85
     }
   ]
 }

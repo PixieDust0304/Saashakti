@@ -1,5 +1,6 @@
 import type {
   BeneficiaryProfile,
+  Exclusion,
   MatchResult,
   MatchStatus,
   Rule,
@@ -7,7 +8,7 @@ import type {
 } from '../../types/src/index.js';
 
 export const evaluateRule = (rule: Rule, profile: BeneficiaryProfile): boolean => {
-  const profileValue = profile[rule.field];
+  const profileValue = (profile as unknown as Record<string, unknown>)[rule.field];
 
   switch (rule.operator) {
     case 'eq':
@@ -24,15 +25,30 @@ export const evaluateRule = (rule: Rule, profile: BeneficiaryProfile): boolean =
       return typeof profileValue === 'string' && typeof rule.value === 'string' && profileValue.includes(rule.value);
     case 'truthy':
       return Boolean(profileValue);
+    case 'falsy':
+      return !profileValue;
     default:
       return false;
   }
 };
 
+export const checkExclusions = (
+  profile: BeneficiaryProfile,
+  exclusions: Exclusion[]
+): Exclusion | null => {
+  for (const excl of exclusions) {
+    const val = (profile as unknown as Record<string, unknown>)[excl.field];
+    if (val === excl.value) return excl;
+  }
+  return null;
+};
+
 export const evaluateScheme = (profile: BeneficiaryProfile, scheme: Scheme): MatchResult => {
   const matchedRules: string[] = [];
   const missingRules: string[] = [];
+  const blockingRules: string[] = [];
 
+  // Evaluate positive rules
   for (const rule of scheme.rules) {
     if (evaluateRule(rule, profile)) {
       matchedRules.push(rule.labelHi);
@@ -41,33 +57,69 @@ export const evaluateScheme = (profile: BeneficiaryProfile, scheme: Scheme): Mat
     }
   }
 
-  const score = matchedRules.length / scheme.rules.length;
-  const status = score === 1 ? 'eligible' : score >= 0.5 ? 'partial' : 'ineligible';
+  // Evaluate exclusions
+  const excludedBy = checkExclusions(profile, scheme.exclusions || []);
+  if (excludedBy) {
+    blockingRules.push(excludedBy.ruleHi);
+  }
+
+  const totalRules = scheme.rules.length;
+  const score = totalRules > 0 ? matchedRules.length / totalRules : 0;
+  const matchScore = Math.round(score * 100);
+
+  // Determine status
+  let status: MatchStatus;
+  if (excludedBy) {
+    status = 'ineligible';
+  } else if (missingRules.length === 0) {
+    status = 'eligible';
+  } else if (score >= 0.5 && missingRules.length <= 2) {
+    status = 'partial';
+  } else {
+    status = 'ineligible';
+  }
+
+  // Build explanations
+  let explanationHi: string;
+  let explanationEn: string;
+
+  if (excludedBy) {
+    explanationHi = `अपात्र: ${excludedBy.ruleHi}`;
+    explanationEn = `Not eligible: ${excludedBy.ruleEn}`;
+  } else if (status === 'eligible') {
+    explanationHi = `आप ${scheme.nameHi} के लिए पात्र हैं।`;
+    explanationEn = `You are eligible for ${scheme.nameEn}.`;
+  } else if (status === 'partial') {
+    explanationHi = `${scheme.nameHi} — आंशिक पात्रता। बाकी: ${missingRules.join(', ')}`;
+    explanationEn = `${scheme.nameEn} — partial eligibility. Pending: ${missingRules.join(', ')}`;
+  } else {
+    explanationHi = `${scheme.nameHi} — पात्रता शर्तें पूरी नहीं हुईं।`;
+    explanationEn = `${scheme.nameEn} — eligibility criteria not met.`;
+  }
 
   return {
     schemeId: scheme.id,
     schemeNameHi: scheme.nameHi,
     schemeNameEn: scheme.nameEn,
     status,
+    matchScore,
     annualValueInr: scheme.annualValueInr,
     matchedRules,
     missingRules,
+    blockingRules,
     nextActionHi: scheme.nextActionHi,
     nextActionEn: scheme.nextActionEn,
-    explanationHi:
-      status === 'eligible'
-        ? 'आप इस योजना के लिए पात्र हैं।'
-        : `कुछ शर्तें बाकी हैं: ${missingRules.join(', ')}`,
-    explanationEn:
-      status === 'eligible'
-        ? 'You are eligible for this scheme.'
-        : `Some criteria are pending: ${missingRules.join(', ')}`,
+    explanationHi,
+    explanationEn,
+    policyConfidence: 0.9,
+    dataConfidence: missingRules.length === 0 ? 0.95 : Math.max(0.5, 1 - missingRules.length * 0.15),
   };
 };
 
 export const matchSchemes = (profile: BeneficiaryProfile, schemes: Scheme[]): MatchResult[] =>
   schemes
     .map((scheme) => evaluateScheme(profile, scheme))
+    .filter((r) => r.status !== 'ineligible')
     .sort((a, b) => {
       const rank: Record<MatchStatus, number> = { eligible: 0, partial: 1, ineligible: 2 };
       return rank[a.status] - rank[b.status] || b.annualValueInr - a.annualValueInr;

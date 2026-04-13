@@ -63,8 +63,11 @@ const runSchemeRegistryValidation = async () => {
     const { validateRegistry } = await import(path.join(root, 'packages/scheme-registry/src/schema.js'));
     const raw = await readFile(path.join(root, 'packages/scheme-registry/src/data/schemes.json'), 'utf8');
     const parsed = JSON.parse(raw);
-    const registry = validateRegistry(parsed);
-    console.log(`✅ Registry loaded: version ${registry.version}, schemes=${registry.schemes.length}`);
+    if (!validateRegistry(parsed)) {
+      failures.push('Scheme registry validation failed: validateRegistry returned false');
+      return;
+    }
+    console.log(`✅ Registry loaded: version ${parsed.version}, schemes=${parsed.schemes.length}`);
   } catch (error) {
     failures.push(`Scheme registry validation failed: ${String(error)}`);
   }
