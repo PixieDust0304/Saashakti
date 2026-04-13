@@ -1,4 +1,10 @@
-import type { BeneficiaryProfile, MatchResult, Rule, Scheme } from '../../types/src';
+import type {
+  BeneficiaryProfile,
+  MatchResult,
+  MatchStatus,
+  Rule,
+  Scheme,
+} from '../../types/src/index.js';
 
 export const evaluateRule = (rule: Rule, profile: BeneficiaryProfile): boolean => {
   const profileValue = profile[rule.field];
@@ -63,6 +69,6 @@ export const matchSchemes = (profile: BeneficiaryProfile, schemes: Scheme[]): Ma
   schemes
     .map((scheme) => evaluateScheme(profile, scheme))
     .sort((a, b) => {
-      const rank = { eligible: 0, partial: 1, ineligible: 2 };
+      const rank: Record<MatchStatus, number> = { eligible: 0, partial: 1, ineligible: 2 };
       return rank[a.status] - rank[b.status] || b.annualValueInr - a.annualValueInr;
     });
