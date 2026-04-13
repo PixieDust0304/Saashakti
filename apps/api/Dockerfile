@@ -25,6 +25,7 @@ COPY apps/mobile/package.json ./apps/mobile/package.json
 COPY packages/types/package.json ./packages/types/package.json
 COPY packages/scheme-engine/package.json ./packages/scheme-engine/package.json
 COPY packages/scheme-registry/package.json ./packages/scheme-registry/package.json
+COPY packages/scheme-ingestion/package.json ./packages/scheme-ingestion/package.json
 COPY packages/api-client/package.json ./packages/api-client/package.json
 
 RUN pnpm install --frozen-lockfile
@@ -34,6 +35,7 @@ COPY apps/api ./apps/api
 COPY packages/types ./packages/types
 COPY packages/scheme-engine ./packages/scheme-engine
 COPY packages/scheme-registry ./packages/scheme-registry
+COPY packages/scheme-ingestion ./packages/scheme-ingestion
 COPY packages/api-client ./packages/api-client
 COPY infra/sql ./infra/sql
 
