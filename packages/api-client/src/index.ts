@@ -9,6 +9,7 @@ import type {
   HealthResponse,
   IntakeRequest,
   IntakeResponse,
+  KycResponse,
   OtpRequestResponse,
   OtpVerifyResponse,
   ReadyResponse,
@@ -171,6 +172,19 @@ export class SaashaktiClient {
       method: 'GET',
       path: '/v1/aadhaar/status',
       auth: true,
+    });
+  }
+
+  /**
+   * Mock e-KYC fetch. Public + rate-limited; pulls a deterministic
+   * fake KYC record from the backend so the admin-web intake form
+   * can pre-fill name, age, gender, address, district, pincode, etc.
+   */
+  fetchAadhaarKyc(aadhaarNumber: string): Promise<KycResponse> {
+    return this.request<KycResponse>({
+      method: 'GET',
+      path: '/v1/aadhaar/kyc',
+      query: { aadhaarNumber },
     });
   }
 

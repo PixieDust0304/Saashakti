@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '../hooks/useLang'
 import { matchSchemes, calculateTotalBenefit } from '../engine/matchSchemes'
 import { saveBeneficiary, saveMatches } from '../lib/supabase'
-import { api } from '../lib/api'
+import { api, ApiError } from '../lib/api'
 import type { BeneficiaryProfile, FieldWorker, SchemeMatch, FormStep } from '../engine/types'
 import schemesData from '../data/schemes.json'
 import districts from '../data/districts-cg.json'
@@ -152,8 +152,67 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
   const [form, setForm] = useState<Partial<BeneficiaryProfile>>(INITIAL)
   const [saving, setSaving] = useState(false)
 
+  // Aadhaar autofill state
+  const [aadhaarNumber, setAadhaarNumber] = useState('')
+  const [kycLoading, setKycLoading] = useState(false)
+  const [kycError, setKycError] = useState<string | null>(null)
+  const [kycFilled, setKycFilled] = useState(false)
+  const [autofilledFields, setAutofilledFields] = useState<Set<string>>(new Set())
+
   const set = (key: string, value: unknown) =>
     setForm((prev) => ({ ...prev, [key]: value }))
+
+  /**
+   * Pull a mock e-KYC record from the backend and prefill the form
+   * with everything Aadhaar actually carries (name, age from DOB,
+   * gender, district, mobile). Marital status, BPL, occupation, etc.
+   * are NOT in Aadhaar and still need manual input.
+   */
+  const fetchKyc = async () => {
+    const digits = aadhaarNumber.replace(/\D/g, '')
+    if (digits.length !== 12) {
+      setKycError(lang === 'hi' ? 'आधार 12 अंकों का होना चाहिए' : 'Aadhaar must be 12 digits')
+      return
+    }
+    setKycError(null)
+    setKycLoading(true)
+    try {
+      const { kyc } = await api.fetchAadhaarKyc(digits)
+
+      // Map the KYC district name onto the form's slug-based code list.
+      const districtCode = districts.find(
+        (d) => d.name_en.toLowerCase() === kyc.address.district.toLowerCase(),
+      )?.code
+
+      setForm((prev) => ({
+        ...prev,
+        name: kyc.name,
+        age: kyc.age,
+        phone: kyc.mobileNumber?.replace(/^91/, '') ?? prev.phone,
+        district: districtCode ?? prev.district,
+        gender: 'female',
+        state: 'Chhattisgarh',
+      }))
+
+      const filled = new Set<string>(['name', 'age'])
+      if (kyc.mobileNumber) filled.add('phone')
+      if (districtCode) filled.add('district')
+      setAutofilledFields(filled)
+      setKycFilled(true)
+    } catch (err) {
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : err instanceof Error
+            ? err.message
+            : 'Aadhaar fetch failed'
+      setKycError(message)
+    } finally {
+      setKycLoading(false)
+    }
+  }
+
+  const isAutofilled = (field: string) => autofilledFields.has(field)
 
   const canProceed = () => {
     if (step === 1) return form.name && form.age && form.district
@@ -359,10 +418,64 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="glass-card p-5 space-y-5"
               >
+                {/* Aadhaar autofill */}
+                <div className="rounded-lg border border-saffron-200 bg-saffron-50/60 p-4 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={16} className="text-saffron-600" />
+                    <label className="text-sm font-semibold text-slate-700">
+                      {lang === 'hi' ? 'आधार से ऑटो भरें' : 'Auto-fill from Aadhaar'}
+                    </label>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={14}
+                      value={aadhaarNumber}
+                      onChange={(e) => {
+                        setAadhaarNumber(e.target.value)
+                        if (kycError) setKycError(null)
+                      }}
+                      className="input-3d flex-1 tracking-wider"
+                      placeholder="1234 5678 9012"
+                      disabled={kycLoading}
+                    />
+                    <button
+                      type="button"
+                      onClick={fetchKyc}
+                      disabled={kycLoading || aadhaarNumber.replace(/\D/g, '').length !== 12}
+                      className="toggle-3d toggle-3d-active px-4 py-2 text-sm whitespace-nowrap disabled:opacity-50"
+                    >
+                      {kycLoading
+                        ? lang === 'hi'
+                          ? 'खींच रहा है…'
+                          : 'Fetching…'
+                        : lang === 'hi'
+                          ? 'भरें'
+                          : 'Fetch'}
+                    </button>
+                  </div>
+                  {kycError && (
+                    <p className="text-xs text-red-600">{kycError}</p>
+                  )}
+                  {kycFilled && !kycError && (
+                    <p className="text-xs text-green-700">
+                      {lang === 'hi'
+                        ? '✓ नाम, उम्र, पता, फ़ोन भर दिए गए। बाक़ी विवरण नीचे भरें।'
+                        : '✓ Name, age, address, phone filled. Complete the rest below.'}
+                    </p>
+                  )}
+                </div>
+
                 {/* Name */}
                 <div>
                   <label className="text-sm text-slate-600 mb-1.5 block font-medium">
                     {t('name')}
+                    {isAutofilled('name') && (
+                      <span className="ml-2 text-[10px] uppercase tracking-wide text-saffron-600">
+                        {lang === 'hi' ? 'आधार से' : 'from Aadhaar'}
+                      </span>
+                    )}
                   </label>
                   <input
                     value={form.name || ''}

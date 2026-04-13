@@ -135,6 +135,34 @@ export interface IntakeResponse {
   matchesPersisted: number;
 }
 
+export interface KycAddress {
+  house?: string;
+  street?: string;
+  landmark?: string;
+  locality?: string;
+  vtc: string;
+  district: string;
+  state: string;
+  pincode: string;
+  country: string;
+}
+
+export interface KycRecord {
+  aadhaarLast4: string;
+  name: string;
+  gender: 'F' | 'M' | 'T';
+  dob: string;
+  age: number;
+  address: KycAddress;
+  mobileNumber?: string;
+  source: 'mock' | 'uidai';
+  fetchedAt: string;
+}
+
+export interface KycResponse {
+  kyc: KycRecord;
+}
+
 export interface HealthResponse {
   status: 'ok';
   time: string;
