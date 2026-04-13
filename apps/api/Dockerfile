@@ -23,7 +23,6 @@ COPY apps/api/package.json ./apps/api/package.json
 COPY packages/types/package.json ./packages/types/package.json
 COPY packages/scheme-engine/package.json ./packages/scheme-engine/package.json
 COPY packages/scheme-registry/package.json ./packages/scheme-registry/package.json
-COPY packages/ui/package.json ./packages/ui/package.json
 COPY packages/api-client/package.json ./packages/api-client/package.json
 COPY apps/admin-web/package.json ./apps/admin-web/package.json
 COPY apps/mobile/package.json ./apps/mobile/package.json
@@ -36,7 +35,6 @@ COPY packages/types ./packages/types
 COPY packages/scheme-engine ./packages/scheme-engine
 COPY packages/scheme-registry ./packages/scheme-registry
 COPY packages/api-client ./packages/api-client
-COPY packages/ui ./packages/ui
 COPY infra/sql ./infra/sql
 
 RUN pnpm --filter api build
