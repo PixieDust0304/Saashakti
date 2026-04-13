@@ -1,0 +1,597 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   SAASHAKTI 3D DESIGN SYSTEM
+   Brand: Orange #F97316 + Purple #7C3AED
+   ============================================ */
+
+@layer base {
+  :root {
+    --color-saffron: #F97316;
+    --color-purple: #7C3AED;
+    --color-success: #138808;
+    --color-navy: #0F172A;
+    --color-navy-deep: #0A0F1A;
+    --glass-blur: 16px;
+    --glass-bg: rgba(255, 255, 255, 0.06);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --perspective: 1200px;
+    --tilt-amount: 8deg;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen;
+    font-family: 'Noto Sans Devanagari', 'Inter', 'Noto Sans', sans-serif;
+    background: linear-gradient(135deg, #0A0F1A 0%, #0F172A 40%, #1a0a20 70%, #0A0F1A 100%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  input, select, button, textarea {
+    @apply outline-none;
+    font-family: inherit;
+  }
+
+  ::selection {
+    background: rgba(249, 115, 22, 0.3);
+    color: white;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(249, 115, 22, 0.3);
+    border-radius: 999px;
+  }
+}
+
+@layer components {
+
+  /* ==========================================
+     3D GLASS CARDS
+     ========================================== */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 1.25rem;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+  }
+
+  .glass-card-hover:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow:
+      0 20px 48px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(249, 115, 22, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    border-color: rgba(249, 115, 22, 0.25);
+  }
+
+  .glass-card-hover:active {
+    transform: translateY(-1px) scale(0.99);
+  }
+
+  .glass-card-saffron {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.12), rgba(249, 115, 22, 0.04));
+    border-color: rgba(249, 115, 22, 0.20);
+  }
+
+  .glass-card-purple {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(124, 58, 237, 0.04));
+    border-color: rgba(124, 58, 237, 0.20);
+  }
+
+  .glass-card-success {
+    background: linear-gradient(135deg, rgba(19, 136, 8, 0.12), rgba(19, 136, 8, 0.04));
+    border-color: rgba(19, 136, 8, 0.20);
+  }
+
+  /* ==========================================
+     3D BUTTONS
+     ========================================== */
+  .btn-3d {
+    @apply relative font-semibold py-3.5 px-6 rounded-2xl text-lg text-center
+           transition-all duration-200 ease-out
+           min-h-touch w-full select-none cursor-pointer
+           flex items-center justify-center gap-2;
+    transform: translateY(0);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-3d:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-3d:disabled {
+    @apply opacity-40 cursor-not-allowed;
+    transform: none;
+  }
+
+  .btn-3d-primary {
+    background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+    color: white;
+    box-shadow:
+      0 4px 0 #C2410C,
+      0 8px 24px rgba(249, 115, 22, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-3d-primary:active {
+    box-shadow: 0 1px 0 #C2410C, 0 2px 8px rgba(249, 115, 22, 0.2);
+  }
+
+  .btn-3d-primary:hover:not(:disabled) {
+    box-shadow:
+      0 4px 0 #C2410C,
+      0 12px 32px rgba(249, 115, 22, 0.4),
+      0 0 40px rgba(249, 115, 22, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
+  .btn-3d-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    color: white;
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.15),
+      0 8px 24px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .btn-3d-secondary:active {
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  .btn-3d-secondary:hover:not(:disabled) {
+    border-color: rgba(249, 115, 22, 0.3);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .btn-3d-success {
+    background: linear-gradient(135deg, #138808 0%, #0D6E04 100%);
+    color: white;
+    box-shadow:
+      0 4px 0 #0a5403,
+      0 8px 24px rgba(19, 136, 8, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-3d-success:active {
+    box-shadow: 0 1px 0 #0a5403, 0 2px 8px rgba(19, 136, 8, 0.2);
+  }
+
+  .btn-3d-purple {
+    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+    color: white;
+    box-shadow:
+      0 4px 0 #581C87,
+      0 8px 24px rgba(124, 58, 237, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-3d-purple:active {
+    box-shadow: 0 1px 0 #581C87, 0 2px 8px rgba(124, 58, 237, 0.2);
+  }
+
+  /* ==========================================
+     3D FORM INPUTS
+     ========================================== */
+  .input-3d {
+    @apply w-full rounded-xl py-3.5 px-4 text-lg text-white
+           transition-all duration-300 min-h-touch;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid rgba(255, 255, 255, 0.10);
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.15),
+      0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .input-3d::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .input-3d:focus {
+    border-color: rgba(249, 115, 22, 0.6);
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.1),
+      0 0 0 3px rgba(249, 115, 22, 0.15),
+      0 0 20px rgba(249, 115, 22, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .select-3d {
+    @apply w-full rounded-xl py-3.5 px-4 text-lg text-white
+           transition-all duration-300 min-h-touch appearance-none cursor-pointer;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid rgba(255, 255, 255, 0.10);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+
+  .select-3d:focus {
+    border-color: rgba(249, 115, 22, 0.6);
+    box-shadow:
+      inset 0 2px 4px rgba(0, 0, 0, 0.1),
+      0 0 0 3px rgba(249, 115, 22, 0.15);
+  }
+
+  .select-3d option {
+    background: #1a2332;
+    color: white;
+  }
+
+  /* ==========================================
+     3D TOGGLE BUTTONS
+     ========================================== */
+  .toggle-3d {
+    @apply flex-1 py-3 px-4 rounded-xl text-center font-medium text-base
+           transition-all duration-300 min-h-touch flex items-center justify-center
+           cursor-pointer select-none relative overflow-hidden;
+  }
+
+  .toggle-3d-active {
+    background: linear-gradient(135deg, #F97316, #EA580C);
+    color: white;
+    box-shadow:
+      0 3px 0 #C2410C,
+      0 6px 16px rgba(249, 115, 22, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(0);
+  }
+
+  .toggle-3d-inactive {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.10);
+    color: rgba(255, 255, 255, 0.6);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .toggle-3d-inactive:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .toggle-3d-inactive:active {
+    transform: translateY(1px);
+  }
+
+  /* ==========================================
+     3D STEP INDICATORS
+     ========================================== */
+  .step-3d {
+    @apply w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold
+           transition-all duration-500 relative;
+  }
+
+  .step-3d-active {
+    background: linear-gradient(135deg, #F97316, #7C3AED);
+    color: white;
+    box-shadow:
+      0 0 0 4px rgba(249, 115, 22, 0.2),
+      0 4px 16px rgba(249, 115, 22, 0.4);
+    transform: scale(1.15);
+  }
+
+  .step-3d-done {
+    background: linear-gradient(135deg, #138808, #0D6E04);
+    color: white;
+    box-shadow: 0 3px 12px rgba(19, 136, 8, 0.3);
+  }
+
+  .step-3d-pending {
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .step-connector {
+    @apply h-0.5 flex-1 mx-1 rounded-full transition-all duration-700;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .step-connector-done {
+    background: linear-gradient(90deg, #138808, #F97316);
+  }
+
+  /* ==========================================
+     BADGES
+     ========================================== */
+  .badge-3d-eligible {
+    background: linear-gradient(135deg, rgba(19, 136, 8, 0.2), rgba(19, 136, 8, 0.1));
+    border: 1px solid rgba(19, 136, 8, 0.3);
+    color: #6EE7B7;
+    @apply px-3 py-1.5 rounded-full text-sm font-semibold;
+    box-shadow: 0 2px 8px rgba(19, 136, 8, 0.15);
+  }
+
+  .badge-3d-partial {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(234, 179, 8, 0.1));
+    border: 1px solid rgba(234, 179, 8, 0.3);
+    color: #FDE68A;
+    @apply px-3 py-1.5 rounded-full text-sm font-semibold;
+    box-shadow: 0 2px 8px rgba(234, 179, 8, 0.15);
+  }
+
+  /* ==========================================
+     ANIMATED BACKGROUND
+     ========================================== */
+  .animated-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .animated-bg .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    animation: orbFloat 20s ease-in-out infinite;
+  }
+
+  .animated-bg .orb-saffron {
+    background: radial-gradient(circle, #F97316, transparent 70%);
+    width: 500px;
+    height: 500px;
+    top: -10%;
+    right: -5%;
+    animation-delay: 0s;
+  }
+
+  .animated-bg .orb-purple {
+    background: radial-gradient(circle, #7C3AED, transparent 70%);
+    width: 600px;
+    height: 600px;
+    bottom: -15%;
+    left: -10%;
+    animation-delay: -7s;
+  }
+
+  .animated-bg .orb-green {
+    background: radial-gradient(circle, #138808, transparent 70%);
+    width: 300px;
+    height: 300px;
+    top: 50%;
+    left: 40%;
+    opacity: 0.08;
+    animation-delay: -14s;
+  }
+
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(40px, -60px) scale(1.1); }
+    50% { transform: translate(-30px, 40px) scale(0.9); }
+    75% { transform: translate(50px, 20px) scale(1.05); }
+  }
+
+  /* ==========================================
+     GLASS HEADER
+     ========================================== */
+  .glass-header {
+    background: rgba(10, 15, 26, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  /* ==========================================
+     SHIMMER / LOADING
+     ========================================== */
+  .shimmer {
+    background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.03) 25%,
+      rgba(255, 255, 255, 0.08) 50%,
+      rgba(255, 255, 255, 0.03) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+  }
+
+  /* ==========================================
+     GLOW EFFECTS
+     ========================================== */
+  .glow-saffron {
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.3), 0 0 60px rgba(249, 115, 22, 0.1);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3), 0 0 60px rgba(124, 58, 237, 0.1);
+  }
+
+  .text-glow-saffron {
+    text-shadow: 0 0 20px rgba(249, 115, 22, 0.5), 0 0 40px rgba(249, 115, 22, 0.2);
+  }
+
+  .text-glow-white {
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3), 0 0 60px rgba(255, 255, 255, 0.1);
+  }
+
+  /* ==========================================
+     GRADIENT TEXT
+     ========================================== */
+  .text-gradient-saffron {
+    background: linear-gradient(135deg, #F97316, #FB923C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #F97316, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-success {
+    background: linear-gradient(135deg, #34D399, #138808);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ==========================================
+     DASHBOARD-SPECIFIC
+     ========================================== */
+  .dashboard-bg {
+    background: linear-gradient(135deg, #0A1929 0%, #0F172A 30%, #1a0a20 65%, #0A1929 100%);
+    min-height: 100vh;
+  }
+
+  .counter-glow {
+    text-shadow:
+      0 0 40px rgba(255, 255, 255, 0.4),
+      0 0 80px rgba(249, 115, 22, 0.2);
+  }
+
+  .live-dot {
+    @apply w-3 h-3 rounded-full;
+    background: #4ADE80;
+    box-shadow: 0 0 8px #4ADE80, 0 0 20px rgba(74, 222, 128, 0.4);
+    animation: livePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px #4ADE80, 0 0 20px rgba(74, 222, 128, 0.4); }
+    50% { opacity: 0.6; box-shadow: 0 0 16px #4ADE80, 0 0 40px rgba(74, 222, 128, 0.6); }
+  }
+
+  .bar-gradient {
+    background: linear-gradient(90deg, #F97316, #FB923C);
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2);
+  }
+
+  /* ==========================================
+     PERSPECTIVE / 3D TILT
+     ========================================== */
+  .perspective-container {
+    perspective: 1200px;
+    perspective-origin: center center;
+  }
+
+  .tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease-out;
+  }
+
+  .tilt-card:hover {
+    transform: perspective(800px) rotateX(2deg) rotateY(-3deg) translateZ(10px);
+  }
+
+  /* ==========================================
+     PARTICLE DOTS (CSS-only)
+     ========================================== */
+  .particle-field {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(249, 115, 22, 0.3);
+    animation: particleFloat linear infinite;
+  }
+
+  @keyframes particleFloat {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+  }
+}
+
+/* ==========================================
+   SMOOTH PAGE TRANSITIONS
+   ========================================== */
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: perspective(800px) translateY(30px) rotateX(-3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(800px) translateY(0) rotateX(0deg);
+  }
+}
+
+.page-enter {
+  animation: pageEnter 0.5s ease-out;
+}
+
+/* ==========================================
+   SKELETON LOADING
+   ========================================== */
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.04; }
+  50% { opacity: 0.08; }
+}
+
+.skeleton {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 0.75rem;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+/* ==========================================
+   CONFETTI (for results page celebration)
+   ========================================== */
+@keyframes confettiFall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+.confetti-piece {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+  pointer-events: none;
+  z-index: 50;
+}
