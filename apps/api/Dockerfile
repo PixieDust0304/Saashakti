@@ -17,6 +17,9 @@ RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
 FROM base AS builder
 WORKDIR /workspace
 
+# pnpm 10's `pnpm deploy` requires injected workspace packages
+ENV NPM_CONFIG_INJECT_WORKSPACE_PACKAGES=true
+
 # Copy lockfile + workspace manifest first so dep install is cacheable
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json ./apps/api/package.json
