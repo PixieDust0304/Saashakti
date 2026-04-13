@@ -1,0 +1,10 @@
+{
+  "name": "api",
+  "private": true,
+  "version": "0.3.0",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test tests/auth.test.js tests/beneficiaries.test.js tests/dashboard.test.js"
+  }
+}
