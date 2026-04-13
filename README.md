@@ -64,6 +64,20 @@ pnpm --filter api dev
 docker compose up -d                              # Postgres 16 + Redis 7 with healthchecks
 ```
 
+## API Docker image
+Multi-stage image built from the monorepo root:
+```bash
+docker build -f apps/api/Dockerfile -t saashakti/api:local .
+docker run --rm -p 3001:3001 \
+  -e DATABASE_URL=postgres://saashakti:saashakti@host.docker.internal:5432/saashakti \
+  -e REDIS_URL=redis://host.docker.internal:6379 \
+  -e OTP_MODE=mock \
+  saashakti/api:local
+```
+The image runs as a non-root user, exposes port 3001, includes a
+`HEALTHCHECK` hitting `/health`, and applies pending SQL migrations
+from `/app/infra/sql` on startup.
+
 Environment variables (see `apps/api/.env.example`):
 ```bash
 DATABASE_URL=postgres://saashakti:saashakti@localhost:5432/saashakti

@@ -2,9 +2,13 @@ import { readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { sql } from './client.js';
+import { env } from '../config/env.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const MIGRATIONS_DIR = resolve(here, '../../../../infra/sql');
+const DEFAULT_MIGRATIONS_DIR = resolve(here, '../../../../infra/sql');
+const MIGRATIONS_DIR = env.MIGRATIONS_DIR
+  ? resolve(env.MIGRATIONS_DIR)
+  : DEFAULT_MIGRATIONS_DIR;
 
 const ensureMigrationsTable = async () => {
   await sql`

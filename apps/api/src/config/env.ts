@@ -28,6 +28,8 @@ const schema = z.object({
   CORS_ORIGINS: z.string().optional(),
 
   DASHBOARD_CACHE_TTL_SECONDS: z.coerce.number().int().nonnegative().default(15),
+
+  MIGRATIONS_DIR: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);
