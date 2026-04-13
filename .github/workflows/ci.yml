@@ -80,6 +80,9 @@ jobs:
       - name: API build
         run: pnpm --filter api build
 
+      - name: Admin web build
+        run: pnpm --filter admin-web build
+
       - name: API tests (skip integration if infra missing)
         run: pnpm --filter api test
 
