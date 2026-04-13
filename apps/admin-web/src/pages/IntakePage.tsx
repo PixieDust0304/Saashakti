@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '../hooks/useLang'
 import { matchSchemes, calculateTotalBenefit } from '../engine/matchSchemes'
 import { saveBeneficiary, saveMatches } from '../lib/supabase'
+import { api } from '../lib/api'
 import type { BeneficiaryProfile, FieldWorker, SchemeMatch, FormStep } from '../engine/types'
 import schemesData from '../data/schemes.json'
 import districts from '../data/districts-cg.json'
@@ -172,34 +173,73 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
     profile.total_annual_benefit = totalBenefit
 
     setSaving(true)
-    try {
-      const saved = await saveBeneficiary({
-        ...profile,
-        field_worker_id: fieldWorker?.id || null,
-      })
-      if (saved?.id) {
-        await saveMatches(
-          saved.id,
-          matches
-            .filter(
-              (m) =>
-                m.eligibility_status === 'eligible' ||
-                m.eligibility_status === 'partial'
+
+    // Dual-write: always try the Saashakti backend (/v1/intake) and,
+    // if Supabase is configured, persist there too. Either path failing
+    // must not block the user from seeing results.
+    const backendMatches = matches
+      .filter(
+        (m) =>
+          m.eligibility_status === 'eligible' ||
+          m.eligibility_status === 'partial'
+      )
+      .map((m) => ({
+        schemeId: m.scheme_id,
+        schemeNameHi: m.scheme.name_hi,
+        schemeNameEn: m.scheme.name_en,
+        eligibilityStatus: m.eligibility_status as
+          | 'eligible'
+          | 'partial'
+          | 'not_eligible'
+          | 'ineligible',
+        annualValueInr: m.scheme.benefit.annual_value ?? null,
+        explanationHi: m.explanation_hi,
+        explanationEn: m.explanation_en,
+      }))
+
+    await Promise.allSettled([
+      (async () => {
+        try {
+          await api.submitIntake({
+            profile: profile as unknown as Record<string, unknown>,
+            matches: backendMatches,
+            fieldWorkerCode: fieldWorker?.access_code,
+          })
+        } catch (err) {
+          console.warn('Backend intake save failed (continuing):', err)
+        }
+      })(),
+      (async () => {
+        try {
+          const saved = await saveBeneficiary({
+            ...profile,
+            field_worker_id: fieldWorker?.id || null,
+          })
+          if (saved?.id) {
+            await saveMatches(
+              saved.id,
+              matches
+                .filter(
+                  (m) =>
+                    m.eligibility_status === 'eligible' ||
+                    m.eligibility_status === 'partial'
+                )
+                .map((m) => ({
+                  scheme_id: m.scheme_id,
+                  scheme_name_hi: m.scheme.name_hi,
+                  scheme_name_en: m.scheme.name_en,
+                  benefit_amount: m.scheme.benefit.amount,
+                  benefit_frequency: m.scheme.benefit.frequency,
+                  confidence: m.eligibility_status,
+                }))
             )
-            .map((m) => ({
-              scheme_id: m.scheme_id,
-              scheme_name_hi: m.scheme.name_hi,
-              scheme_name_en: m.scheme.name_en,
-              benefit_amount: m.scheme.benefit.amount,
-              benefit_frequency: m.scheme.benefit.frequency,
-              confidence: m.eligibility_status,
-            }))
-        )
-      }
-    } catch (err) {
-      console.error('Save failed:', err)
-      // Continue anyway -- matching still works client-side
-    }
+          }
+        } catch (err) {
+          console.warn('Supabase save failed (continuing):', err)
+        }
+      })(),
+    ])
+
     setSaving(false)
 
     onComplete(profile, matches)

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getDashboardStats, subscribeToDashboard, supabase, isConfigured } from '../lib/supabase'
+import { api } from '../lib/api'
 import { Users, MapPin, Award, IndianRupee, Heart, Baby, Shield, TrendingUp, Zap } from 'lucide-react'
 import { SaashaktiLogoMark } from '../components/ui/SaashaktiLogo'
 
@@ -56,6 +57,43 @@ async function getRecentRegistrations(): Promise<RecentReg[]> {
     .order('created_at', { ascending: false })
     .limit(8)
   return data || []
+}
+
+/**
+ * Try the Saashakti backend first. If /v1/dashboard/summary is reachable,
+ * map its shape onto the rich DashboardData the admin-web already expects
+ * (the extra fields we don't have server-side default to zero and will
+ * get fleshed out when the aggregator learns about them). Fall back to
+ * Supabase on any failure so local-only dev still works.
+ */
+async function getBackendDashboard(): Promise<{
+  stats: DashboardData
+  recent: RecentReg[]
+} | null> {
+  try {
+    const [summary, recent] = await Promise.all([
+      api.getDashboardSummary(),
+      api.getDashboardRecent(8),
+    ])
+    const stats: DashboardData = {
+      total_registrations: summary.totals.beneficiaries,
+      districts: summary.byDistrict.length,
+      total_matches: summary.totals.matches,
+      total_benefit: 0,
+      bpl_count: 0,
+      pregnant_count: 0,
+      widow_count: 0,
+      by_district: summary.byDistrict.map((d) => [d.district, d.count] as [string, number]),
+    }
+    const mapped: RecentReg[] = recent.entries.map((e) => ({
+      name: e.mobileNumber,
+      district: e.district ?? '—',
+      created_at: e.createdAt,
+    }))
+    return { stats, recent: mapped }
+  } catch {
+    return null
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -186,14 +224,17 @@ export default function DashboardPage() {
   const animatedPregnant = useAnimatedValue(stats?.pregnant_count ?? 0, 600)
   const animatedWidow = useAnimatedValue(stats?.widow_count ?? 0, 600)
 
-  // Fetch all 3 data sources
+  // Fetch all 3 data sources — backend first, supabase second
   const fetchAll = useCallback(async () => {
     try {
-      const [dashData, schemes, regs] = await Promise.all([
-        getDashboardStats(),
-        getTopSchemes(),
-        getRecentRegistrations(),
-      ])
+      const backend = await getBackendDashboard()
+      const [dashData, schemes, regs] = backend
+        ? [backend.stats, await getTopSchemes(), backend.recent]
+        : await Promise.all([
+            getDashboardStats(),
+            getTopSchemes(),
+            getRecentRegistrations(),
+          ])
       const resolved = (dashData as DashboardData) ?? {
         total_registrations: 0,
         districts: 0,
