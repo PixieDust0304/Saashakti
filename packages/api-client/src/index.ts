@@ -7,6 +7,8 @@ import type {
   DashboardSummary,
   GetMeResponse,
   HealthResponse,
+  IntakeRequest,
+  IntakeResponse,
   OtpRequestResponse,
   OtpVerifyResponse,
   ReadyResponse,
@@ -213,6 +215,15 @@ export class SaashaktiClient {
       method: 'GET',
       path: '/v1/matching/me',
       auth: true,
+    });
+  }
+
+  // -- Rich intake (public, rate-limited) --
+  submitIntake(request: IntakeRequest): Promise<IntakeResponse> {
+    return this.request<IntakeResponse>({
+      method: 'POST',
+      path: '/v1/intake',
+      body: request,
     });
   }
 

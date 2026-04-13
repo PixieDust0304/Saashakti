@@ -558,6 +558,82 @@
         }
       }
     },
+    "/v1/intake": {
+      "post": {
+        "summary": "Rich opaque intake (admin-web path)",
+        "description": "Public, rate-limited endpoint for the admin-web PWA. Accepts an arbitrary profile JSON blob, a set of pre-computed matches, and an optional field-worker access code. Persists the profile into beneficiaries.profile_json plus a best-effort structured row in beneficiary_profiles so dashboard aggregates still work.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  "matches": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "schemeId": {
+                          "type": "string"
+                        },
+                        "schemeNameHi": {
+                          "type": "string"
+                        },
+                        "schemeNameEn": {
+                          "type": "string"
+                        },
+                        "eligibilityStatus": {
+                          "type": "string",
+                          "enum": [
+                            "eligible",
+                            "partial",
+                            "not_eligible",
+                            "ineligible"
+                          ]
+                        },
+                        "annualValueInr": {
+                          "type": "number",
+                          "nullable": true
+                        },
+                        "explanationHi": {
+                          "type": "string"
+                        },
+                        "explanationEn": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "schemeId",
+                        "eligibilityStatus"
+                      ]
+                    }
+                  },
+                  "fieldWorkerCode": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "profile"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Existing beneficiary updated"
+          },
+          "201": {
+            "description": "Beneficiary created"
+          }
+        }
+      }
+    },
     "/v1/dashboard/summary": {
       "get": {
         "summary": "Aggregated dashboard counts (cached)",

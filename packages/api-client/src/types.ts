@@ -113,6 +113,28 @@ export interface DashboardRecentResponse {
   entries: DashboardRecentEntry[];
 }
 
+export interface IntakeMatchInput {
+  schemeId: string;
+  schemeNameHi?: string;
+  schemeNameEn?: string;
+  eligibilityStatus: 'eligible' | 'partial' | 'not_eligible' | 'ineligible';
+  annualValueInr?: number | null;
+  explanationHi?: string;
+  explanationEn?: string;
+}
+
+export interface IntakeRequest {
+  profile: Record<string, unknown>;
+  matches?: IntakeMatchInput[];
+  fieldWorkerCode?: string;
+}
+
+export interface IntakeResponse {
+  beneficiaryId: number;
+  created: boolean;
+  matchesPersisted: number;
+}
+
 export interface HealthResponse {
   status: 'ok';
   time: string;
