@@ -17,18 +17,15 @@ RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
 FROM base AS builder
 WORKDIR /workspace
 
-# pnpm 10's `pnpm deploy` requires injected workspace packages
-ENV NPM_CONFIG_INJECT_WORKSPACE_PACKAGES=true
-
-# Copy lockfile + workspace manifest first so dep install is cacheable
+# Copy lockfile + workspace manifests first for cacheable dep install
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json ./apps/api/package.json
+COPY apps/admin-web/package.json ./apps/admin-web/package.json
+COPY apps/mobile/package.json ./apps/mobile/package.json
 COPY packages/types/package.json ./packages/types/package.json
 COPY packages/scheme-engine/package.json ./packages/scheme-engine/package.json
 COPY packages/scheme-registry/package.json ./packages/scheme-registry/package.json
 COPY packages/api-client/package.json ./packages/api-client/package.json
-COPY apps/admin-web/package.json ./apps/admin-web/package.json
-COPY apps/mobile/package.json ./apps/mobile/package.json
 
 RUN pnpm install --frozen-lockfile
 
@@ -42,10 +39,6 @@ COPY infra/sql ./infra/sql
 
 RUN pnpm --filter api build
 
-# Produce a self-contained deploy bundle under /deploy/api
-RUN pnpm deploy --filter api --prod /deploy/api \
- && rm -rf /deploy/api/src /deploy/api/tests /deploy/api/scripts
-
 # ----- runtime stage -----
 FROM node:${NODE_VERSION} AS runtime
 WORKDIR /app
@@ -58,12 +51,13 @@ ENV NODE_ENV=production \
 # Run as a non-root user
 RUN addgroup -S saashakti && adduser -S saashakti -G saashakti
 
-COPY --from=builder --chown=saashakti:saashakti /deploy/api/node_modules ./node_modules
-COPY --from=builder --chown=saashakti:saashakti /deploy/api/dist ./dist
-COPY --from=builder --chown=saashakti:saashakti /deploy/api/package.json ./package.json
-COPY --from=builder --chown=saashakti:saashakti /workspace/infra/sql ./infra/sql
+# Copy the built workspace verbatim so pnpm's node_modules symlink
+# graph stays intact. Dev deps are included — acceptable for now;
+# trim in a follow-up once pnpm deploy lands in the lockfile config.
+COPY --from=builder --chown=saashakti:saashakti /workspace /app
 
 USER saashakti
+WORKDIR /app/apps/api
 
 EXPOSE 3001
 
