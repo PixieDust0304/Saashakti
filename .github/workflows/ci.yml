@@ -1,0 +1,131 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22"
+  PNPM_VERSION: "10.0.0"
+
+jobs:
+  checks:
+    name: Lint · Typecheck · Build · Smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate critical JSON files
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            package.json
+            apps/api/package.json
+            apps/admin-web/package.json
+            apps/mobile/package.json
+            packages/types/package.json
+            packages/scheme-engine/package.json
+            packages/scheme-registry/package.json
+            packages/scheme-registry/src/data/schemes.json
+            docs/openapi.json
+          )
+          for f in "${files[@]}"; do
+            if [ -f "$f" ]; then
+              node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))"
+              echo "ok: $f"
+            fi
+          done
+
+      - name: Scan for stray merge conflict markers
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RIlnE \
+               --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=dist \
+               --exclude=ci.yml \
+               -e '^<{7} ' -e '^={7}$' -e '^>{7} ' . ; then
+            echo "::error::merge conflict markers detected in tracked files"
+            exit 1
+          fi
+          echo "no merge conflict markers"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Repo-level QA (lint + scheme tests + debug)
+        run: npm run qa
+
+      - name: API typecheck
+        run: pnpm --filter api typecheck
+
+      - name: API build
+        run: pnpm --filter api build
+
+      - name: API tests (skip integration if infra missing)
+        run: pnpm --filter api test
+
+  integration:
+    name: API integration tests (Postgres + Redis)
+    runs-on: ubuntu-latest
+    needs: checks
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: saashakti
+          POSTGRES_PASSWORD: saashakti
+          POSTGRES_DB: saashakti
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U saashakti -d saashakti"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://saashakti:saashakti@localhost:5432/saashakti
+      REDIS_URL: redis://localhost:6379
+      OTP_MODE: mock
+      LOG_LEVEL: silent
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run integration suite
+        run: pnpm --filter api test
