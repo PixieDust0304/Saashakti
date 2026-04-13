@@ -228,7 +228,7 @@ function checkExclusions(
   exclusions: SchemeExclusion[]
 ): SchemeExclusion | null {
   for (const excl of exclusions) {
-    const val = (profile as Record<string, unknown>)[excl.field]
+    const val = (profile as unknown as Record<string, unknown>)[excl.field]
     if (val === excl.value) return excl
   }
   return null

@@ -78,8 +78,8 @@ function Toggle({
   t: (k: string) => string
 }) {
   return (
-    <div className="flex items-center justify-between py-3 border-b border-white/5 last:border-b-0">
-      <span className="text-base text-white/80 pr-3 leading-snug">{label}</span>
+    <div className="flex items-center justify-between py-3 border-b border-slate-200 last:border-b-0">
+      <span className="text-base text-slate-600 pr-3 leading-snug">{label}</span>
       <div className="flex gap-2 flex-shrink-0">
         <button
           type="button"
@@ -131,7 +131,7 @@ function OptionGrid({
             }`}
           >
             {o.icon && <span className="text-lg">{o.icon}</span>}
-            <span className={`text-sm font-medium leading-tight ${active ? 'text-white' : ''}`}>
+            <span className={`text-sm font-medium leading-tight ${active ? 'text-slate-900' : ''}`}>
               {o.label}
             </span>
           </motion.button>
@@ -225,7 +225,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
                 style={{
                   background: isDone || isActive
                     ? 'linear-gradient(90deg, #F97316, #7C3AED)'
-                    : 'rgba(255, 255, 255, 0.1)',
+                    : 'rgba(0, 0, 0, 0.1)',
                 }}
               />
             )}
@@ -282,9 +282,9 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
             border: '1px solid rgba(249,115,22,0.2)',
           }}
         >
-          <span className="text-saffron-400">{meta.icon}</span>
+          <span className="text-saffron-600">{meta.icon}</span>
         </div>
-        <h2 className="text-lg font-semibold text-white">{t(meta.labelKey)}</h2>
+        <h2 className="text-lg font-semibold text-slate-900">{t(meta.labelKey)}</h2>
       </motion.div>
     )
   }
@@ -321,7 +321,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
               >
                 {/* Name */}
                 <div>
-                  <label className="text-sm text-white/50 mb-1.5 block font-medium">
+                  <label className="text-sm text-slate-600 mb-1.5 block font-medium">
                     {t('name')}
                   </label>
                   <input
@@ -334,7 +334,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
 
                 {/* Age */}
                 <div>
-                  <label className="text-sm text-white/50 mb-1.5 block font-medium">
+                  <label className="text-sm text-slate-600 mb-1.5 block font-medium">
                     {t('age')} ({t('years')})
                   </label>
                   <input
@@ -351,7 +351,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
 
                 {/* Phone */}
                 <div>
-                  <label className="text-sm text-white/50 mb-1.5 block font-medium">
+                  <label className="text-sm text-slate-600 mb-1.5 block font-medium">
                     {t('phone_optional')}
                   </label>
                   <input
@@ -366,7 +366,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
 
                 {/* District */}
                 <div>
-                  <label className="text-sm text-white/50 mb-1.5 block font-medium">
+                  <label className="text-sm text-slate-600 mb-1.5 block font-medium">
                     {t('district')}
                   </label>
                   <select
@@ -385,7 +385,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
 
                 {/* Residence type */}
                 <div>
-                  <label className="text-sm text-white/50 mb-2 block font-medium">
+                  <label className="text-sm text-slate-600 mb-2 block font-medium">
                     {t('residence')}
                   </label>
                   <div className="flex gap-3">
@@ -425,7 +425,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
               >
                 {/* Marital status */}
                 <div>
-                  <label className="text-sm text-white/50 mb-2.5 block font-medium">
+                  <label className="text-sm text-slate-600 mb-2.5 block font-medium">
                     {t('marital_status')}
                   </label>
                   <OptionGrid
@@ -443,7 +443,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
 
                 {/* Caste category */}
                 <div>
-                  <label className="text-sm text-white/50 mb-2.5 block font-medium">
+                  <label className="text-sm text-slate-600 mb-2.5 block font-medium">
                     {t('caste_category')}
                   </label>
                   <OptionGrid
@@ -475,7 +475,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
               >
                 {/* Income bracket */}
                 <div>
-                  <label className="text-sm text-white/50 mb-2.5 block font-medium">
+                  <label className="text-sm text-slate-600 mb-2.5 block font-medium">
                     {t('income')}
                   </label>
                   <OptionGrid
@@ -553,7 +553,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
               >
                 {/* Number of children */}
                 <div>
-                  <label className="text-sm text-white/50 mb-1.5 block font-medium">
+                  <label className="text-sm text-slate-600 mb-1.5 block font-medium">
                     {t('children')}
                   </label>
                   <input
@@ -601,7 +601,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
                         className="overflow-hidden"
                       >
                         <div className="pt-3 pb-1">
-                          <label className="text-sm text-white/50 mb-1.5 block font-medium">
+                          <label className="text-sm text-slate-600 mb-1.5 block font-medium">
                             {t('girl_child_age')}
                           </label>
                           <input
@@ -650,7 +650,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
                 className="glass-card p-5 space-y-5"
                 style={{
                   background:
-                    'linear-gradient(135deg, rgba(245,158,11,0.08), rgba(255,255,255,0.04))',
+                    'linear-gradient(135deg, rgba(245,158,11,0.08), rgba(255,255,255,0.7))',
                   borderColor: 'rgba(245,158,11,0.18)',
                 }}
               >
@@ -666,7 +666,7 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
                     size={20}
                     className="text-amber-400 flex-shrink-0 mt-0.5"
                   />
-                  <p className="text-sm text-white/60 leading-relaxed">
+                  <p className="text-sm text-slate-500 leading-relaxed">
                     {lang === 'hi'
                       ? '\u0915\u0943\u092A\u092F\u093E \u092C\u0924\u093E\u090F\u0902 \u0915\u093F \u0915\u094D\u092F\u093E \u0928\u093F\u092E\u094D\u0928\u0932\u093F\u0916\u093F\u0924 \u092E\u0947\u0902 \u0938\u0947 \u0915\u094B\u0908 \u0938\u094D\u0925\u093F\u0924\u093F \u0906\u092A\u0915\u0947 \u092A\u0930\u093F\u0935\u093E\u0930 \u092A\u0930 \u0932\u093E\u0917\u0942 \u0939\u094B\u0924\u0940 \u0939\u0948:'
                       : 'Please indicate if any of the following apply to your family:'}
@@ -706,10 +706,10 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
       <div
         className="fixed bottom-0 left-0 right-0 z-50 p-4 flex gap-3"
         style={{
-          background: 'rgba(15, 23, 42, 0.85)',
+          background: 'rgba(255, 255, 255, 0.85)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          borderTop: '1px solid rgba(0, 0, 0, 0.08)',
         }}
       >
         {/* Back button */}

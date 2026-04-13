@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getDashboardStats, subscribeToDashboard, supabase } from '../lib/supabase'
+import { getDashboardStats, subscribeToDashboard, supabase, isConfigured } from '../lib/supabase'
 import { Users, MapPin, Award, IndianRupee, Heart, Baby, Shield, TrendingUp, Zap } from 'lucide-react'
+import { SaashaktiLogoMark } from '../components/ui/SaashaktiLogo'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -34,6 +35,7 @@ interface RecentReg {
 // ---------------------------------------------------------------------------
 
 async function getTopSchemes(): Promise<TopScheme[]> {
+  if (!isConfigured) return []
   const { data } = await supabase
     .from('matched_schemes')
     .select('scheme_id, scheme_name_hi')
@@ -47,6 +49,7 @@ async function getTopSchemes(): Promise<TopScheme[]> {
 }
 
 async function getRecentRegistrations(): Promise<RecentReg[]> {
+  if (!isConfigured) return []
   const { data } = await supabase
     .from('beneficiaries')
     .select('name, district, created_at')
@@ -110,9 +113,9 @@ function useAnimatedValue(target: number, duration = 800) {
 function DashboardSkeleton() {
   return (
     <div
-      className="h-screen w-screen overflow-hidden text-white relative"
+      className="h-screen w-screen overflow-hidden text-slate-900 relative"
       style={{
-        background: 'linear-gradient(135deg, #0A1929 0%, #0F172A 30%, #1a0a20 65%, #0A1929 100%)',
+        background: 'linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 30%, #FFF7ED 65%, #F8FAFC 100%)',
       }}
     >
       {/* Header skeleton */}
@@ -191,21 +194,37 @@ export default function DashboardPage() {
         getTopSchemes(),
         getRecentRegistrations(),
       ])
-      if (dashData) {
-        setStats(dashData as DashboardData)
-        // Trigger pulse animation on counter change
-        if (dashData.total_registrations !== prevRegCount.current && prevRegCount.current !== 0) {
-          setCounterPulse(true)
-          setTimeout(() => setCounterPulse(false), 400)
-        }
-        prevRegCount.current = dashData.total_registrations
+      const resolved = (dashData as DashboardData) ?? {
+        total_registrations: 0,
+        districts: 0,
+        total_matches: 0,
+        total_benefit: 0,
+        bpl_count: 0,
+        pregnant_count: 0,
+        widow_count: 0,
+        by_district: [],
       }
+      setStats(resolved)
+      // Trigger pulse animation on counter change
+      if (resolved.total_registrations !== prevRegCount.current && prevRegCount.current !== 0) {
+        setCounterPulse(true)
+        setTimeout(() => setCounterPulse(false), 400)
+      }
+      prevRegCount.current = resolved.total_registrations
       setTopSchemes(schemes)
       setRecentRegs(regs)
       setIsConnected(true)
       if (!isLoaded) setIsLoaded(true)
     } catch {
       setIsConnected(false)
+      // Still show the dashboard with zeros rather than infinite skeleton
+      if (!isLoaded) {
+        setStats({
+          total_registrations: 0, districts: 0, total_matches: 0, total_benefit: 0,
+          bpl_count: 0, pregnant_count: 0, widow_count: 0, by_district: [],
+        })
+        setIsLoaded(true)
+      }
     }
   }, [isLoaded])
 
@@ -251,9 +270,9 @@ export default function DashboardPage() {
 
   return (
     <div
-      className="h-screen w-screen overflow-hidden text-white relative"
+      className="h-screen w-screen overflow-hidden text-slate-900 relative"
       style={{
-        background: 'linear-gradient(135deg, #0A1929 0%, #0F172A 30%, #1a0a20 65%, #0A1929 100%)',
+        background: 'linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 30%, #FFF7ED 65%, #F8FAFC 100%)',
       }}
     >
       {/* ============ FLOATING ORBS ============ */}
@@ -265,9 +284,9 @@ export default function DashboardPage() {
             height: 600,
             top: '-8%',
             right: '-5%',
-            background: 'radial-gradient(circle, #F97316, transparent 70%)',
+            background: 'radial-gradient(circle, #FDBA74, transparent 70%)',
             filter: 'blur(100px)',
-            opacity: 0.08,
+            opacity: 0.05,
             animation: 'orbFloat 25s ease-in-out infinite',
           }}
         />
@@ -278,9 +297,9 @@ export default function DashboardPage() {
             height: 500,
             bottom: '-12%',
             left: '-8%',
-            background: 'radial-gradient(circle, #7C3AED, transparent 70%)',
+            background: 'radial-gradient(circle, #C4B5FD, transparent 70%)',
             filter: 'blur(100px)',
-            opacity: 0.07,
+            opacity: 0.05,
             animation: 'orbFloat 30s ease-in-out infinite reverse',
           }}
         />
@@ -291,9 +310,9 @@ export default function DashboardPage() {
             height: 300,
             top: '40%',
             left: '50%',
-            background: 'radial-gradient(circle, #F97316, transparent 70%)',
+            background: 'radial-gradient(circle, #FDBA74, transparent 70%)',
             filter: 'blur(80px)',
-            opacity: 0.05,
+            opacity: 0.04,
             animation: 'orbFloat 20s ease-in-out infinite',
             animationDelay: '-8s',
           }}
@@ -303,8 +322,8 @@ export default function DashboardPage() {
           className="absolute inset-0"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)
+              linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px)
             `,
             backgroundSize: '80px 80px',
           }}
@@ -315,24 +334,12 @@ export default function DashboardPage() {
       <div className="glass-header h-16 flex items-center justify-between px-8 relative z-10">
         <div className="flex items-center gap-3">
           {/* Logo */}
-          <div
-            className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{
-              background: 'linear-gradient(135deg, #F97316, #EA580C)',
-              boxShadow: '0 0 20px rgba(249, 115, 22, 0.3)',
-            }}
-          >
-            <span className="text-white font-bold text-xl leading-none"
-              style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
-            >
-              {'\u0938'}
-            </span>
-          </div>
+          <SaashaktiLogoMark size={48} />
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-white">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900">
               {'\u0938\u0936\u0915\u094D\u0924\u093F'} — Saashakti
             </h1>
-            <p className="text-saffron-300 text-xs opacity-80">
+            <p className="text-saffron-600 text-xs opacity-80">
               {'\u092E\u0939\u093F\u0932\u093E \u0915\u0932\u094D\u092F\u093E\u0923 \u092F\u094B\u091C\u0928\u093E \u092E\u093F\u0932\u093E\u0928 \u092E\u0902\u091A'}
             </p>
           </div>
@@ -350,7 +357,7 @@ export default function DashboardPage() {
               <div className="w-3 h-3 rounded-full bg-amber-400" style={{
                 boxShadow: '0 0 8px rgba(251, 191, 36, 0.6)',
               }} />
-              <span className="text-amber-400 text-sm font-semibold">
+              <span className="text-amber-600 text-sm font-semibold">
                 {'\u26A0'} Connection
               </span>
             </>
@@ -362,21 +369,18 @@ export default function DashboardPage() {
       <div className="relative z-10 px-6 pt-4 flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
 
         {/* -------- MAIN COUNTER -------- */}
-        <motion.div
-          className="text-center mb-3 flex-shrink-0"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <div
+          className="text-center mb-3 flex-shrink-0 animate-slide-up"
+          style={{ animationFillMode: 'both' }}
         >
-          <p className="text-saffron-300 text-lg font-medium tracking-wide mb-1">
+          <p className="text-saffron-600 text-lg font-medium tracking-wide mb-1">
             {'\u0915\u0941\u0932 \u092A\u0902\u091C\u0940\u0915\u0943\u0924 \u092E\u0939\u093F\u0932\u093E\u090F\u0902'}
           </p>
-          <motion.div
-            animate={counterPulse ? { scale: [1, 1.08, 1] } : { scale: 1 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
+          <div
+            style={{ transition: 'transform 0.3s ease-out', transform: counterPulse ? 'scale(1.08)' : 'scale(1)' }}
           >
             <span
-              className="counter-glow inline-block"
+              className="counter-glow inline-block text-slate-800"
               style={{
                 fontSize: '8rem',
                 fontWeight: 800,
@@ -387,11 +391,11 @@ export default function DashboardPage() {
             >
               {animatedTotal.toLocaleString('en-IN')}
             </span>
-          </motion.div>
-          <p className="text-white/40 text-base mt-1">
+          </div>
+          <p className="text-slate-300 text-base mt-1">
             {'\u092E\u0939\u093F\u0932\u093E\u090F\u0902 \u092A\u0902\u091C\u0940\u0915\u0943\u0924'}
           </p>
-        </motion.div>
+        </div>
 
         {/* -------- 4 METRIC CARDS -------- */}
         <div className="grid grid-cols-4 gap-4 mb-3 flex-shrink-0">
@@ -455,13 +459,11 @@ export default function DashboardPage() {
         </div>
 
         {/* -------- DISTRICT BAR CHART -------- */}
-        <motion.div
-          className="glass-card p-4 mb-3 flex-shrink-0"
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.45 }}
+        <div
+          className="glass-card p-4 mb-3 flex-shrink-0 animate-slide-up"
+          style={{ animationDelay: '0.3s', animationFillMode: 'both' }}
         >
-          <h2 className="text-sm font-semibold text-saffron-200 mb-2 flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-saffron-600 mb-2 flex items-center gap-2">
             <MapPin size={14} className="text-saffron-400" />
             {'\u091C\u093F\u0932\u093E-\u0935\u093E\u0930 \u092A\u0902\u091C\u0940\u0915\u0930\u0923'}
           </h2>
@@ -472,41 +474,40 @@ export default function DashboardPage() {
                 : 6
               return (
                 <div key={district} className="flex items-center gap-2">
-                  <span className="text-xs text-saffron-200/80 w-28 truncate capitalize text-right flex-shrink-0">
+                  <span className="text-xs text-saffron-700 w-28 truncate capitalize text-right flex-shrink-0">
                     {district.replace(/_/g, ' ')}
                   </span>
-                  <div className="flex-1 h-5 bg-white/5 rounded overflow-hidden">
-                    <motion.div
+                  <div className="flex-1 h-5 bg-slate-100 rounded overflow-hidden">
+                    <div
                       className="h-full rounded bar-gradient flex items-center justify-end pr-2"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${barWidth}%` }}
-                      transition={{ duration: 0.7, delay: 0.5 + idx * 0.05, ease: 'easeOut' }}
+                      style={{
+                        width: `${barWidth}%`,
+                        transition: `width 0.7s ease-out ${0.5 + idx * 0.05}s`,
+                      }}
                     >
-                      <span className="text-[10px] font-bold text-white/90">{count}</span>
-                    </motion.div>
+                      <span className="text-[10px] font-bold text-slate-800">{count}</span>
+                    </div>
                   </div>
                 </div>
               )
             })}
             {stats.by_district.length === 0 && (
-              <p className="text-white/30 text-xs text-center py-3">
+              <p className="text-slate-300 text-xs text-center py-3">
                 {'\u0905\u092D\u0940 \u0915\u094B\u0908 \u0921\u0947\u091F\u093E \u0928\u0939\u0940\u0902'}
               </p>
             )}
           </div>
-        </motion.div>
+        </div>
 
         {/* -------- BOTTOM SPLIT: SCHEMES + RECENT -------- */}
         <div className="grid grid-cols-2 gap-4 flex-1 min-h-0 mb-2">
 
           {/* Left: Top Schemes */}
-          <motion.div
-            className="glass-card p-4 flex flex-col overflow-hidden"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.55 }}
+          <div
+            className="glass-card p-4 flex flex-col overflow-hidden animate-slide-up"
+            style={{ animationDelay: '0.4s', animationFillMode: 'both' }}
           >
-            <h2 className="text-sm font-semibold text-saffron-200 mb-2 flex items-center gap-2 flex-shrink-0">
+            <h2 className="text-sm font-semibold text-saffron-600 mb-2 flex items-center gap-2 flex-shrink-0">
               <Award size={14} className="text-green-400" />
               {'\u0936\u0940\u0930\u094D\u0937 \u092F\u094B\u091C\u0928\u093E\u090F\u0902'}
             </h2>
@@ -521,15 +522,15 @@ export default function DashboardPage() {
                       style={{
                         background: i === 0
                           ? 'linear-gradient(135deg, #F97316, #FB923C)'
-                          : 'rgba(255,255,255,0.08)',
-                        color: i === 0 ? '#fff' : 'rgba(255,255,255,0.5)',
+                          : 'rgba(0,0,0,0.06)',
+                        color: i === 0 ? '#fff' : 'rgba(100,116,139,0.7)',
                       }}
                     >
                       {i + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-white/80 truncate leading-tight">{scheme.name}</p>
-                      <div className="w-full h-1.5 bg-white/5 rounded-full mt-0.5 overflow-hidden">
+                      <p className="text-xs text-slate-600 truncate leading-tight">{scheme.name}</p>
+                      <div className="w-full h-1.5 bg-slate-100 rounded-full mt-0.5 overflow-hidden">
                         <div
                           className="h-full rounded-full"
                           style={{
@@ -540,27 +541,25 @@ export default function DashboardPage() {
                         />
                       </div>
                     </div>
-                    <span className="text-[10px] font-bold text-white/50 flex-shrink-0 w-8 text-right">
+                    <span className="text-[10px] font-bold text-slate-400 flex-shrink-0 w-8 text-right">
                       {scheme.count}
                     </span>
                   </div>
                 )
               }) : (
-                <p className="text-white/30 text-xs text-center py-4">
+                <p className="text-slate-300 text-xs text-center py-4">
                   {'\u0905\u092D\u0940 \u0915\u094B\u0908 \u0921\u0947\u091F\u093E \u0928\u0939\u0940\u0902'}
                 </p>
               )}
             </div>
-          </motion.div>
+          </div>
 
           {/* Right: Recent Registrations */}
-          <motion.div
-            className="glass-card p-4 flex flex-col overflow-hidden"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
+          <div
+            className="glass-card p-4 flex flex-col overflow-hidden animate-slide-up"
+            style={{ animationDelay: '0.5s', animationFillMode: 'both' }}
           >
-            <h2 className="text-sm font-semibold text-saffron-200 mb-2 flex items-center gap-2 flex-shrink-0">
+            <h2 className="text-sm font-semibold text-saffron-600 mb-2 flex items-center gap-2 flex-shrink-0">
               <Zap size={14} className="text-yellow-400" />
               {'\u0939\u093E\u0932 \u0915\u0947 \u092A\u0902\u091C\u0940\u0915\u0930\u0923'}
             </h2>
@@ -569,24 +568,24 @@ export default function DashboardPage() {
                 {recentRegs.length > 0 ? recentRegs.map((reg, i) => (
                   <motion.div
                     key={reg.name + reg.created_at}
-                    className="flex items-center justify-between py-1 border-b border-white/5 last:border-b-0"
+                    className="flex items-center justify-between py-1 border-b border-slate-100 last:border-b-0"
                     initial={{ opacity: 0, y: -12, height: 0 }}
                     animate={{ opacity: 1, y: 0, height: 'auto' }}
                     exit={{ opacity: 0, y: 12, height: 0 }}
                     transition={{ duration: 0.3, delay: i * 0.03 }}
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs text-white/90 truncate font-medium">{reg.name}</p>
-                      <p className="text-[10px] text-white/40 capitalize">{reg.district?.replace(/_/g, ' ')}</p>
+                      <p className="text-xs text-slate-800 truncate font-medium">{reg.name}</p>
+                      <p className="text-[10px] text-slate-300 capitalize">{reg.district?.replace(/_/g, ' ')}</p>
                     </div>
-                    <span className="text-[10px] text-saffron-300/60 flex-shrink-0 ml-2">
+                    <span className="text-[10px] text-saffron-500 flex-shrink-0 ml-2">
                       {timeAgo(reg.created_at)}
                     </span>
                   </motion.div>
                 )) : (
                   <motion.p
                     key="empty"
-                    className="text-white/30 text-xs text-center py-4"
+                    className="text-slate-300 text-xs text-center py-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
@@ -595,12 +594,12 @@ export default function DashboardPage() {
                 )}
               </AnimatePresence>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* ============ FOOTER ============ */}
         <div className="text-center py-1.5 flex-shrink-0">
-          <p className="text-white/25 text-[10px] tracking-wide">
+          <p className="text-slate-400 text-[10px] tracking-wide">
             {'\u092E\u0939\u093F\u0932\u093E \u090F\u0935\u0902 \u092C\u093E\u0932 \u0935\u093F\u0915\u093E\u0938 \u0935\u093F\u092D\u093E\u0917, \u091B\u0924\u094D\u0924\u0940\u0938\u0917\u0922\u093C \u0936\u093E\u0938\u0928'} &bull; Powered by Saashakti
           </p>
         </div>
@@ -622,12 +621,9 @@ function MetricCard({ icon, value, label, borderColor, iconBg, delay }: {
   delay: number
 }) {
   return (
-    <motion.div
-      className="glass-card p-4 flex items-center gap-3"
-      style={{ borderLeft: `4px solid ${borderColor}` }}
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay }}
+    <div
+      className="glass-card p-4 flex items-center gap-3 animate-slide-up"
+      style={{ borderLeft: `4px solid ${borderColor}`, animationDelay: `${delay}s`, animationFillMode: 'both' }}
     >
       <div
         className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -637,9 +633,9 @@ function MetricCard({ icon, value, label, borderColor, iconBg, delay }: {
       </div>
       <div className="min-w-0">
         <p className="text-2xl font-bold leading-tight tracking-tight">{value}</p>
-        <p className="text-[11px] text-white/50 leading-tight truncate">{label}</p>
+        <p className="text-[11px] text-slate-400 leading-tight truncate">{label}</p>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
@@ -655,15 +651,13 @@ function DemoCard({ icon, value, label, color, delay }: {
   delay: number
 }) {
   return (
-    <motion.div
-      className="glass-card p-3 flex items-center justify-center gap-3"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay }}
+    <div
+      className="glass-card p-3 flex items-center justify-center gap-3 animate-slide-up"
+      style={{ animationDelay: `${delay}s`, animationFillMode: 'both' }}
     >
       <span style={{ color }} className="flex-shrink-0">{icon}</span>
       <span className="text-xl font-bold">{value.toLocaleString('en-IN')}</span>
-      <span className="text-xs text-white/50">{label}</span>
-    </motion.div>
+      <span className="text-xs text-slate-400">{label}</span>
+    </div>
   )
 }

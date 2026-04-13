@@ -30,12 +30,12 @@ interface Particle {
 const PARTICLE_COUNT = 18;
 
 const PARTICLE_COLORS = [
-  "rgba(249, 115, 22, 0.3)", // saffron
-  "rgba(249, 115, 22, 0.25)",
-  "rgba(124, 58, 237, 0.3)", // purple
-  "rgba(124, 58, 237, 0.25)",
-  "rgba(249, 115, 22, 0.2)",
-  "rgba(124, 58, 237, 0.2)",
+  "rgba(249, 115, 22, 0.12)", // saffron
+  "rgba(249, 115, 22, 0.10)",
+  "rgba(124, 58, 237, 0.12)", // purple
+  "rgba(124, 58, 237, 0.10)",
+  "rgba(249, 115, 22, 0.08)",
+  "rgba(124, 58, 237, 0.08)",
 ];
 
 /**
@@ -89,12 +89,12 @@ export default function AnimatedBackground(): React.JSX.Element {
         <div
           className="orb"
           style={{
-            background: "radial-gradient(circle, #F97316, transparent 70%)",
+            background: "radial-gradient(circle, #FDBA74, transparent 70%)",
             width: 500,
             height: 500,
             top: "-10%",
             right: "-5%",
-            opacity: 0.15,
+            opacity: 0.10,
             animationDuration: "20s",
             animationDelay: "0s",
           }}
@@ -104,12 +104,12 @@ export default function AnimatedBackground(): React.JSX.Element {
         <div
           className="orb"
           style={{
-            background: "radial-gradient(circle, #7C3AED, transparent 70%)",
+            background: "radial-gradient(circle, #C4B5FD, transparent 70%)",
             width: 600,
             height: 600,
             bottom: "-15%",
             left: "-10%",
-            opacity: 0.18,
+            opacity: 0.12,
             animationDuration: "25s",
             animationDelay: "-7s",
           }}
@@ -119,12 +119,12 @@ export default function AnimatedBackground(): React.JSX.Element {
         <div
           className="orb"
           style={{
-            background: "radial-gradient(circle, #138808, transparent 70%)",
+            background: "radial-gradient(circle, #86EFAC, transparent 70%)",
             width: 400,
             height: 400,
             top: "50%",
             left: "40%",
-            opacity: 0.12,
+            opacity: 0.08,
             animationDuration: "18s",
             animationDelay: "-14s",
           }}
@@ -140,7 +140,7 @@ export default function AnimatedBackground(): React.JSX.Element {
           zIndex: 0,
           pointerEvents: "none",
           backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)",
+            "radial-gradient(circle, rgba(0,0,0,0.02) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
       />
@@ -174,7 +174,7 @@ export default function AnimatedBackground(): React.JSX.Element {
           zIndex: 0,
           pointerEvents: "none",
           background:
-            "radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(15,23,42,0.4) 60%, rgba(15,23,42,0.85) 100%)",
+            "radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(255,255,255,0.03) 60%, rgba(255,255,255,0.06) 100%)",
         }}
       />
     </>

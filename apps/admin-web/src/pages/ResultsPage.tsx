@@ -226,10 +226,10 @@ function SchemeCard({ match, lang, t, index }: SchemeCardProps) {
         {/* ── Top row: name + benefit ── */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-base leading-tight text-white">
+            <h3 className="font-semibold text-base leading-tight text-slate-900">
               {lang === 'hi' ? scheme.name_hi : scheme.name_en}
             </h3>
-            <p className="text-sm text-white/40 mt-0.5 truncate">
+            <p className="text-sm text-slate-300 mt-0.5 truncate">
               {scheme.department_hi}
             </p>
           </div>
@@ -239,7 +239,7 @@ function SchemeCard({ match, lang, t, index }: SchemeCardProps) {
                 {benefitText}
               </p>
             )}
-            <p className="text-xs text-white/40">{freqText}</p>
+            <p className="text-xs text-slate-300">{freqText}</p>
           </div>
         </div>
 
@@ -267,12 +267,12 @@ function SchemeCard({ match, lang, t, index }: SchemeCardProps) {
             animate={{ rotate: expanded ? 180 : 0 }}
             transition={{ duration: 0.3 }}
           >
-            <ChevronDown size={18} className="text-white/30" />
+            <ChevronDown size={18} className="text-slate-300" />
           </motion.div>
         </div>
 
         {/* ── Explanation ── */}
-        <p className="text-sm text-white/50 mt-2 leading-relaxed">
+        <p className="text-sm text-slate-400 mt-2 leading-relaxed">
           {lang === 'hi' ? match.explanation_hi : match.explanation_en}
         </p>
 
@@ -290,9 +290,9 @@ function SchemeCard({ match, lang, t, index }: SchemeCardProps) {
               }}
               style={{ overflow: 'hidden' }}
             >
-              <div className="mt-4 pt-4 border-t border-white/8 space-y-4">
+              <div className="mt-4 pt-4 border-t border-slate-200 space-y-4">
                 {/* Benefit description */}
-                <p className="text-sm text-white/60 leading-relaxed">
+                <p className="text-sm text-slate-400 leading-relaxed">
                   {lang === 'hi'
                     ? scheme.benefit.description_hi
                     : scheme.benefit.description_en}
@@ -301,11 +301,11 @@ function SchemeCard({ match, lang, t, index }: SchemeCardProps) {
                 {/* Document checklist */}
                 {scheme.documents_required.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-semibold text-white/70 flex items-center gap-1.5 mb-2">
-                      <FileText size={14} className="text-white/50" />
+                    <h4 className="text-sm font-semibold text-slate-600 flex items-center gap-1.5 mb-2">
+                      <FileText size={14} className="text-slate-400" />
                       {t('documents_needed')}
                     </h4>
-                    <ul className="text-sm text-white/50 space-y-1.5">
+                    <ul className="text-sm text-slate-400 space-y-1.5">
                       {scheme.documents_required.map(
                         (doc: string, i: number) => (
                           <li key={i} className="flex items-center gap-2.5">
@@ -344,7 +344,7 @@ function SchemeCard({ match, lang, t, index }: SchemeCardProps) {
                       padding: '0.75rem 1rem',
                       background:
                         'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(124, 58, 237, 0.06))',
-                      borderColor: 'rgba(249, 115, 22, 0.15)',
+                      borderColor: 'rgba(249, 115, 22, 0.20)',
                       borderRadius: '0.75rem',
                     }}
                   >
@@ -353,7 +353,7 @@ function SchemeCard({ match, lang, t, index }: SchemeCardProps) {
                       className="flex-shrink-0 mt-0.5"
                       style={{ color: '#F97316' }}
                     />
-                    <p className="text-sm text-white/70 leading-relaxed">
+                    <p className="text-sm text-slate-600 leading-relaxed">
                       {match.next_best_action}
                     </p>
                   </div>
@@ -432,24 +432,24 @@ export default function ResultsPage({
             style={{
               padding: '1.5rem',
               background:
-                'linear-gradient(135deg, rgba(249, 115, 22, 0.10), rgba(124, 58, 237, 0.10), rgba(255, 255, 255, 0.04))',
+                'linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(124, 58, 237, 0.06), rgba(255, 255, 255, 0.80))',
               borderColor: 'rgba(249, 115, 22, 0.2)',
             }}
           >
             {/* Sparkle decoration */}
             <div className="flex items-center gap-2 mb-3">
               <Sparkles size={16} className="text-amber-400" />
-              <p className="text-sm text-white/50 tracking-wide">
+              <p className="text-sm text-slate-400 tracking-wide">
                 {profile.name}
               </p>
             </div>
 
             {/* Giant scheme count */}
             <div className="flex items-baseline gap-3 mb-4">
-              <span className="text-6xl font-extrabold counter-glow text-white tabular-nums">
+              <span className="text-6xl font-extrabold counter-glow text-slate-900 tabular-nums">
                 {animatedSchemeCount}
               </span>
-              <span className="text-lg text-white/60 font-medium">
+              <span className="text-lg text-slate-400 font-medium">
                 {lang === 'hi' ? 'योजनाएं मिलीं' : t('schemes_matched')}
               </span>
             </div>
@@ -463,8 +463,8 @@ export default function ResultsPage({
                 className="glass-card"
                 style={{
                   padding: '1rem 1.25rem',
-                  background: 'rgba(255, 255, 255, 0.06)',
-                  borderColor: 'rgba(255, 255, 255, 0.08)',
+                  background: 'rgba(255, 255, 255, 0.80)',
+                  borderColor: 'rgba(0, 0, 0, 0.06)',
                   borderRadius: '1rem',
                   display: 'flex',
                   alignItems: 'center',
@@ -485,14 +485,14 @@ export default function ResultsPage({
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-white/40 mb-0.5">
+                  <p className="text-xs text-slate-300 mb-0.5">
                     {lang === 'hi' ? 'कुल वार्षिक लाभ' : t('total_benefit')}
                   </p>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-2xl font-bold text-gradient-saffron tabular-nums">
                       {`\u20B9${animatedBenefit.toLocaleString('en-IN')}`}
                     </span>
-                    <span className="text-sm text-white/40">
+                    <span className="text-sm text-slate-300">
                       {lang === 'hi' ? '/वर्ष' : '/year'}
                     </span>
                   </div>
@@ -528,7 +528,7 @@ export default function ResultsPage({
               >
                 <CheckCircle size={18} style={{ color: '#6EE7B7' }} />
               </div>
-              <h2 className="text-lg font-semibold text-white/90">
+              <h2 className="text-lg font-semibold text-slate-800">
                 {t('eligible')}
               </h2>
               <span
@@ -581,7 +581,7 @@ export default function ResultsPage({
               >
                 <AlertCircle size={18} style={{ color: '#FDE68A' }} />
               </div>
-              <h2 className="text-lg font-semibold text-white/90">
+              <h2 className="text-lg font-semibold text-slate-800">
                 {t('partial')}
               </h2>
               <span
@@ -625,9 +625,9 @@ export default function ResultsPage({
               <AlertCircle
                 size={48}
                 className="mx-auto mb-4"
-                style={{ color: 'rgba(255,255,255,0.2)' }}
+                style={{ color: 'rgba(0,0,0,0.15)' }}
               />
-              <p className="text-white/50 text-base">
+              <p className="text-slate-400 text-base">
                 {lang === 'hi'
                   ? 'कोई मिलान योजना नहीं मिली।'
                   : 'No matching schemes found.'}
@@ -647,10 +647,10 @@ export default function ResultsPage({
           transition={{ delay: 0.7, type: 'spring', stiffness: 120, damping: 18 }}
           className="fixed bottom-0 left-0 right-0 z-40"
           style={{
-            background: 'rgba(10, 15, 26, 0.85)',
+            background: 'rgba(255, 255, 255, 0.85)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+            borderTop: '1px solid rgba(0, 0, 0, 0.06)',
             padding: '0.75rem 1rem',
           }}
         >

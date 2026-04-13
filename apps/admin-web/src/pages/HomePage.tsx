@@ -6,39 +6,13 @@ import { verifyFieldWorker } from '../lib/supabase'
 import type { FieldWorker } from '../engine/types'
 import { Shield, User, Globe, ArrowRight, Sparkles, Lock } from 'lucide-react'
 import AnimatedBackground from '../components/3d/AnimatedBackground'
+import SaashaktiLogo from '../components/ui/SaashaktiLogo'
 
 interface Props {
   onFieldWorkerLogin: (fw: FieldWorker) => void
 }
 
-/* ── Animation variants ─────────────────────────── */
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.2 },
-  },
-}
-
-const childFadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-  },
-}
-
-const buttonVariants = {
-  hidden: { opacity: 0, scale: 0.9, y: 20 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-  },
-}
+/* ── Animation variants (interactive only) ──────── */
 
 const loginCardVariants = {
   initial: { opacity: 0, y: 60, scale: 0.95 },
@@ -53,34 +27,6 @@ const loginCardVariants = {
     y: 60,
     scale: 0.95,
     transition: { duration: 0.35, ease: [0.55, 0, 1, 0.45] },
-  },
-}
-
-const logoFloat = {
-  animate: {
-    y: [0, -8, 0],
-    transition: {
-      duration: 3,
-      ease: 'easeInOut',
-      repeat: Infinity,
-      repeatType: 'loop' as const,
-    },
-  },
-}
-
-const glowPulse = {
-  animate: {
-    boxShadow: [
-      '0 0 30px rgba(249, 115, 22, 0.2), 0 0 60px rgba(249, 115, 22, 0.1)',
-      '0 0 50px rgba(249, 115, 22, 0.35), 0 0 100px rgba(249, 115, 22, 0.15)',
-      '0 0 30px rgba(249, 115, 22, 0.2), 0 0 60px rgba(249, 115, 22, 0.1)',
-    ],
-    transition: {
-      duration: 3,
-      ease: 'easeInOut',
-      repeat: Infinity,
-      repeatType: 'loop' as const,
-    },
   },
 }
 
@@ -122,86 +68,60 @@ export default function HomePage({ onFieldWorkerLogin }: Props) {
       <AnimatedBackground />
 
       {/* ── Language Toggle (top-right) ─────────────── */}
-      <motion.button
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+      <button
         onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')}
         className="absolute top-5 right-5 z-20 flex items-center gap-2 px-4 py-2.5 rounded-lg
-                   bg-white/[0.06] backdrop-blur-xl border border-white/[0.12]
-                   text-white/80 text-sm font-medium
-                   hover:bg-white/[0.10] hover:border-white/[0.20]
-                   active:scale-95 transition-all duration-200 cursor-pointer select-none"
+                   bg-white/80 backdrop-blur-xl border border-black/[0.06]
+                   text-slate-600 text-sm font-medium
+                   hover:bg-white/90 hover:border-black/[0.12]
+                   active:scale-95 transition-all duration-200 cursor-pointer select-none
+                   animate-fade-in"
+        style={{ animationDelay: '0.3s', animationFillMode: 'both' }}
       >
         <Globe size={16} className="opacity-70" />
         {lang === 'hi' ? 'English' : 'हिंदी'}
-      </motion.button>
+      </button>
 
       {/* ── Main Content ────────────────────────────── */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="flex-1 flex flex-col items-center justify-center px-6 pb-8 pt-16 relative z-10"
-      >
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-8 pt-16 relative z-10">
         <div className="w-full max-w-[420px] flex flex-col items-center">
 
           {/* ── Logo with Glow Ring ───────────────────── */}
-          <motion.div variants={childFadeUp} className="relative mb-6">
-            {/* Pulsing saffron glow ring behind the logo */}
-            <motion.div
-              {...glowPulse}
-              className="absolute inset-0 rounded-2xl"
-              style={{ margin: '-8px' }}
-            />
-            {/* Floating logo card */}
-            <motion.div
-              {...logoFloat}
-              className="relative w-20 h-20 rounded-2xl flex items-center justify-center"
-              style={{
-                background: 'linear-gradient(135deg, #F97316, #7C3AED)',
-                boxShadow:
-                  '0 8px 32px rgba(249, 115, 22, 0.3), 0 4px 0 rgba(0, 0, 0, 0.15)',
-              }}
-            >
-              <span className="text-white font-bold text-[32px] leading-none select-none">
-                स
-              </span>
-              {/* Sparkle accent */}
+          <div className="relative mb-6 animate-slide-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
+            <div className="animate-float">
+              <SaashaktiLogo size={96} glow />
               <Sparkles
                 size={14}
-                className="absolute -top-1 -right-1 text-saffron-300 opacity-80"
+                className="absolute -top-1 -right-1 text-saffron-500 opacity-80"
               />
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* ── Title & Tagline ───────────────────────── */}
-          <motion.h1
-            variants={childFadeUp}
-            className="text-3xl font-bold text-white text-glow-saffron mb-1 select-none"
+          <h1
+            className="text-3xl font-bold text-slate-900 text-glow-saffron mb-1 select-none animate-slide-up"
+            style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
           >
             {t('app_name')}
-          </motion.h1>
-          <motion.p
-            variants={childFadeUp}
-            className="text-saffron-300 text-lg mb-10 select-none"
+          </h1>
+          <p
+            className="text-saffron-500 text-lg mb-10 select-none animate-slide-up"
+            style={{ animationDelay: '0.3s', animationFillMode: 'both' }}
           >
             {t('app_tagline')}
-          </motion.p>
+          </p>
 
           {/* ── Action Buttons / Login Card ───────────── */}
           <AnimatePresence mode="wait">
             {!showLogin ? (
               <motion.div
                 key="buttons"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
+                initial={{ opacity: 1 }}
                 exit={{ opacity: 0, y: -20, transition: { duration: 0.25 } }}
                 className="w-full space-y-4"
               >
                 {/* Field Worker Button */}
-                <motion.div variants={buttonVariants}>
+                <div className="animate-slide-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
                   <motion.button
                     whileHover={{ y: -2, boxShadow: '0 0 30px rgba(249, 115, 22, 0.25), 0 12px 40px rgba(0, 0, 0, 0.3)' }}
                     whileTap={{ scale: 0.97 }}
@@ -213,20 +133,20 @@ export default function HomePage({ onFieldWorkerLogin }: Props) {
                                transition-all duration-300"
                     style={{
                       background:
-                        'linear-gradient(135deg, rgba(249, 115, 22, 0.10), rgba(249, 115, 22, 0.03))',
-                      borderColor: 'rgba(249, 115, 22, 0.20)',
+                        'linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(249, 115, 22, 0.02))',
+                      borderColor: 'rgba(249, 115, 22, 0.25)',
                     }}
                   >
                     <Shield size={22} className="text-saffron-400 shrink-0" />
-                    <span className="flex-1 text-center text-white font-semibold text-lg">
+                    <span className="flex-1 text-center text-slate-800 font-semibold text-lg">
                       {t('i_am_field_worker')}
                     </span>
-                    <ArrowRight size={20} className="text-white/40 shrink-0" />
+                    <ArrowRight size={20} className="text-slate-400 shrink-0" />
                   </motion.button>
-                </motion.div>
+                </div>
 
                 {/* Beneficiary Button */}
-                <motion.div variants={buttonVariants}>
+                <div className="animate-slide-up" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
                   <motion.button
                     whileHover={{ y: -2, boxShadow: '0 0 30px rgba(124, 58, 237, 0.25), 0 12px 40px rgba(0, 0, 0, 0.3)' }}
                     whileTap={{ scale: 0.97 }}
@@ -236,17 +156,17 @@ export default function HomePage({ onFieldWorkerLogin }: Props) {
                                transition-all duration-300"
                     style={{
                       background:
-                        'linear-gradient(135deg, rgba(124, 58, 237, 0.10), rgba(124, 58, 237, 0.03))',
-                      borderColor: 'rgba(124, 58, 237, 0.20)',
+                        'linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(124, 58, 237, 0.02))',
+                      borderColor: 'rgba(124, 58, 237, 0.25)',
                     }}
                   >
                     <User size={22} className="text-purple-400 shrink-0" />
-                    <span className="flex-1 text-center text-white font-semibold text-lg">
+                    <span className="flex-1 text-center text-slate-800 font-semibold text-lg">
                       {t('i_am_beneficiary')}
                     </span>
-                    <ArrowRight size={20} className="text-white/40 shrink-0" />
+                    <ArrowRight size={20} className="text-slate-400 shrink-0" />
                   </motion.button>
-                </motion.div>
+                </div>
               </motion.div>
             ) : (
               /* ── Field Worker Login Card ─────────────── */
@@ -269,7 +189,7 @@ export default function HomePage({ onFieldWorkerLogin }: Props) {
                   >
                     <Lock size={22} className="text-saffron-400" />
                   </div>
-                  <h2 className="text-white font-semibold text-lg">
+                  <h2 className="text-slate-900 font-semibold text-lg">
                     {t('enter_access_code')}
                   </h2>
                 </div>
@@ -326,7 +246,7 @@ export default function HomePage({ onFieldWorkerLogin }: Props) {
                     setCode('')
                     setError('')
                   }}
-                  className="w-full text-center text-white/50 hover:text-white/80
+                  className="w-full text-center text-slate-400 hover:text-slate-600
                              py-2 text-sm transition-colors duration-200 cursor-pointer select-none"
                 >
                   {t('back')}
@@ -335,17 +255,15 @@ export default function HomePage({ onFieldWorkerLogin }: Props) {
             )}
           </AnimatePresence>
         </div>
-      </motion.div>
+      </div>
 
       {/* ── Footer ──────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.8 }}
-        className="text-center pb-6 text-xs text-white/25 relative z-10 select-none"
+      <div
+        className="text-center pb-6 text-xs text-slate-400 relative z-10 select-none animate-fade-in"
+        style={{ animationDelay: '0.8s', animationFillMode: 'both' }}
       >
         महिला एवं बाल विकास विभाग, छत्तीसगढ़
-      </motion.div>
+      </div>
     </div>
   )
 }

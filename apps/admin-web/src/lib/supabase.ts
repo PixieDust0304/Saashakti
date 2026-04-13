@@ -1,12 +1,18 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+// Create client only if credentials exist; otherwise use a safe placeholder
+export const supabase: SupabaseClient = supabaseUrl && supabaseKey
+  ? createClient(supabaseUrl, supabaseKey)
+  : createClient('https://placeholder.supabase.co', 'placeholder-key')
+
+export const isConfigured = !!(supabaseUrl && supabaseKey)
 
 // Save beneficiary profile
 export async function saveBeneficiary(profile: Record<string, unknown>) {
+  if (!isConfigured) { console.warn('Supabase not configured'); return null }
   const { data, error } = await supabase
     .from('beneficiaries')
     .insert(profile)
@@ -28,6 +34,7 @@ export async function saveMatches(
     confidence: string
   }>
 ) {
+  if (!isConfigured) return
   const rows = matches.map(m => ({ ...m, beneficiary_id: beneficiaryId }))
   const { error } = await supabase.from('matched_schemes').insert(rows)
   if (error) throw error
@@ -35,6 +42,7 @@ export async function saveMatches(
 
 // Verify field worker access code
 export async function verifyFieldWorker(code: string) {
+  if (!isConfigured) return null
   const { data, error } = await supabase
     .from('field_workers')
     .select('*')
@@ -62,6 +70,7 @@ export function subscribeToDashboard(callback: (count: number) => void) {
 
 // Get dashboard stats
 export async function getDashboardStats() {
+  if (!isConfigured) return null
   const { data, error } = await supabase
     .from('beneficiaries')
     .select('district, is_bpl, is_pregnant, marital_status, total_schemes_matched, total_annual_benefit')

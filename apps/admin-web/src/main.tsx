@@ -6,11 +6,9 @@ import App from './App'
 import './styles/globals.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <LangProvider>
-        <App />
-      </LangProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+  <BrowserRouter>
+    <LangProvider>
+      <App />
+    </LangProvider>
+  </BrowserRouter>,
 )
