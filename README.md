@@ -7,6 +7,7 @@ Saashakti is a launch-oriented Women Welfare Registration and Scheme Discovery m
 - ✅ Shared type/runtime contracts in `packages/types`
 - ✅ Scheme registry with runtime validation in `packages/scheme-registry`
 - ✅ Rule-based matching engine with tests in `packages/scheme-engine`
+<<<<<<< codex/scaffold-monorepo-for-saashakti-project-77ahhu
 - ✅ OTP API foundation with cooldown, rate limits, verify attempts, and error envelopes
 - ✅ Production adapters added: PostgreSQL store, Redis OTP store, auth middleware, structured logger
 - ✅ Repo debug + QA command for fast developer sanity checks before pushes
@@ -30,6 +31,10 @@ Saashakti is a launch-oriented Women Welfare Registration and Scheme Discovery m
 - verify-attempt cap
 - request ID + structured error envelope
 - mock SMS provider abstraction (development-safe)
+=======
+- ✅ Repo debug + QA command for fast developer sanity checks before pushes
+- ⏳ API/mobile/admin feature modules (OTP onboarding, dashboards, persistence) in next increments
+>>>>>>> main
 
 ## Architecture
 - `apps/mobile`: Expo mobile app for beneficiary and assisted worker onboarding.
@@ -52,6 +57,7 @@ npm run qa
 npm run build
 ```
 
+<<<<<<< codex/scaffold-monorepo-for-saashakti-project-77ahhu
 Run API locally:
 ```bash
 npm --prefix apps/api run start
@@ -70,6 +76,8 @@ export REDIS_URL=redis://localhost:6379
 export STORE_MODE=persistent
 ```
 
+=======
+>>>>>>> main
 ## Team push checklist (VS Code)
 1. Pull latest branch changes.
 2. Run `npm run qa` before pushing.
@@ -87,10 +95,17 @@ Create service-specific `.env` files for API base URLs, database, Redis, OTP mod
 
 ## Known limitations
 - Aadhaar integration is intentionally abstracted for phased rollout.
+<<<<<<< codex/scaffold-monorepo-for-saashakti-project-77ahhu
 - Persistent mode now available through Redis + PostgreSQL adapters; in-memory mode remains as fallback for local/test.
 
 ## Next-phase roadmap
 - Redis-backed OTP/session storage
+=======
+- App/API endpoints are not yet fully implemented in this commit.
+
+## Next-phase roadmap
+- OTP request/verify API + rate limiting
+>>>>>>> main
 - Beneficiary onboarding persistence APIs
 - Mobile onboarding screens and assisted mode
 - Admin dashboard summary/recent feeds

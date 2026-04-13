@@ -7,4 +7,5 @@
     "start": "node src/server.js",
     "test": "node --test tests/auth.test.js tests/beneficiaries.test.js tests/dashboard.test.js"
   }
+  "version": "0.1.0"
 }
