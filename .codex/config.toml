@@ -1,0 +1,20 @@
+model = "codex-1"
+reasoning_effort = "medium"
+
+[environment]
+setup = [
+  "corepack enable || true",
+  "pnpm install || npm install || true"
+]
+
+[tools]
+internet_access = false
+
+[commands]
+lint = "pnpm lint"
+typecheck = "pnpm typecheck"
+test = "pnpm test"
+build = "pnpm build"
+
+[mcp_servers.openaiDeveloperDocs]
+url = "https://developers.openai.com/mcp"

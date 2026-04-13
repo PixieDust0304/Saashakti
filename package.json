@@ -1,0 +1,19 @@
+{
+  "name": "saashakti",
+  "private": true,
+  "version": "0.3.0",
+  "packageManager": "pnpm@10.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "lint": "node --check packages/scheme-engine/src/index.js && node --check packages/scheme-registry/src/index.js && node --check packages/scheme-registry/src/schema.js && node --check packages/types/src/index.js && node --check infra/scripts/repo-debug.mjs",
+    "typecheck": "node -e \"console.log('TypeScript typecheck gate will be activated when API/mobile/admin TS projects are wired.')\"",
+    "test": "node --test packages/scheme-engine/src/index.test.js packages/scheme-registry/src/schema.test.js",
+    "build": "node -e \"console.log('Build pipeline placeholder for upcoming app/api packages.')\"",
+    "debug": "node infra/scripts/repo-debug.mjs",
+    "qa": "npm run lint && npm run test && npm run debug"
+  }
+}

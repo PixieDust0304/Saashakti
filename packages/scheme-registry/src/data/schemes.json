@@ -1,0 +1,42 @@
+{
+  "version": "2026.04.13",
+  "updatedAt": "2026-04-13T00:00:00.000Z",
+  "schemes": [
+    {
+      "id": "matru-vandana",
+      "nameHi": "प्रधानमंत्री मातृ वंदना योजना",
+      "nameEn": "PM Matru Vandana Yojana",
+      "annualValueInr": 5000,
+      "rules": [
+        { "field": "isPregnant", "operator": "truthy", "labelHi": "गर्भवती", "labelEn": "Pregnant" },
+        { "field": "hasBankAccount", "operator": "truthy", "labelHi": "बैंक खाता", "labelEn": "Has bank account" }
+      ],
+      "nextActionHi": "आंगनवाड़ी केंद्र में आवेदन जमा करें",
+      "nextActionEn": "Submit application at nearest anganwadi"
+    },
+    {
+      "id": "ujjwala",
+      "nameHi": "प्रधानमंत्री उज्ज्वला योजना",
+      "nameEn": "PM Ujjwala Yojana",
+      "annualValueInr": 1600,
+      "rules": [
+        { "field": "isBpl", "operator": "truthy", "labelHi": "बीपीएल परिवार", "labelEn": "BPL household" },
+        { "field": "hasRationCard", "operator": "truthy", "labelHi": "राशन कार्ड", "labelEn": "Has ration card" }
+      ],
+      "nextActionHi": "CSC केंद्र पर KYC पूरा करें",
+      "nextActionEn": "Complete KYC at CSC center"
+    },
+    {
+      "id": "shg-credit",
+      "nameHi": "महिला SHG क्रेडिट लिंक",
+      "nameEn": "Women SHG Credit Link",
+      "annualValueInr": 50000,
+      "rules": [
+        { "field": "isShgMember", "operator": "truthy", "labelHi": "SHG सदस्य", "labelEn": "SHG member" },
+        { "field": "hasBankAccount", "operator": "truthy", "labelHi": "बैंक खाता", "labelEn": "Has bank account" }
+      ],
+      "nextActionHi": "SHG बैंक लिंकेज शिविर में जाएँ",
+      "nextActionEn": "Attend SHG-bank linkage camp"
+    }
+  ]
+}
