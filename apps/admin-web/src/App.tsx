@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
 import type { FieldWorker, BeneficiaryProfile, SchemeMatch } from './engine/types'
 import HomePage from './pages/HomePage'
-import IntakePage from './pages/IntakePage'
+import IntakePage, { createInitialForm } from './pages/IntakePage'
 import ResultsPage from './pages/ResultsPage'
 import DashboardPage from './pages/DashboardPage'
 import Header from './components/layout/Header'
@@ -11,6 +11,11 @@ export default function App() {
   const [fieldWorker, setFieldWorker] = useState<FieldWorker | null>(null)
   const [profile, setProfile] = useState<BeneficiaryProfile | null>(null)
   const [matches, setMatches] = useState<SchemeMatch[]>([])
+  // Form state lives here so it survives route transitions (/register →
+  // /results → /register via browser back). IntakePage owns the step
+  // counter and Aadhaar autofill state locally since those are UI-only
+  // and resetting them on navigation is the desired behavior.
+  const [form, setForm] = useState<Partial<BeneficiaryProfile>>(createInitialForm)
 
   return (
     <div className="min-h-screen relative">
@@ -30,6 +35,8 @@ export default function App() {
               <Header fieldWorker={fieldWorker} />
               <IntakePage
                 fieldWorker={fieldWorker}
+                form={form}
+                setForm={setForm}
                 onComplete={(p, m) => {
                   setProfile(p)
                   setMatches(m)
@@ -50,6 +57,7 @@ export default function App() {
                 onRegisterNext={() => {
                   setProfile(null)
                   setMatches([])
+                  setForm(createInitialForm())
                 }}
               />
             </div>

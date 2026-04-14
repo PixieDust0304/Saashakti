@@ -75,7 +75,13 @@ export class SaashaktiClient {
 
   constructor(options: SaashaktiClientOptions) {
     this.baseUrl = options.baseUrl;
-    this.fetchImpl = options.fetch ?? fetch;
+    // Native `fetch` must be invoked with a Window/WorkerGlobalScope `this`.
+    // Storing the bare reference and calling it as `this.fetchImpl(...)`
+    // rebinds `this` to the SaashaktiClient instance, which the browser
+    // rejects with "Illegal invocation". Bind it to the global when we
+    // default, and leave caller-supplied overrides untouched (test mocks
+    // are usually plain functions and don't care).
+    this.fetchImpl = options.fetch ?? fetch.bind(globalThis);
     this.defaultHeaders = options.defaultHeaders ?? {};
     this.token = options.token ?? null;
   }

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { memo, useMemo } from "react";
 
 /**
  * AnimatedBackground
@@ -27,7 +27,7 @@ interface Particle {
   color: string;
 }
 
-const PARTICLE_COUNT = 18;
+const PARTICLE_COUNT = 6;
 
 const PARTICLE_COLORS = [
   "rgba(249, 115, 22, 0.12)", // saffron
@@ -77,7 +77,7 @@ function generateParticles(): Particle[] {
   return particles;
 }
 
-export default function AnimatedBackground(): React.JSX.Element {
+function AnimatedBackgroundImpl(): React.JSX.Element {
   // Memoize particle data so it's computed only once
   const particles = useMemo<Particle[]>(generateParticles, []);
 
@@ -180,3 +180,9 @@ export default function AnimatedBackground(): React.JSX.Element {
     </>
   );
 }
+
+// Background is purely decorative and stateless — memoize so parent
+// re-renders (form state, scroll, route transitions) don't re-run
+// the particle generator or recreate 18 DOM nodes.
+const AnimatedBackground = memo(AnimatedBackgroundImpl);
+export default AnimatedBackground;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getDashboardStats, subscribeToDashboard, supabase, isConfigured } from '../lib/supabase'
 import { api } from '../lib/api'
@@ -215,14 +215,15 @@ export default function DashboardPage() {
   const prevRegCount = useRef(0)
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Animated values for all numeric fields
+  // Only animate the headline counter. Other metrics update instantly —
+  // 7 simultaneous rAF loops on every fetch was the biggest dashboard hog.
   const animatedTotal = useAnimatedValue(stats?.total_registrations ?? 0, 1000)
-  const animatedDistricts = useAnimatedValue(stats?.districts ?? 0, 700)
-  const animatedMatches = useAnimatedValue(stats?.total_matches ?? 0, 800)
-  const animatedBenefit = useAnimatedValue(stats?.total_benefit ?? 0, 900)
-  const animatedBPL = useAnimatedValue(stats?.bpl_count ?? 0, 600)
-  const animatedPregnant = useAnimatedValue(stats?.pregnant_count ?? 0, 600)
-  const animatedWidow = useAnimatedValue(stats?.widow_count ?? 0, 600)
+  const animatedDistricts = stats?.districts ?? 0
+  const animatedMatches = stats?.total_matches ?? 0
+  const animatedBenefit = stats?.total_benefit ?? 0
+  const animatedBPL = stats?.bpl_count ?? 0
+  const animatedPregnant = stats?.pregnant_count ?? 0
+  const animatedWidow = stats?.widow_count ?? 0
 
   // Fetch all 3 data sources — backend first, supabase second
   const fetchAll = useCallback(async () => {
@@ -281,8 +282,9 @@ export default function DashboardPage() {
     // Initial fetch
     fetchAll()
 
-    // Polling interval (8 seconds)
-    const pollInterval = setInterval(fetchAll, 8000)
+    // Polling interval (30s). Supabase realtime handles fast updates;
+    // polling is the safety net for missed events, not the primary path.
+    const pollInterval = setInterval(fetchAll, 30000)
 
     // Realtime subscription
     const channel = subscribeToDashboard(() => {
@@ -316,7 +318,7 @@ export default function DashboardPage() {
         background: 'linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 30%, #FFF7ED 65%, #F8FAFC 100%)',
       }}
     >
-      {/* ============ FLOATING ORBS ============ */}
+      {/* ============ FLOATING ORBS (blur-free, GPU-cheap) ============ */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div
           className="absolute rounded-full"
@@ -325,10 +327,10 @@ export default function DashboardPage() {
             height: 600,
             top: '-8%',
             right: '-5%',
-            background: 'radial-gradient(circle, #FDBA74, transparent 70%)',
-            filter: 'blur(100px)',
-            opacity: 0.05,
+            background: 'radial-gradient(circle, rgba(253, 186, 116, 0.25), transparent 70%)',
+            opacity: 0.6,
             animation: 'orbFloat 25s ease-in-out infinite',
+            willChange: 'transform',
           }}
         />
         <div
@@ -338,24 +340,10 @@ export default function DashboardPage() {
             height: 500,
             bottom: '-12%',
             left: '-8%',
-            background: 'radial-gradient(circle, #C4B5FD, transparent 70%)',
-            filter: 'blur(100px)',
-            opacity: 0.05,
+            background: 'radial-gradient(circle, rgba(196, 181, 253, 0.22), transparent 70%)',
+            opacity: 0.6,
             animation: 'orbFloat 30s ease-in-out infinite reverse',
-          }}
-        />
-        <div
-          className="absolute rounded-full"
-          style={{
-            width: 300,
-            height: 300,
-            top: '40%',
-            left: '50%',
-            background: 'radial-gradient(circle, #FDBA74, transparent 70%)',
-            filter: 'blur(80px)',
-            opacity: 0.04,
-            animation: 'orbFloat 20s ease-in-out infinite',
-            animationDelay: '-8s',
+            willChange: 'transform',
           }}
         />
         {/* Subtle grid overlay */}
@@ -650,10 +638,11 @@ export default function DashboardPage() {
 }
 
 // ---------------------------------------------------------------------------
-// Metric Card (4-column row)
+// Metric Card (4-column row) — memoized: dashboard re-renders on every poll,
+// but these cards only change when their specific props do.
 // ---------------------------------------------------------------------------
 
-function MetricCard({ icon, value, label, borderColor, iconBg, delay }: {
+const MetricCard = memo(function MetricCard({ icon, value, label, borderColor, iconBg, delay }: {
   icon: React.ReactNode
   value: string
   label: string
@@ -678,13 +667,13 @@ function MetricCard({ icon, value, label, borderColor, iconBg, delay }: {
       </div>
     </div>
   )
-}
+})
 
 // ---------------------------------------------------------------------------
-// Demographic Card (3-column row)
+// Demographic Card (3-column row) — memoized for the same reason.
 // ---------------------------------------------------------------------------
 
-function DemoCard({ icon, value, label, color, delay }: {
+const DemoCard = memo(function DemoCard({ icon, value, label, color, delay }: {
   icon: React.ReactNode
   value: number
   label: string
@@ -701,4 +690,4 @@ function DemoCard({ icon, value, label, color, delay }: {
       <span className="text-xs text-slate-400">{label}</span>
     </div>
   )
-}
+})
