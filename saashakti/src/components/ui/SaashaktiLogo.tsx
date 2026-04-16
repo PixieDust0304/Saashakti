@@ -23,7 +23,7 @@ export default function SaashaktiLogo({ size = 80, className = '', showText = fa
           src="/logo.png"
           alt="सशक्ति — Saashakti"
           className="relative w-full h-full object-contain drop-shadow-lg"
-          style={{ borderRadius: size > 60 ? '1rem' : '0.5rem' }}
+          style={{ borderRadius: size > 60 ? '1rem' : '0.5rem', mixBlendMode: 'multiply' }}
         />
       </div>
       {showText && (
@@ -50,7 +50,7 @@ export function SaashaktiLogoMark({ size = 36, className = '' }: { size?: number
       src="/logo.png"
       alt="सशक्ति"
       className={`object-contain flex-shrink-0 drop-shadow-md ${className}`}
-      style={{ width: size, height: size }}
+      style={{ width: size, height: size, mixBlendMode: 'multiply' }}
     />
   )
 }
