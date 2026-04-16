@@ -30,6 +30,13 @@ const schema = z.object({
   DASHBOARD_CACHE_TTL_SECONDS: z.coerce.number().int().nonnegative().default(15),
 
   MIGRATIONS_DIR: z.string().optional(),
+
+  AADHAAR_PROVIDER: z.enum(['mock', 'karza', 'uidai']).default('mock'),
+  AADHAAR_KARZA_API_KEY: z.string().optional(),
+  AADHAAR_KARZA_BASE_URL: z.string().optional(),
+  AADHAAR_AUA_CODE: z.string().optional(),
+  AADHAAR_AUA_LICENSE_KEY: z.string().optional(),
+  AADHAAR_ASA_API_URL: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);

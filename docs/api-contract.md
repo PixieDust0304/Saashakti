@@ -106,6 +106,52 @@ Response shape:
 | GET | `/v1/dashboard/summary` | — | Aggregates cached `DASHBOARD_CACHE_TTL_SECONDS` in Redis. |
 | GET | `/v1/dashboard/recent?limit=20` | — | Recent registrations (most recent first). `limit` capped at 100. |
 
+## Aadhaar e-KYC (mock / vendor)
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/v1/aadhaar/kyc?aadhaarNumber=...` | — | Public, rate-limited 30/min. Returns a deterministic mock KYC record (name, DOB/age, gender, address with pincode, mobile). Switch providers via `AADHAAR_PROVIDER` env: `mock` (default), `karza` (REST vendor), `uidai` (direct SOAP — scaffold only). |
+
+Response shape:
+
+```ts
+{
+  kyc: {
+    aadhaarLast4: string,
+    name: string,
+    gender: "F" | "M" | "T",
+    dob: string, // YYYY-MM-DD
+    age: number,
+    address: {
+      house?: string, street?: string, landmark?: string,
+      locality?: string, vtc: string, district: string,
+      state: string, pincode: string, country: string,
+    },
+    mobileNumber?: string,
+    source: "mock" | "uidai" | "karza",
+    fetchedAt: string,
+  }
+}
+```
+
+## Rich intake (admin-web path)
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/v1/intake` | — | Public, rate-limited 60/min. Accepts an opaque admin-web profile JSON + pre-computed matches + optional field-worker access code. Stores full profile in `beneficiaries.profile_json`, writes a best-effort row to `beneficiary_profiles`, and persists matches. |
+
+## Ingestion pipeline
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/v1/ingestion/discover` | — | Crawl seed URLs + sitemaps for scheme page URLs |
+| POST | `/v1/ingestion/fetch` | — | Fetch up to 20 URLs and store raw source documents |
+| POST | `/v1/ingestion/extract` | — | Extract scheme candidates from source documents |
+| POST | `/v1/ingestion/normalize` | — | Normalize candidates into registry shape with auto-suggested rules |
+| POST | `/v1/ingestion/publish` | — | Publish normalized schemes to canonical store (gated by `is_published`) |
+| POST | `/v1/ingestion/run-full` | — | End-to-end pipeline: discover → fetch → extract → normalize → publish |
+| GET | `/v1/ingestion/stats` | — | Returns counts of source docs, candidates, canonical schemes, published |
+
 ## Headers
 
 - `x-request-id` — echoes the incoming header or a generated UUID. Use it in client-side error reporting and log correlation.

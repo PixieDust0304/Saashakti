@@ -436,6 +436,31 @@
         }
       }
     },
+    "/v1/aadhaar/kyc": {
+      "get": {
+        "summary": "Mock e-KYC fetch (returns name, DOB, gender, address, mobile from Aadhaar)",
+        "parameters": [
+          {
+            "name": "aadhaarNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 12,
+              "maxLength": 12
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "KYC record"
+          },
+          "400": {
+            "description": "Invalid Aadhaar number"
+          }
+        }
+      }
+    },
     "/v1/beneficiary": {
       "post": {
         "summary": "Create or fetch beneficiary record",
@@ -669,6 +694,76 @@
         "responses": {
           "200": {
             "description": "Entries"
+          }
+        }
+      }
+    },
+    "/v1/ingestion/discover": {
+      "post": {
+        "summary": "Run URL discovery from seed sources + sitemaps",
+        "responses": {
+          "200": {
+            "description": "Discovery results"
+          }
+        }
+      }
+    },
+    "/v1/ingestion/fetch": {
+      "post": {
+        "summary": "Fetch up to 20 URLs and store source documents",
+        "responses": {
+          "200": {
+            "description": "Fetch results"
+          }
+        }
+      }
+    },
+    "/v1/ingestion/extract": {
+      "post": {
+        "summary": "Extract scheme candidates from source documents",
+        "responses": {
+          "200": {
+            "description": "Extraction results"
+          }
+        }
+      }
+    },
+    "/v1/ingestion/normalize": {
+      "post": {
+        "summary": "Normalize candidates into registry-shaped schemes",
+        "responses": {
+          "200": {
+            "description": "Normalized results"
+          }
+        }
+      }
+    },
+    "/v1/ingestion/publish": {
+      "post": {
+        "summary": "Publish normalized schemes to canonical store",
+        "responses": {
+          "200": {
+            "description": "Published results"
+          }
+        }
+      }
+    },
+    "/v1/ingestion/run-full": {
+      "post": {
+        "summary": "End-to-end pipeline: discover → fetch → extract → normalize → publish",
+        "responses": {
+          "200": {
+            "description": "Pipeline results"
+          }
+        }
+      }
+    },
+    "/v1/ingestion/stats": {
+      "get": {
+        "summary": "Ingestion pipeline statistics (source docs, candidates, canonicals)",
+        "responses": {
+          "200": {
+            "description": "Stats"
           }
         }
       }
