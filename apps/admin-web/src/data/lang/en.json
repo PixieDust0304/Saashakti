@@ -78,5 +78,15 @@
   "exclusion_checks": "Exclusion Checks",
   "registration_saved": "Registration saved successfully!",
   "my_registrations": "My Registrations",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "scan_card": "Scan Card",
+  "scan_aadhaar_title": "Scan Aadhaar Card",
+  "position_qr": "Position the QR code inside the frame",
+  "no_qr_found": "No QR code detected. Try better lighting or upload a photo.",
+  "upload_photo": "Upload photo instead",
+  "use_this_data": "Use this data",
+  "try_again": "Try again",
+  "scanning_privacy": "The QR code is read on this device. No image is uploaded or stored.",
+  "camera_denied": "Camera access unavailable. Please allow the camera or upload a photo.",
+  "fetch_failed_manual_entry": "Failed to fetch. Please enter the details manually."
 }

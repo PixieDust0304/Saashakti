@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '../hooks/useLang'
@@ -8,15 +8,20 @@ import { api, ApiError } from '../lib/api'
 import type { BeneficiaryProfile, FieldWorker, SchemeMatch, FormStep } from '../engine/types'
 import schemesData from '../data/schemes.json'
 import districts from '../data/districts-cg.json'
-import { ChevronRight, ChevronLeft, Heart, Wallet, Users, AlertTriangle, User, Sparkles } from 'lucide-react'
+import { ChevronRight, ChevronLeft, Heart, Wallet, Users, AlertTriangle, User, Sparkles, Camera } from 'lucide-react'
 import AnimatedBackground from '../components/3d/AnimatedBackground'
+import AadhaarScanModal from '../components/AadhaarScanModal'
+import Toast from '../components/ui/Toast'
+import type { AadhaarParsed } from '../lib/aadhaar-qr'
 
 interface Props {
   fieldWorker: FieldWorker | null
+  form: Partial<BeneficiaryProfile>
+  setForm: React.Dispatch<React.SetStateAction<Partial<BeneficiaryProfile>>>
   onComplete: (profile: BeneficiaryProfile, matches: SchemeMatch[]) => void
 }
 
-const INITIAL: Partial<BeneficiaryProfile> = {
+export const createInitialForm = (): Partial<BeneficiaryProfile> => ({
   gender: 'female',
   state: 'Chhattisgarh',
   residence_type: 'rural',
@@ -42,7 +47,7 @@ const INITIAL: Partial<BeneficiaryProfile> = {
   family_is_elected_rep: false,
   family_is_board_chair: false,
   has_disability: false,
-}
+})
 
 /* ------------------------------------------------------------------ */
 /*  Step transition variants                                          */
@@ -143,13 +148,102 @@ function OptionGrid({
 }
 
 /* ================================================================== */
+/*  Step Indicator (module-scope + memo)                              */
+/*                                                                    */
+/*  MUST live outside IntakePage. Previously it was defined inline    */
+/*  as a nested arrow function, which meant every keystroke in any    */
+/*  form input created a brand-new component type, unmounting the     */
+/*  old step dots and remounting new ones. Framer Motion's layout +   */
+/*  spring transitions would re-fire on every keystroke, producing    */
+/*  the jitter the user was reporting. At module scope + React.memo,  */
+/*  StepIndicator only re-renders when `step` actually changes.       */
+/* ================================================================== */
+const StepIndicator = memo(function StepIndicator({ step }: { step: FormStep }) {
+  return (
+    <div className="flex items-center justify-center gap-0 py-5 px-4">
+      {([1, 2, 3, 4, 5] as FormStep[]).map((s, idx) => {
+        const isActive = s === step
+        const isDone = s < step
+
+        return (
+          <div key={s} className="flex items-center">
+            {idx > 0 && (
+              <div
+                className="h-[2px] w-6 sm:w-8 transition-all duration-500"
+                style={{
+                  background: isDone || isActive
+                    ? 'linear-gradient(90deg, #F97316, #7C3AED)'
+                    : 'rgba(0, 0, 0, 0.1)',
+                }}
+              />
+            )}
+            <motion.div
+              layout
+              className={`step-3d ${
+                isActive
+                  ? 'step-3d-active'
+                  : isDone
+                  ? 'step-3d-done'
+                  : 'step-3d-pending'
+              }`}
+              animate={{ scale: isActive ? 1.15 : 1 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            >
+              {isDone ? (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="text-sm"
+                >
+                  &#10003;
+                </motion.span>
+              ) : (
+                <span>{s}</span>
+              )}
+            </motion.div>
+          </div>
+        )
+      })}
+    </div>
+  )
+})
+
+const StepTitle = memo(function StepTitle({
+  step,
+  t,
+}: {
+  step: FormStep
+  t: (k: string) => string
+}) {
+  const meta = STEP_META[step - 1]!
+  return (
+    <motion.div
+      key={`title-${step}`}
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-center gap-2.5 px-5 pb-2"
+    >
+      <div
+        className="w-8 h-8 rounded-lg flex items-center justify-center"
+        style={{
+          background: 'linear-gradient(135deg, rgba(249,115,22,0.2), rgba(124,58,237,0.15))',
+          border: '1px solid rgba(249,115,22,0.2)',
+        }}
+      >
+        <span className="text-saffron-600">{meta.icon}</span>
+      </div>
+      <h2 className="text-lg font-semibold text-slate-900">{t(meta.labelKey)}</h2>
+    </motion.div>
+  )
+})
+
+/* ================================================================== */
 /*  Main Component                                                    */
 /* ================================================================== */
-export default function IntakePage({ fieldWorker, onComplete }: Props) {
+export default function IntakePage({ fieldWorker, form, setForm, onComplete }: Props) {
   const { t, lang } = useLang()
   const navigate = useNavigate()
   const [step, setStep] = useState<FormStep>(1)
-  const [form, setForm] = useState<Partial<BeneficiaryProfile>>(INITIAL)
   const [saving, setSaving] = useState(false)
 
   // Aadhaar autofill state
@@ -158,9 +252,55 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
   const [kycError, setKycError] = useState<string | null>(null)
   const [kycFilled, setKycFilled] = useState(false)
   const [autofilledFields, setAutofilledFields] = useState<Set<string>>(new Set())
+  const [scanModalOpen, setScanModalOpen] = useState(false)
+  const [toast, setToast] = useState<string | null>(null)
 
-  const set = (key: string, value: unknown) =>
-    setForm((prev) => ({ ...prev, [key]: value }))
+  const set = useCallback(
+    (key: string, value: unknown) =>
+      setForm((prev) => ({ ...prev, [key]: value })),
+    [setForm],
+  )
+
+  /**
+   * Shared autofill application — used by both the mock-API fetch path
+   * and the in-browser QR-scan path. Maps the Aadhaar district string
+   * onto the form's slug-based dropdown codes using a two-pass fuzzy
+   * match so post-2012 district splits (Surguja → Surajpur/Balrampur)
+   * still resolve when possible.
+   */
+  const applyAadhaarData = (src: {
+    name: string
+    age: number | null
+    mobileNumber?: string | null
+    district: string
+  }) => {
+    const qrDist = src.district.trim().toLowerCase()
+    const districtMatch = qrDist
+      ? districts.find((d) => {
+          const en = d.name_en.toLowerCase()
+          return en === qrDist || en.includes(qrDist) || qrDist.includes(en)
+        })
+      : undefined
+    const districtCode = districtMatch?.code
+
+    setForm((prev) => ({
+      ...prev,
+      name: src.name,
+      age: src.age ?? prev.age,
+      phone: src.mobileNumber?.replace(/^91/, '') ?? prev.phone,
+      district: districtCode ?? prev.district,
+      gender: 'female',
+      state: 'Chhattisgarh',
+    }))
+
+    const filled = new Set<string>(['name'])
+    if (src.age !== null) filled.add('age')
+    if (src.mobileNumber) filled.add('phone')
+    if (districtCode) filled.add('district')
+    setAutofilledFields(filled)
+    setKycFilled(true)
+    setKycError(null)
+  }
 
   /**
    * Pull a mock e-KYC record from the backend and prefill the form
@@ -178,38 +318,30 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
     setKycLoading(true)
     try {
       const { kyc } = await api.fetchAadhaarKyc(digits)
-
-      // Map the KYC district name onto the form's slug-based code list.
-      const districtCode = districts.find(
-        (d) => d.name_en.toLowerCase() === kyc.address.district.toLowerCase(),
-      )?.code
-
-      setForm((prev) => ({
-        ...prev,
+      applyAadhaarData({
         name: kyc.name,
         age: kyc.age,
-        phone: kyc.mobileNumber?.replace(/^91/, '') ?? prev.phone,
-        district: districtCode ?? prev.district,
-        gender: 'female',
-        state: 'Chhattisgarh',
-      }))
-
-      const filled = new Set<string>(['name', 'age'])
-      if (kyc.mobileNumber) filled.add('phone')
-      if (districtCode) filled.add('district')
-      setAutofilledFields(filled)
-      setKycFilled(true)
-    } catch (err) {
-      const message =
-        err instanceof ApiError
-          ? err.message
-          : err instanceof Error
-            ? err.message
-            : 'Aadhaar fetch failed'
-      setKycError(message)
+        mobileNumber: kyc.mobileNumber ?? null,
+        district: kyc.address.district,
+      })
+    } catch {
+      // Don't leak raw fetch error strings into the UI. Show a friendly
+      // toast telling the user to enter details manually. The inline
+      // kycError red-text stays reserved for validation feedback only.
+      setToast(t('fetch_failed_manual_entry'))
     } finally {
       setKycLoading(false)
     }
+  }
+
+  const handleScanParsed = (parsed: AadhaarParsed) => {
+    applyAadhaarData({
+      name: parsed.name,
+      age: parsed.age,
+      mobileNumber: null,
+      district: parsed.district,
+    })
+    setScanModalOpen(false)
   }
 
   const isAutofilled = (field: string) => autofilledFields.has(field)
@@ -305,89 +437,6 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
     navigate('/results')
   }
 
-  /* ---------------------------------------------------------------- */
-  /*  Step Indicator (built inline)                                   */
-  /* ---------------------------------------------------------------- */
-  const StepIndicator = () => (
-    <div className="flex items-center justify-center gap-0 py-5 px-4">
-      {([1, 2, 3, 4, 5] as FormStep[]).map((s, idx) => {
-        const isActive = s === step
-        const isDone = s < step
-        const isPending = s > step
-
-        return (
-          <div key={s} className="flex items-center">
-            {/* Connector line before this step (skip first) */}
-            {idx > 0 && (
-              <div
-                className="h-[2px] w-6 sm:w-8 transition-all duration-500"
-                style={{
-                  background: isDone || isActive
-                    ? 'linear-gradient(90deg, #F97316, #7C3AED)'
-                    : 'rgba(0, 0, 0, 0.1)',
-                }}
-              />
-            )}
-
-            {/* Step circle */}
-            <motion.div
-              layout
-              className={`step-3d ${
-                isActive
-                  ? 'step-3d-active'
-                  : isDone
-                  ? 'step-3d-done'
-                  : 'step-3d-pending'
-              }`}
-              animate={{
-                scale: isActive ? 1.15 : 1,
-              }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            >
-              {isDone ? (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="text-sm"
-                >
-                  &#10003;
-                </motion.span>
-              ) : (
-                <span>{s}</span>
-              )}
-            </motion.div>
-          </div>
-        )
-      })}
-    </div>
-  )
-
-  /* ---------------------------------------------------------------- */
-  /*  Step Title Bar                                                  */
-  /* ---------------------------------------------------------------- */
-  const StepTitle = () => {
-    const meta = STEP_META[step - 1]
-    return (
-      <motion.div
-        key={`title-${step}`}
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center gap-2.5 px-5 pb-2"
-      >
-        <div
-          className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{
-            background: 'linear-gradient(135deg, rgba(249,115,22,0.2), rgba(124,58,237,0.15))',
-            border: '1px solid rgba(249,115,22,0.2)',
-          }}
-        >
-          <span className="text-saffron-600">{meta.icon}</span>
-        </div>
-        <h2 className="text-lg font-semibold text-slate-900">{t(meta.labelKey)}</h2>
-      </motion.div>
-    )
-  }
-
   /* ================================================================ */
   /*  RENDER                                                          */
   /* ================================================================ */
@@ -397,14 +446,14 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
 
       <div className="relative z-10">
         {/* Step indicator */}
-        <StepIndicator />
+        <StepIndicator step={step} />
 
         {/* Step title */}
-        <StepTitle />
+        <StepTitle step={step} t={t} />
 
         {/* Form content */}
         <div className="px-4 mt-2">
-          <AnimatePresence mode="wait">
+          <AnimatePresence initial={false}>
             {/* ================================================== */}
             {/*  STEP 1 -- Personal Details                        */}
             {/* ================================================== */}
@@ -455,6 +504,16 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
                           : 'Fetch'}
                     </button>
                   </div>
+                  {/* Camera scan fallback — in-browser, no upload */}
+                  <button
+                    type="button"
+                    onClick={() => setScanModalOpen(true)}
+                    disabled={kycLoading}
+                    className="w-full flex items-center justify-center gap-2 rounded-lg border border-saffron-300 bg-white/70 hover:bg-white/90 text-saffron-700 font-medium py-2.5 transition disabled:opacity-50"
+                  >
+                    <Camera size={16} />
+                    <span>{t('scan_card')}</span>
+                  </button>
                   {kycError && (
                     <p className="text-xs text-red-600">{kycError}</p>
                   )}
@@ -920,6 +979,19 @@ export default function IntakePage({ fieldWorker, onComplete }: Props) {
           </motion.button>
         )}
       </div>
+
+      {/* Aadhaar camera scan modal — mounts only when opened */}
+      <AnimatePresence>
+        {scanModalOpen && (
+          <AadhaarScanModal
+            onParsed={handleScanParsed}
+            onClose={() => setScanModalOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Transient error toast (Aadhaar fetch failure, etc.) */}
+      <Toast message={toast} onDismiss={() => setToast(null)} />
     </div>
   )
 }

@@ -61,16 +61,16 @@
      3D GLASS CARDS
      ========================================== */
   .glass-card {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    /* Solid-enough background instead of backdrop-filter blur —
+       avoids per-frame blur sampling on weak GPUs. */
+    background: rgba(255, 255, 255, 0.92);
     border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 1.25rem;
     box-shadow:
       0 4px 24px rgba(0, 0, 0, 0.06),
       0 1px 2px rgba(0, 0, 0, 0.04),
       inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     position: relative;
     overflow: hidden;
   }
@@ -161,8 +161,7 @@
   }
 
   .btn-3d-secondary {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.95);
     border: 2px solid rgba(0, 0, 0, 0.08);
     color: #334155;
     box-shadow:
@@ -362,9 +361,9 @@
   .animated-bg .orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
     opacity: 0.12;
     animation: orbFloat 20s ease-in-out infinite;
+    will-change: transform;
   }
 
   .animated-bg .orb-saffron {

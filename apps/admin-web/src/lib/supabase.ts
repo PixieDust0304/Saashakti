@@ -42,7 +42,20 @@ export async function saveMatches(
 
 // Verify field worker access code
 export async function verifyFieldWorker(code: string) {
-  if (!isConfigured) return null
+  if (!isConfigured) {
+    if (import.meta.env.DEV && code === '999999') {
+      console.warn('[supabase] dev bypass: accepting Demo Worker without Supabase')
+      return {
+        id: 'dev-demo-worker',
+        name: 'Demo Worker',
+        access_code: '999999',
+        district: 'raipur',
+        organization: 'Demo',
+        is_active: true,
+      }
+    }
+    return null
+  }
   const { data, error } = await supabase
     .from('field_workers')
     .select('*')
