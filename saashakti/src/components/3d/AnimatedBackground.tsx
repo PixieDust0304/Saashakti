@@ -3,17 +3,14 @@ import React, { useMemo } from "react";
 /**
  * AnimatedBackground
  *
- * Fixed-position animated background with:
- * - Three large floating gradient orbs (saffron, purple, green) with CSS blur
- * - A subtle dotted grid pattern overlay
- * - 18 floating particle dots that slowly rise via CSS animations
- * - A radial gradient vignette overlay for depth
+ * Fixed full-screen animated background with:
+ * - Three large gradient orbs (saffron, purple, green) with CSS orbFloat animation
+ * - 25 floating particle dots with CSS particleFloat animation, random positions/sizes/delays
+ * - A subtle grid pattern overlay (very low opacity)
+ * - A radial vignette overlay for depth
  *
- * Uses CSS classes from globals.css (.animated-bg, .orb, .orb-*, .particle-field,
- * .particle, @keyframes orbFloat, @keyframes particleFloat) plus inline styles
- * for randomized particle positioning and timing.
- *
- * No external libraries -- pure React 18 + CSS.
+ * Performance: will-change: transform on animated elements, GPU-accelerated,
+ * pointer-events: none on everything. Pure CSS animations, no JS animation loop.
  */
 
 interface Particle {
@@ -27,15 +24,16 @@ interface Particle {
   color: string;
 }
 
-const PARTICLE_COUNT = 18;
+const PARTICLE_COUNT = 25;
 
 const PARTICLE_COLORS = [
-  "rgba(249, 115, 22, 0.12)", // saffron
-  "rgba(249, 115, 22, 0.10)",
-  "rgba(124, 58, 237, 0.12)", // purple
-  "rgba(124, 58, 237, 0.10)",
-  "rgba(249, 115, 22, 0.08)",
-  "rgba(124, 58, 237, 0.08)",
+  "rgba(237, 112, 35, 0.14)",   // saffron brand
+  "rgba(237, 112, 35, 0.10)",
+  "rgba(118, 79, 144, 0.14)",   // purple brand
+  "rgba(118, 79, 144, 0.10)",
+  "rgba(19, 136, 8, 0.10)",     // green brand
+  "rgba(237, 112, 35, 0.08)",
+  "rgba(118, 79, 144, 0.08)",
 ];
 
 /**
@@ -55,83 +53,75 @@ function mulberry32(seed: number): () => number {
 
 function generateParticles(): Particle[] {
   const rand = mulberry32(42);
-  const particles: Particle[] = [];
-
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
+  return Array.from({ length: PARTICLE_COUNT }, (_, i) => {
     const left = `${rand() * 100}%`;
-    // Start particles spread across the lower portion of the viewport
     const bottom = `${-10 + rand() * 30}%`;
-    // 2-4px diameter
-    const size = 2 + rand() * 2;
-    // 0.15 - 0.35 opacity
-    const opacity = 0.15 + rand() * 0.2;
-    // 15s - 40s duration
-    const duration = `${15 + rand() * 25}s`;
-    // Stagger start: 0 - 30s negative delay so they don't all begin at once
-    const delay = `${-(rand() * 30)}s`;
+    const size = 2 + rand() * 3;
+    const opacity = 0.15 + rand() * 0.25;
+    const duration = `${14 + rand() * 28}s`;
+    const delay = `${-(rand() * 35)}s`;
     const color = PARTICLE_COLORS[Math.floor(rand() * PARTICLE_COLORS.length)];
-
-    particles.push({ id: i, left, bottom, size, opacity, duration, delay, color });
-  }
-
-  return particles;
+    return { id: i, left, bottom, size, opacity, duration, delay, color };
+  });
 }
 
 export default function AnimatedBackground(): React.JSX.Element {
-  // Memoize particle data so it's computed only once
   const particles = useMemo<Particle[]>(generateParticles, []);
 
   return (
     <>
       {/* ── Orbs ─────────────────────────────────────── */}
       <div className="animated-bg" aria-hidden="true">
-        {/* Saffron orb -- top-right, 500px */}
+        {/* Saffron orb -- top-right, large */}
         <div
           className="orb"
           style={{
-            background: "radial-gradient(circle, #FDBA74, transparent 70%)",
-            width: 500,
-            height: 500,
-            top: "-10%",
-            right: "-5%",
-            opacity: 0.10,
-            animationDuration: "20s",
-            animationDelay: "0s",
-          }}
-        />
-
-        {/* Purple orb -- bottom-left, 600px */}
-        <div
-          className="orb"
-          style={{
-            background: "radial-gradient(circle, #C4B5FD, transparent 70%)",
+            background: "radial-gradient(circle, rgba(237,112,35,0.35), rgba(253,186,116,0.15), transparent 70%)",
             width: 600,
             height: 600,
-            bottom: "-15%",
-            left: "-10%",
-            opacity: 0.12,
-            animationDuration: "25s",
-            animationDelay: "-7s",
+            top: "-12%",
+            right: "-8%",
+            opacity: 0.14,
+            animationDuration: "22s",
+            animationDelay: "0s",
+            willChange: "transform",
           }}
         />
 
-        {/* Green orb -- centre, 400px, subtler */}
+        {/* Purple orb -- bottom-left, largest */}
         <div
           className="orb"
           style={{
-            background: "radial-gradient(circle, #86EFAC, transparent 70%)",
-            width: 400,
-            height: 400,
-            top: "50%",
-            left: "40%",
-            opacity: 0.08,
-            animationDuration: "18s",
-            animationDelay: "-14s",
+            background: "radial-gradient(circle, rgba(118,79,144,0.35), rgba(196,181,253,0.15), transparent 70%)",
+            width: 700,
+            height: 700,
+            bottom: "-18%",
+            left: "-12%",
+            opacity: 0.13,
+            animationDuration: "28s",
+            animationDelay: "-8s",
+            willChange: "transform",
+          }}
+        />
+
+        {/* Green orb -- centre-right, medium */}
+        <div
+          className="orb"
+          style={{
+            background: "radial-gradient(circle, rgba(19,136,8,0.30), rgba(134,239,172,0.12), transparent 70%)",
+            width: 450,
+            height: 450,
+            top: "45%",
+            left: "50%",
+            opacity: 0.09,
+            animationDuration: "20s",
+            animationDelay: "-15s",
+            willChange: "transform",
           }}
         />
       </div>
 
-      {/* ── Grid overlay ─────────────────────────────── */}
+      {/* ── Grid pattern overlay ─────────────────────── */}
       <div
         aria-hidden="true"
         style={{
@@ -140,8 +130,8 @@ export default function AnimatedBackground(): React.JSX.Element {
           zIndex: 0,
           pointerEvents: "none",
           backgroundImage:
-            "radial-gradient(circle, rgba(0,0,0,0.02) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
+            "linear-gradient(rgba(0,0,0,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.015) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
         }}
       />
 
@@ -160,6 +150,7 @@ export default function AnimatedBackground(): React.JSX.Element {
               opacity: p.opacity,
               animationDuration: p.duration,
               animationDelay: p.delay,
+              willChange: "transform, opacity",
             }}
           />
         ))}
@@ -174,7 +165,7 @@ export default function AnimatedBackground(): React.JSX.Element {
           zIndex: 0,
           pointerEvents: "none",
           background:
-            "radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(255,255,255,0.03) 60%, rgba(255,255,255,0.06) 100%)",
+            "radial-gradient(ellipse at 50% 30%, transparent 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.06) 100%)",
         }}
       />
     </>

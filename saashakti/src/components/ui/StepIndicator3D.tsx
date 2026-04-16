@@ -1,19 +1,19 @@
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useRef } from "react";
 
-// ---------------------------------------------------------------------------
-// StepIndicator3D
-// ---------------------------------------------------------------------------
-// A horizontal step indicator with numbered circles connected by lines.
-// Uses CSS classes from globals.css: step-3d, step-3d-active, step-3d-done,
-// step-3d-pending, step-connector, step-connector-done.
-// Framer-motion provides scale, color, and layoutId animations.
-// ---------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------
+   StepIndicator3D
+   ---------------------------------------------------------------------------
+   A horizontal step indicator with numbered circles connected by lines.
+   Uses CSS classes from globals.css: step-3d, step-3d-active, step-3d-done,
+   step-3d-pending, step-connector, step-connector-done.
+   Pure CSS @keyframes for all animations -- no framer-motion.
+   --------------------------------------------------------------------------- */
 
 interface StepIndicator3DProps {
-  currentStep: number; // 1-based
-  totalSteps: number; // e.g. 5
-  labels?: string[]; // optional step labels
+  currentStep: number;       // 1-based
+  totalSteps: number;        // e.g. 5
+  stepLabels?: string[];     // optional step labels
+  onStepClick?: (step: number) => void;
 }
 
 /**
@@ -23,29 +23,14 @@ function stepState(
   stepIndex: number,
   currentStep: number
 ): "active" | "done" | "pending" {
-  const stepNum = stepIndex + 1; // convert 0-based to 1-based
+  const stepNum = stepIndex + 1;
   if (stepNum === currentStep) return "active";
   if (stepNum < currentStep) return "done";
   return "pending";
 }
 
 /**
- * Map state to the corresponding globals.css class.
- */
-function stepCssClass(state: "active" | "done" | "pending"): string {
-  switch (state) {
-    case "active":
-      return "step-3d step-3d-active";
-    case "done":
-      return "step-3d step-3d-done";
-    case "pending":
-      return "step-3d step-3d-pending";
-  }
-}
-
-/**
- * Render the inner content of a step circle -- either a checkmark (done),
- * the step number (active/pending).
+ * Render the inner content of a step circle.
  */
 function StepContent({
   state,
@@ -56,135 +41,163 @@ function StepContent({
 }) {
   if (state === "done") {
     return (
-      <motion.span
-        key="check"
-        initial={{ scale: 0, rotate: -90 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 20 }}
-        className="leading-none text-base"
+      <svg
+        className="step-checkmark-svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        &#10003;
-      </motion.span>
+        <polyline
+          points="20 6 9 17 4 12"
+          style={{
+            strokeDasharray: 30,
+            strokeDashoffset: 0,
+            animation: "checkmarkDraw 0.4s ease-out forwards",
+          }}
+        />
+      </svg>
     );
   }
   return (
-    <motion.span
-      key="num"
-      initial={{ scale: 0.6, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.25 }}
+    <span
       className="leading-none"
+      style={{
+        animation:
+          state === "active" ? "stepNumPopIn 0.35s ease-out" : undefined,
+      }}
     >
       {stepNumber}
-    </motion.span>
+    </span>
   );
 }
 
 export default function StepIndicator3D({
   currentStep,
   totalSteps,
-  labels,
+  stepLabels,
+  onStepClick,
 }: StepIndicator3DProps): React.JSX.Element {
   const steps = Array.from({ length: totalSteps }, (_, i) => i);
+  const progressPercent = Math.round(((currentStep - 1) / (totalSteps - 1)) * 100);
+  const prevStepRef = useRef(currentStep);
+
+  useEffect(() => {
+    prevStepRef.current = currentStep;
+  }, [currentStep]);
 
   return (
-    <div className="w-full" role="navigation" aria-label="Progress steps">
+    <div className="w-full px-4 pt-5 pb-2" role="navigation" aria-label="Progress steps">
       {/* Row of circles + connectors */}
-      <div className="flex items-center w-full">
+      <div className="flex items-center w-full justify-center">
         {steps.map((i) => {
           const state = stepState(i, currentStep);
           const stepNumber = i + 1;
           const isLast = i === totalSteps - 1;
+          const isClickable = onStepClick && (state === "done" || state === "active");
 
           return (
             <React.Fragment key={i}>
-              {/* ── Step circle ──────────────────────────────── */}
+              {/* Step circle + optional label */}
               <div className="flex flex-col items-center relative">
-                <motion.div
-                  className={stepCssClass(state)}
-                  layout
-                  animate={{
-                    scale: state === "active" ? 1.15 : 1,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 350,
-                    damping: 25,
-                    mass: 0.8,
-                  }}
+                <button
+                  type="button"
+                  className={`step-3d ${
+                    state === "active"
+                      ? "step-3d-active step-3d-bounce"
+                      : state === "done"
+                        ? "step-3d-done"
+                        : "step-3d-pending"
+                  } ${isClickable ? "cursor-pointer" : "cursor-default"}`}
+                  onClick={() => isClickable && onStepClick?.(stepNumber)}
+                  disabled={!isClickable}
                   aria-current={state === "active" ? "step" : undefined}
-                  aria-label={`Step ${stepNumber}${labels?.[i] ? `: ${labels[i]}` : ""}${state === "done" ? " (completed)" : state === "active" ? " (current)" : ""}`}
+                  aria-label={`Step ${stepNumber}${stepLabels?.[i] ? `: ${stepLabels[i]}` : ""}${
+                    state === "done"
+                      ? " (completed)"
+                      : state === "active"
+                        ? " (current)"
+                        : ""
+                  }`}
+                  style={{
+                    transform: state === "active" ? "scale(1.15)" : "scale(1)",
+                    transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, background 0.4s ease",
+                  }}
                 >
-                  {/* Glow ring that slides to the active step */}
+                  {/* Pulsing glow ring for active step */}
                   {state === "active" && (
-                    <motion.div
-                      layoutId="step-glow-ring"
-                      className="absolute inset-[-6px] rounded-full pointer-events-none"
-                      style={{
-                        background:
-                          "linear-gradient(135deg, rgba(249,115,22,0.25), rgba(124,58,237,0.25))",
-                        boxShadow:
-                          "0 0 18px rgba(249,115,22,0.35), 0 0 40px rgba(124,58,237,0.15)",
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 30,
-                      }}
+                    <span
+                      className="step-glow-ring"
+                      aria-hidden="true"
                     />
                   )}
 
-                  <AnimatePresence mode="wait">
-                    <StepContent
-                      key={state === "done" ? "done" : "num"}
-                      state={state}
-                      stepNumber={stepNumber}
-                    />
-                  </AnimatePresence>
-                </motion.div>
+                  <StepContent state={state} stepNumber={stepNumber} />
+                </button>
 
-                {/* ── Optional label below circle ────────────── */}
-                {labels?.[i] && (
+                {/* Optional label below circle -- hidden on mobile */}
+                {stepLabels?.[i] && (
                   <span
-                    className={`mt-2 text-[10px] leading-tight text-center max-w-[64px] truncate ${
+                    className={`hidden sm:block mt-2 text-[10px] leading-tight text-center max-w-[72px] truncate font-medium transition-colors duration-400 ${
                       state === "active"
-                        ? "text-orange-300"
+                        ? "text-saffron-600"
                         : state === "done"
-                          ? "text-emerald-400/70"
-                          : "text-white/30"
+                          ? "text-green-600"
+                          : "text-slate-400"
                     }`}
                   >
-                    {labels[i]}
+                    {stepLabels[i]}
                   </span>
                 )}
               </div>
 
-              {/* ── Connector line ───────────────────────────── */}
+              {/* Connector line */}
               {!isLast && (
-                <motion.div
+                <div
                   className={`step-connector ${
                     stepNumber < currentStep ? "step-connector-done" : ""
                   }`}
-                  initial={false}
-                  animate={{
+                  style={{
                     opacity: stepNumber < currentStep ? 1 : 0.5,
+                    transition: "opacity 0.5s ease-in-out, background 0.7s ease",
+                    minWidth: "24px",
                   }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
                 />
               )}
             </React.Fragment>
           );
         })}
       </div>
+
+      {/* Progress bar underneath */}
+      <ProgressBar3D progress={progressPercent} className="mt-3" />
+
+      {/* Progress percentage text */}
+      <p
+        className="text-center text-xs font-semibold mt-1.5 tracking-wide"
+        style={{
+          background: "linear-gradient(135deg, #F97316, #7C3AED)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+      >
+        {progressPercent}% complete
+      </p>
     </div>
   );
 }
 
-// ---------------------------------------------------------------------------
-// ProgressBar3D
-// ---------------------------------------------------------------------------
-// Full-width rounded progress bar with glass track and gradient fill.
-// ---------------------------------------------------------------------------
+/* ---------------------------------------------------------------------------
+   ProgressBar3D
+   ---------------------------------------------------------------------------
+   Full-width rounded progress bar with glass track and gradient fill.
+   CSS-only animations.
+   --------------------------------------------------------------------------- */
 
 interface ProgressBar3DProps {
   progress: number; // 0 to 100
@@ -195,7 +208,6 @@ export function ProgressBar3D({
   progress,
   className = "",
 }: ProgressBar3DProps): React.JSX.Element {
-  // Clamp to 0-100
   const clamped = Math.max(0, Math.min(100, progress));
 
   return (
@@ -207,27 +219,26 @@ export function ProgressBar3D({
       aria-valuemax={100}
       aria-label={`Progress: ${Math.round(clamped)}%`}
     >
-      {/* ── Track ────────────────────────────────────── */}
+      {/* Track */}
       <div
         className="relative w-full overflow-hidden rounded-full"
         style={{
           height: 6,
-          background: "rgba(255, 255, 255, 0.06)",
+          background: "rgba(0, 0, 0, 0.06)",
           boxShadow:
-            "inset 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.04)",
+            "inset 0 1px 3px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(0, 0, 0, 0.03)",
         }}
       >
-        {/* ── Fill ───────────────────────────────────── */}
-        <motion.div
+        {/* Fill */}
+        <div
           className="absolute inset-y-0 left-0 rounded-full"
           style={{
             background: "linear-gradient(90deg, #F97316, #7C3AED)",
+            width: `${clamped}%`,
+            transition: "width 0.7s cubic-bezier(0.25, 0.1, 0.25, 1)",
           }}
-          initial={false}
-          animate={{ width: `${clamped}%` }}
-          transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          {/* ── Glowing leading edge ─────────────────── */}
+          {/* Glowing leading edge */}
           {clamped > 0 && (
             <div
               className="absolute top-0 right-0 h-full w-3 rounded-full"
@@ -239,7 +250,7 @@ export function ProgressBar3D({
               }}
             />
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );

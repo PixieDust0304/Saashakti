@@ -1,25 +1,18 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '../hooks/useLang'
 import { calculateTotalBenefit } from '../engine/matchSchemes'
 import type { BeneficiaryProfile, FieldWorker, SchemeMatch } from '../engine/types'
-import {
-  CheckCircle,
-  AlertCircle,
-  IndianRupee,
-  FileText,
-  ExternalLink,
-  UserPlus,
-  ChevronDown,
-  ChevronUp,
-  Sparkles,
-  Award,
-  ArrowRight,
-} from 'lucide-react'
+import GlassCard, {
+  SchemeCard,
+  StatCard,
+  useAnimatedCounter,
+} from '../components/ui/GlassCard'
 import AnimatedBackground from '../components/3d/AnimatedBackground'
 
-// ─── Props ──────────────────────────────────────────────────
+// ----------------------------------------------------------------
+// Props
+// ----------------------------------------------------------------
 interface Props {
   profile: BeneficiaryProfile | null
   matches: SchemeMatch[]
@@ -27,16 +20,21 @@ interface Props {
   onRegisterNext: () => void
 }
 
-// ─── Helpers ────────────────────────────────────────────────
+// ----------------------------------------------------------------
+// Helpers
+// ----------------------------------------------------------------
 function formatBenefitAmount(amount: number | null): string {
   if (!amount) return ''
   return `\u20B9${amount.toLocaleString('en-IN')}`
 }
 
+// ----------------------------------------------------------------
+// Confetti
+// ----------------------------------------------------------------
 const CONFETTI_COLORS = [
-  '#F97316', // saffron
-  '#7C3AED', // purple
-  '#138808', // green
+  '#ED7023', // saffron brand
+  '#764F90', // purple brand
+  '#138808', // green brand
   '#FBBF24', // gold
   '#FB923C', // light saffron
   '#A78BFA', // light purple
@@ -44,44 +42,6 @@ const CONFETTI_COLORS = [
   '#FDE68A', // pale gold
 ]
 
-// ─── Animated Counter Hook ──────────────────────────────────
-function useAnimatedCounter(target: number, duration: number = 1800): number {
-  const [value, setValue] = useState(0)
-  const frameRef = useRef<number>(0)
-
-  useEffect(() => {
-    if (target === 0) {
-      setValue(0)
-      return
-    }
-
-    const startTime = performance.now()
-    const startValue = 0
-
-    function tick(now: number) {
-      const elapsed = now - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      // Ease-out cubic for satisfying deceleration
-      const eased = 1 - Math.pow(1 - progress, 3)
-      const current = Math.round(startValue + (target - startValue) * eased)
-      setValue(current)
-
-      if (progress < 1) {
-        frameRef.current = requestAnimationFrame(tick)
-      }
-    }
-
-    frameRef.current = requestAnimationFrame(tick)
-
-    return () => {
-      if (frameRef.current) cancelAnimationFrame(frameRef.current)
-    }
-  }, [target, duration])
-
-  return value
-}
-
-// ─── Confetti Pieces (generated once) ───────────────────────
 interface ConfettiPiece {
   id: number
   left: string
@@ -90,286 +50,210 @@ interface ConfettiPiece {
   duration: string
   delay: string
   rotation: number
+  shape: 'circle' | 'rect' | 'diamond'
 }
 
 function generateConfetti(): ConfettiPiece[] {
   const pieces: ConfettiPiece[] = []
-  for (let i = 0; i < 14; i++) {
+  const shapes: Array<'circle' | 'rect' | 'diamond'> = ['circle', 'rect', 'diamond']
+  for (let i = 0; i < 24; i++) {
     pieces.push({
       id: i,
-      left: `${5 + (i * 6.5) % 90}%`,
+      left: `${3 + ((i * 4.1) % 94)}%`,
       color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-      size: 6 + (i % 4) * 2,
-      duration: `${1.8 + (i % 5) * 0.3}s`,
-      delay: `${(i % 7) * 0.12}s`,
-      rotation: (i * 47) % 360,
+      size: 6 + (i % 5) * 2,
+      duration: `${2.0 + (i % 6) * 0.25}s`,
+      delay: `${(i % 9) * 0.1}s`,
+      rotation: (i * 41) % 360,
+      shape: shapes[i % 3],
     })
   }
   return pieces
 }
 
-// ─── Celebration Confetti Component ─────────────────────────
 function CelebrationConfetti() {
   const [visible, setVisible] = useState(true)
   const pieces = useMemo(generateConfetti, [])
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), 3200)
+    const timer = setTimeout(() => setVisible(false), 3500)
     return () => clearTimeout(timer)
   }, [])
 
   if (!visible) return null
 
   return (
-    <div aria-hidden="true">
-      {pieces.map((p) => (
-        <div
-          key={p.id}
-          className="confetti-piece"
-          style={{
-            left: p.left,
-            top: '-20px',
-            width: p.size,
-            height: p.size * 1.4,
-            backgroundColor: p.color,
-            animationDuration: p.duration,
-            animationDelay: p.delay,
-            borderRadius: p.id % 3 === 0 ? '50%' : '2px',
-            transform: `rotate(${p.rotation}deg)`,
-          }}
-        />
-      ))}
+    <div aria-hidden="true" style={{ position: 'fixed', inset: 0, zIndex: 50, pointerEvents: 'none', overflow: 'hidden' }}>
+      {pieces.map((p) => {
+        const shapeStyle: React.CSSProperties =
+          p.shape === 'circle'
+            ? { borderRadius: '50%' }
+            : p.shape === 'diamond'
+            ? { borderRadius: '2px', transform: `rotate(${p.rotation + 45}deg)` }
+            : { borderRadius: '2px', transform: `rotate(${p.rotation}deg)` }
+
+        return (
+          <div
+            key={p.id}
+            className="confetti-piece"
+            style={{
+              left: p.left,
+              top: '-20px',
+              width: p.size,
+              height: p.size * 1.3,
+              backgroundColor: p.color,
+              animationDuration: p.duration,
+              animationDelay: p.delay,
+              ...shapeStyle,
+            }}
+          />
+        )
+      })}
     </div>
   )
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  SCHEME CARD (inline component)
-// ═══════════════════════════════════════════════════════════════
-interface SchemeCardProps {
-  match: SchemeMatch
-  lang: string
-  t: (k: string) => string
-  index: number
-}
-
-function SchemeCard({ match, lang, t, index }: SchemeCardProps) {
-  const { scheme } = match
-  const [expanded, setExpanded] = useState(false)
-  const [tilt, setTilt] = useState({ x: 0, y: 0 })
-  const cardRef = useRef<HTMLDivElement>(null)
-
-  const isEligible = match.eligibility_status === 'eligible'
-  const borderColor = isEligible
-    ? 'rgba(19, 136, 8, 0.6)'
-    : 'rgba(234, 179, 8, 0.6)'
-
-  const benefitText = formatBenefitAmount(scheme.benefit.amount)
-
-  const freqText =
-    scheme.benefit.frequency === 'monthly'
-      ? t('per_month')
-      : scheme.benefit.frequency === 'annual'
-      ? t('per_year')
-      : scheme.benefit.frequency === 'one_time' ||
-        scheme.benefit.frequency === 'one_time_installments'
-      ? t('one_time')
-      : ''
-
-  // ── Perspective tilt on hover ──
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
-    const dx = (e.clientX - cx) / (rect.width / 2)
-    const dy = (e.clientY - cy) / (rect.height / 2)
-    setTilt({ x: dy * -3, y: dx * 3 })
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    setTilt({ x: 0, y: 0 })
-  }, [])
+// ----------------------------------------------------------------
+// Section Header
+// ----------------------------------------------------------------
+function SectionHeader({
+  icon,
+  title,
+  count,
+  color,
+  delay,
+}: {
+  icon: React.ReactNode
+  title: string
+  count: number
+  color: 'green' | 'amber'
+  delay: string
+}) {
+  const bg =
+    color === 'green'
+      ? 'linear-gradient(135deg, rgba(19, 136, 8, 0.18), rgba(19, 136, 8, 0.06))'
+      : 'linear-gradient(135deg, rgba(234, 179, 8, 0.18), rgba(234, 179, 8, 0.06))'
+  const border =
+    color === 'green'
+      ? '1px solid rgba(19, 136, 8, 0.25)'
+      : '1px solid rgba(234, 179, 8, 0.25)'
+  const glowShadow =
+    color === 'green'
+      ? '0 0 16px rgba(19, 136, 8, 0.1)'
+      : '0 0 16px rgba(234, 179, 8, 0.1)'
 
   return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, x: 60 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{
-        delay: index * 0.08,
-        duration: 0.5,
-        type: 'spring',
-        stiffness: 120,
-        damping: 18,
-      }}
+    <div
+      className="section-header-entrance"
       style={{
-        perspective: '800px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.65rem',
+        marginBottom: '1rem',
+        animationDelay: delay,
+        animationFillMode: 'both',
       }}
     >
-      <motion.div
-        className="glass-card glass-card-hover cursor-pointer"
-        onClick={() => setExpanded(!expanded)}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        animate={{
-          rotateX: tilt.x,
-          rotateY: tilt.y,
-        }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      <div
         style={{
-          borderLeft: `4px solid ${borderColor}`,
-          padding: '1.25rem',
-          transformStyle: 'preserve-3d',
+          width: 34,
+          height: 34,
+          borderRadius: '0.6rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: bg,
+          border,
+          boxShadow: glowShadow,
+          flexShrink: 0,
         }}
       >
-        {/* ── Top row: name + benefit ── */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-base leading-tight text-slate-900">
-              {lang === 'hi' ? scheme.name_hi : scheme.name_en}
-            </h3>
-            <p className="text-sm text-slate-300 mt-0.5 truncate">
-              {scheme.department_hi}
-            </p>
-          </div>
-          <div className="text-right flex-shrink-0">
-            {benefitText && (
-              <p className="text-lg font-bold text-gradient-saffron">
-                {benefitText}
-              </p>
-            )}
-            <p className="text-xs text-slate-300">{freqText}</p>
-          </div>
-        </div>
-
-        {/* ── Badge ── */}
-        <div className="mt-3 flex items-center justify-between">
-          <span
-            className={
-              isEligible ? 'badge-3d-eligible' : 'badge-3d-partial'
-            }
-          >
-            {isEligible ? (
-              <span className="flex items-center gap-1.5">
-                <CheckCircle size={14} />
-                {t('eligible')}
-              </span>
-            ) : (
-              <span className="flex items-center gap-1.5">
-                <AlertCircle size={14} />
-                {t('partial')}
-              </span>
-            )}
-          </span>
-
-          <motion.div
-            animate={{ rotate: expanded ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <ChevronDown size={18} className="text-slate-300" />
-          </motion.div>
-        </div>
-
-        {/* ── Explanation ── */}
-        <p className="text-sm text-slate-400 mt-2 leading-relaxed">
-          {lang === 'hi' ? match.explanation_hi : match.explanation_en}
-        </p>
-
-        {/* ── Expanded content ── */}
-        <AnimatePresence initial={false}>
-          {expanded && (
-            <motion.div
-              key="expanded"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{
-                height: { type: 'spring', stiffness: 200, damping: 26 },
-                opacity: { duration: 0.25 },
-              }}
-              style={{ overflow: 'hidden' }}
-            >
-              <div className="mt-4 pt-4 border-t border-slate-200 space-y-4">
-                {/* Benefit description */}
-                <p className="text-sm text-slate-400 leading-relaxed">
-                  {lang === 'hi'
-                    ? scheme.benefit.description_hi
-                    : scheme.benefit.description_en}
-                </p>
-
-                {/* Document checklist */}
-                {scheme.documents_required.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-600 flex items-center gap-1.5 mb-2">
-                      <FileText size={14} className="text-slate-400" />
-                      {t('documents_needed')}
-                    </h4>
-                    <ul className="text-sm text-slate-400 space-y-1.5">
-                      {scheme.documents_required.map(
-                        (doc: string, i: number) => (
-                          <li key={i} className="flex items-center gap-2.5">
-                            <span
-                              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                              style={{ backgroundColor: '#F97316' }}
-                            />
-                            {doc}
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Portal link */}
-                {scheme.portal && (
-                  <a
-                    href={scheme.portal}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-sm font-medium transition-colors duration-200"
-                    style={{ color: '#F97316' }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <ExternalLink size={14} />
-                    {t('how_to_apply')}
-                  </a>
-                )}
-
-                {/* Next best action */}
-                {match.next_best_action && (
-                  <div
-                    className="glass-card flex items-start gap-2.5"
-                    style={{
-                      padding: '0.75rem 1rem',
-                      background:
-                        'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(124, 58, 237, 0.06))',
-                      borderColor: 'rgba(249, 115, 22, 0.20)',
-                      borderRadius: '0.75rem',
-                    }}
-                  >
-                    <ArrowRight
-                      size={16}
-                      className="flex-shrink-0 mt-0.5"
-                      style={{ color: '#F97316' }}
-                    />
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                      {match.next_best_action}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </motion.div>
+        {icon}
+      </div>
+      <h2 style={{ fontSize: '1.12rem', fontWeight: 600, color: '#1E293B', margin: 0 }}>
+        {title}
+      </h2>
+      <span
+        className={color === 'green' ? 'badge-3d-eligible' : 'badge-3d-partial'}
+        style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem' }}
+      >
+        {count}
+      </span>
+    </div>
   )
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  RESULTS PAGE (main export)
-// ═══════════════════════════════════════════════════════════════
+// ----------------------------------------------------------------
+// Print / Share button
+// ----------------------------------------------------------------
+function PrintShareButton({ lang }: { lang: string }) {
+  const handlePrint = useCallback(() => {
+    window.print()
+  }, [])
+
+  const handleShare = useCallback(async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: lang === 'hi' ? 'सशक्ति - योजना परिणाम' : 'Saashakti - Scheme Results',
+          text:
+            lang === 'hi'
+              ? 'मेरी पात्र सरकारी योजनाएं देखें'
+              : 'Check my eligible government schemes',
+          url: window.location.href,
+        })
+      } catch {
+        // user cancelled
+      }
+    } else {
+      handlePrint()
+    }
+  }, [lang, handlePrint])
+
+  return (
+    <button
+      onClick={handleShare}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '0.4rem',
+        fontSize: '0.82rem',
+        fontWeight: 500,
+        color: '#64748B',
+        background: 'rgba(255,255,255,0.7)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid rgba(0,0,0,0.08)',
+        borderRadius: '0.75rem',
+        padding: '0.5rem 0.85rem',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+      }}
+      aria-label={lang === 'hi' ? 'प्रिंट या शेयर करें' : 'Print or share'}
+    >
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+        <polyline points="16 6 12 2 8 6" />
+        <line x1="12" y1="2" x2="12" y2="15" />
+      </svg>
+      {lang === 'hi' ? 'शेयर / प्रिंट' : 'Share / Print'}
+    </button>
+  )
+}
+
+// ================================================================
+// RESULTS PAGE (main export)
+// ================================================================
 export default function ResultsPage({
   profile,
   matches,
@@ -379,289 +263,458 @@ export default function ResultsPage({
   const { t, lang } = useLang()
   const navigate = useNavigate()
 
-  // ── Redirect if no profile ──
+  // ---- Expanded card state ----
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  // ---- Redirect if no profile ----
   if (!profile) {
     navigate('/')
     return null
   }
 
-  // ── Derived data ──
+  // ---- Derived data ----
   const eligible = matches.filter((m) => m.eligibility_status === 'eligible')
   const partial = matches.filter((m) => m.eligibility_status === 'partial')
   const totalBenefit = calculateTotalBenefit(matches)
   const schemeCount = eligible.length + partial.length
 
-  // ── Animated counters ──
+  // ---- Animated counters ----
   const animatedSchemeCount = useAnimatedCounter(schemeCount, 1400)
   const animatedBenefit = useAnimatedCounter(totalBenefit, 2200)
 
-  // ── Handler ──
+  // ---- Handlers ----
   const handleRegisterNext = () => {
     onRegisterNext()
     navigate('/register')
   }
 
+  const toggleExpand = useCallback((id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id))
+  }, [])
+
+  // ---- Frequency text helper ----
+  function getFreqText(freq: string): string {
+    if (freq === 'monthly') return t('per_month')
+    if (freq === 'annual') return t('per_year')
+    if (freq === 'one_time' || freq === 'one_time_installments') return t('one_time')
+    return ''
+  }
+
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen page-enter">
       <AnimatedBackground />
 
-      {/* ── Celebration confetti on load ── */}
-      <CelebrationConfetti />
+      {/* ---- Confetti on load ---- */}
+      {schemeCount > 0 && <CelebrationConfetti />}
 
-      {/* ── Page content ── */}
+      {/* ---- Page content ---- */}
       <div
         className="relative z-10"
         style={{ paddingBottom: fieldWorker ? '6rem' : '2rem' }}
       >
-        {/* ════════════════════════════════════════════════
-            HERO BENEFIT SUMMARY CARD
-            ════════════════════════════════════════════════ */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            duration: 0.6,
-            type: 'spring',
-            stiffness: 120,
-            damping: 16,
+        {/* ============================================================
+            HERO SUMMARY CARD
+            ============================================================ */}
+        <div
+          className="summary-entrance"
+          style={{
+            padding: '1.5rem 1rem 0.5rem',
+            animationFillMode: 'both',
           }}
-          className="px-4 pt-6 pb-2"
         >
-          <div
-            className="glass-card glow-saffron"
+          <GlassCard
+            variant="saffron"
+            glow
+            tilt
             style={{
               padding: '1.5rem',
               background:
-                'linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(124, 58, 237, 0.06), rgba(255, 255, 255, 0.80))',
-              borderColor: 'rgba(249, 115, 22, 0.2)',
+                'linear-gradient(135deg, rgba(237, 112, 35, 0.08), rgba(118, 79, 144, 0.06), rgba(255, 255, 255, 0.80))',
+              borderColor: 'rgba(237, 112, 35, 0.2)',
             }}
           >
-            {/* Sparkle decoration */}
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles size={16} className="text-amber-400" />
-              <p className="text-sm text-slate-400 tracking-wide">
+            {/* Sparkle + name */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#FBBF24"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74L12 2z" />
+              </svg>
+              <p style={{ fontSize: '0.85rem', color: '#94A3B8', letterSpacing: '0.02em' }}>
                 {profile.name}
               </p>
+
+              {/* Print/Share button -- top right */}
+              <div style={{ marginLeft: 'auto' }}>
+                <PrintShareButton lang={lang} />
+              </div>
             </div>
 
             {/* Giant scheme count */}
-            <div className="flex items-baseline gap-3 mb-4">
-              <span className="text-6xl font-extrabold counter-glow text-slate-900 tabular-nums">
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.75rem', marginBottom: '1rem' }}>
+              <span
+                className="counter-glow tabular-nums"
+                style={{ fontSize: '3.5rem', fontWeight: 800, color: '#0F172A', lineHeight: 1 }}
+              >
                 {animatedSchemeCount}
               </span>
-              <span className="text-lg text-slate-400 font-medium">
+              <span style={{ fontSize: '1.1rem', color: '#64748B', fontWeight: 500 }}>
                 {lang === 'hi' ? 'योजनाएं मिलीं' : t('schemes_matched')}
               </span>
             </div>
 
-            {/* Benefit amount sub-card */}
+            {/* Total benefit sub-card */}
             {totalBenefit > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="glass-card"
-                style={{
-                  padding: '1rem 1.25rem',
-                  background: 'rgba(255, 255, 255, 0.80)',
-                  borderColor: 'rgba(0, 0, 0, 0.06)',
-                  borderRadius: '1rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                }}
-              >
-                <div
-                  className="flex items-center justify-center rounded-xl flex-shrink-0"
-                  style={{
-                    width: 44,
-                    height: 44,
-                    background:
-                      'linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.08))',
-                    border: '1px solid rgba(249, 115, 22, 0.25)',
-                  }}
-                >
-                  <IndianRupee size={22} style={{ color: '#F97316' }} />
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-slate-300 mb-0.5">
-                    {lang === 'hi' ? 'कुल वार्षिक लाभ' : t('total_benefit')}
-                  </p>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-bold text-gradient-saffron tabular-nums">
-                      {`\u20B9${animatedBenefit.toLocaleString('en-IN')}`}
-                    </span>
-                    <span className="text-sm text-slate-300">
-                      {lang === 'hi' ? '/वर्ष' : '/year'}
-                    </span>
-                  </div>
-                </div>
-
-                <Award size={28} className="text-amber-400/30 flex-shrink-0" />
-              </motion.div>
+              <StatCard
+                icon={
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#F97316"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                }
+                value={totalBenefit}
+                label={lang === 'hi' ? 'कुल वार्षिक लाभ' : t('total_benefit')}
+                prefix={'\u20B9'}
+                suffix={lang === 'hi' ? '/वर्ष' : '/year'}
+                color="saffron"
+                duration={2200}
+              />
             )}
-          </div>
-        </motion.div>
+          </GlassCard>
+        </div>
 
-        {/* ════════════════════════════════════════════════
+        {/* ============================================================
             ELIGIBLE SCHEMES SECTION
-            ════════════════════════════════════════════════ */}
+            ============================================================ */}
         {eligible.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="px-4 mt-6 mb-5"
-          >
-            {/* Section header */}
-            <div className="flex items-center gap-2.5 mb-4">
-              <div
-                className="flex items-center justify-center rounded-lg"
-                style={{
-                  width: 32,
-                  height: 32,
-                  background:
-                    'linear-gradient(135deg, rgba(19, 136, 8, 0.25), rgba(19, 136, 8, 0.1))',
-                  border: '1px solid rgba(19, 136, 8, 0.3)',
-                }}
-              >
-                <CheckCircle size={18} style={{ color: '#6EE7B7' }} />
-              </div>
-              <h2 className="text-lg font-semibold text-slate-800">
-                {t('eligible')}
-              </h2>
-              <span
-                className="badge-3d-eligible"
-                style={{
-                  fontSize: '0.75rem',
-                  padding: '0.2rem 0.6rem',
-                }}
-              >
-                {eligible.length}
-              </span>
-            </div>
+          <div style={{ padding: '0 1rem', marginTop: '1.75rem' }}>
+            <SectionHeader
+              icon={
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#22C55E"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              }
+              title={lang === 'hi' ? 'पात्र योजनाएं' : t('eligible')}
+              count={eligible.length}
+              color="green"
+              delay="0.3s"
+            />
 
-            {/* Staggered scheme cards */}
-            <div className="space-y-3">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {eligible.map((m, i) => (
                 <SchemeCard
                   key={m.scheme_id}
-                  match={m}
+                  nameHi={m.scheme.name_hi}
+                  nameEn={m.scheme.name_en}
+                  department={m.scheme.department_hi}
+                  matchScore={m.match_score}
+                  annualValue={m.scheme.benefit.annual_value}
+                  benefitText={formatBenefitAmount(m.scheme.benefit.amount)}
+                  frequencyText={getFreqText(m.scheme.benefit.frequency)}
+                  isEligible={true}
+                  badgeLabel={
+                    lang === 'hi'
+                      ? `\u2713 ${t('eligible')}`
+                      : t('eligible')
+                  }
+                  explanation={lang === 'hi' ? m.explanation_hi : m.explanation_en}
+                  matchedCriteria={m.matched_criteria}
+                  missingCriteria={m.missing_criteria}
+                  documents={m.scheme.documents_required}
+                  benefitDescription={
+                    lang === 'hi'
+                      ? m.scheme.benefit.description_hi
+                      : m.scheme.benefit.description_en
+                  }
+                  portalUrl={m.scheme.portal || undefined}
+                  nextAction={m.next_best_action || undefined}
+                  applyLabel={t('how_to_apply')}
+                  documentsLabel={t('documents_needed')}
+                  nextStepLabel={lang === 'hi' ? 'अगला कदम' : 'Next step'}
+                  expanded={expandedId === m.scheme_id}
+                  onExpand={() => toggleExpand(m.scheme_id)}
                   lang={lang}
-                  t={t}
                   index={i}
                 />
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
 
-        {/* ════════════════════════════════════════════════
+        {/* ============================================================
             PARTIAL SCHEMES SECTION
-            ════════════════════════════════════════════════ */}
+            ============================================================ */}
         {partial.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            className="px-4 mt-2 mb-5"
-          >
-            {/* Section header */}
-            <div className="flex items-center gap-2.5 mb-4">
-              <div
-                className="flex items-center justify-center rounded-lg"
-                style={{
-                  width: 32,
-                  height: 32,
-                  background:
-                    'linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(234, 179, 8, 0.1))',
-                  border: '1px solid rgba(234, 179, 8, 0.3)',
-                }}
-              >
-                <AlertCircle size={18} style={{ color: '#FDE68A' }} />
-              </div>
-              <h2 className="text-lg font-semibold text-slate-800">
-                {t('partial')}
-              </h2>
-              <span
-                className="badge-3d-partial"
-                style={{
-                  fontSize: '0.75rem',
-                  padding: '0.2rem 0.6rem',
-                }}
-              >
-                {partial.length}
-              </span>
-            </div>
+          <div style={{ padding: '0 1rem', marginTop: '1.75rem' }}>
+            <SectionHeader
+              icon={
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#EAB308"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              }
+              title={lang === 'hi' ? 'आंशिक पात्र' : t('partial')}
+              count={partial.length}
+              color="amber"
+              delay="0.5s"
+            />
 
-            {/* Staggered scheme cards */}
-            <div className="space-y-3">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {partial.map((m, i) => (
                 <SchemeCard
                   key={m.scheme_id}
-                  match={m}
+                  nameHi={m.scheme.name_hi}
+                  nameEn={m.scheme.name_en}
+                  department={m.scheme.department_hi}
+                  matchScore={m.match_score}
+                  annualValue={m.scheme.benefit.annual_value}
+                  benefitText={formatBenefitAmount(m.scheme.benefit.amount)}
+                  frequencyText={getFreqText(m.scheme.benefit.frequency)}
+                  isEligible={false}
+                  badgeLabel={
+                    lang === 'hi'
+                      ? `\u26A0 ${t('partial')}`
+                      : t('partial')
+                  }
+                  explanation={lang === 'hi' ? m.explanation_hi : m.explanation_en}
+                  matchedCriteria={m.matched_criteria}
+                  missingCriteria={m.missing_criteria}
+                  documents={m.scheme.documents_required}
+                  benefitDescription={
+                    lang === 'hi'
+                      ? m.scheme.benefit.description_hi
+                      : m.scheme.benefit.description_en
+                  }
+                  portalUrl={m.scheme.portal || undefined}
+                  nextAction={m.next_best_action || undefined}
+                  applyLabel={t('how_to_apply')}
+                  documentsLabel={t('documents_needed')}
+                  nextStepLabel={lang === 'hi' ? 'अगला कदम' : 'Next step'}
+                  expanded={expandedId === m.scheme_id}
+                  onExpand={() => toggleExpand(m.scheme_id)}
                   lang={lang}
-                  t={t}
                   index={i + eligible.length}
                 />
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
 
-        {/* ── Empty state ── */}
+        {/* ============================================================
+            EMPTY STATE
+            ============================================================ */}
         {schemeCount === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="px-4 mt-8"
+          <div
+            className="empty-state-entrance"
+            style={{
+              padding: '0 1rem',
+              marginTop: '2rem',
+              animationFillMode: 'both',
+            }}
           >
-            <div
-              className="glass-card text-center"
-              style={{ padding: '2.5rem 1.5rem' }}
+            <GlassCard
+              style={{
+                padding: '2.5rem 1.5rem',
+                textAlign: 'center',
+              }}
             >
-              <AlertCircle
-                size={48}
-                className="mx-auto mb-4"
-                style={{ color: 'rgba(0,0,0,0.15)' }}
-              />
-              <p className="text-slate-400 text-base">
+              {/* Illustration: stylized empty state */}
+              <div
+                style={{
+                  margin: '0 auto 1.25rem',
+                  width: 80,
+                  height: 80,
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, rgba(237,112,35,0.08), rgba(118,79,144,0.08))',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <svg
+                  width="36"
+                  height="36"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="rgba(0,0,0,0.15)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  <line x1="8" y1="11" x2="14" y2="11" />
+                </svg>
+              </div>
+
+              <p style={{ fontSize: '1rem', color: '#64748B', marginBottom: '0.5rem' }}>
                 {lang === 'hi'
                   ? 'कोई मिलान योजना नहीं मिली।'
                   : 'No matching schemes found.'}
               </p>
-            </div>
-          </motion.div>
+              <p style={{ fontSize: '0.85rem', color: '#94A3B8', lineHeight: 1.5 }}>
+                {lang === 'hi'
+                  ? 'चिंता न करें! अपनी जानकारी दोबारा जांचें या स्थानीय आंगनवाड़ी से संपर्क करें।'
+                  : "Don't worry! Double-check your information or contact your local Anganwadi center for guidance."}
+              </p>
+
+              <button
+                onClick={() => navigate('/intake')}
+                className="btn-3d btn-3d-primary"
+                style={{ marginTop: '1.25rem', maxWidth: '280px', marginLeft: 'auto', marginRight: 'auto' }}
+              >
+                {lang === 'hi' ? 'फिर से जांचें' : 'Check Again'}
+              </button>
+            </GlassCard>
+          </div>
+        )}
+
+        {/* ============================================================
+            BOTTOM CTA BUTTONS
+            ============================================================ */}
+        {schemeCount > 0 && (
+          <div
+            className="cta-entrance"
+            style={{
+              padding: '1.5rem 1rem 1rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.75rem',
+              animationDelay: '0.6s',
+              animationFillMode: 'both',
+            }}
+          >
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="btn-3d btn-3d-primary"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+              </svg>
+              {lang === 'hi' ? 'डैशबोर्ड देखें' : 'View Dashboard'}
+            </button>
+
+            <button
+              onClick={() => navigate('/intake')}
+              className="btn-3d btn-3d-secondary"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <polyline points="1 4 1 10 7 10" />
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+              </svg>
+              {lang === 'hi' ? 'फिर से जांचें' : 'Check Again'}
+            </button>
+          </div>
         )}
       </div>
 
-      {/* ════════════════════════════════════════════════
+      {/* ============================================================
           FIELD WORKER BOTTOM BAR
-          ════════════════════════════════════════════════ */}
+          ============================================================ */}
       {fieldWorker && (
-        <motion.div
-          initial={{ y: 80, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.7, type: 'spring', stiffness: 120, damping: 18 }}
-          className="fixed bottom-0 left-0 right-0 z-40"
+        <div
+          className="fieldworker-bar-entrance"
           style={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 40,
             background: 'rgba(255, 255, 255, 0.85)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             borderTop: '1px solid rgba(0, 0, 0, 0.06)',
             padding: '0.75rem 1rem',
+            animationFillMode: 'both',
           }}
         >
           <button
             onClick={handleRegisterNext}
             className="btn-3d btn-3d-success"
           >
-            <UserPlus size={20} />
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="8.5" cy="7" r="4" />
+              <line x1="20" y1="8" x2="20" y2="14" />
+              <line x1="23" y1="11" x2="17" y2="11" />
+            </svg>
             {t('save_register_next')}
           </button>
-        </motion.div>
+        </div>
       )}
     </div>
   )
