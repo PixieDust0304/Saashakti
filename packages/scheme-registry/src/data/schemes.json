@@ -1,7 +1,7 @@
 {
-  "version": "2026.04.13",
+  "version": "2026.04.21-v4-complete",
   "updatedAt": "2026-04-13T00:00:00.000Z",
-  "totalSchemes": 21,
+  "totalSchemes": 129,
   "schemes": [
     {
       "id": "cg-mahtari-vandan",
@@ -96,7 +96,8 @@
         "cg_state",
         "monthly_cash"
       ],
-      "priorityScore": 100
+      "priorityScore": 100,
+      "needCategory": "general_welfare"
     },
     {
       "id": "central-pmmvy",
@@ -167,7 +168,8 @@
         "maternity",
         "pregnant"
       ],
-      "priorityScore": 95
+      "priorityScore": 95,
+      "needCategory": "maternity"
     },
     {
       "id": "central-pmay-g",
@@ -243,7 +245,8 @@
         "rural",
         "bpl"
       ],
-      "priorityScore": 90
+      "priorityScore": 90,
+      "needCategory": "housing"
     },
     {
       "id": "central-ujjwala",
@@ -305,7 +308,8 @@
         "lpg",
         "bpl"
       ],
-      "priorityScore": 85
+      "priorityScore": 85,
+      "needCategory": "general_welfare"
     },
     {
       "id": "central-nfsa",
@@ -314,16 +318,22 @@
       "level": "central",
       "departmentHi": "उपभोक्ता मामले, खाद्य एवं सार्वजनिक वितरण मंत्रालय",
       "annualValueInr": 0,
-      "benefitDescriptionHi": "प्रति व्यक्ति 5 किलो खाद्यान्न/माह; अंत्योदय को 35 किलो",
-      "benefitDescriptionEn": "5 kg foodgrains/person/month; 35 kg for Antyodaya",
+      "benefitDescriptionHi": "PHH परिवारों को ₹2/kg गेहूं, ₹3/kg चावल (5 kg/व्यक्ति/माह); AAY को 35 kg/परिवार/माह; PMGKAY के तहत मुफ्त",
+      "benefitDescriptionEn": "PHH: 5 kg/person/month at ₹2/kg wheat, ₹3/kg rice; AAY: 35 kg/family/month; free under PMGKAY",
       "benefitFrequency": "monthly",
       "benefitAmount": null,
       "rules": [
         {
           "field": "isBpl",
           "operator": "truthy",
-          "labelHi": "बीपीएल परिवार",
-          "labelEn": "BPL household"
+          "labelHi": "BPL/PHH/AAY राशन कार्ड",
+          "labelEn": "BPL/PHH/AAY ration card"
+        },
+        {
+          "field": "hasRationCard",
+          "operator": "truthy",
+          "labelHi": "राशन कार्ड है",
+          "labelEn": "Has ration card"
         }
       ],
       "exclusions": [],
@@ -331,15 +341,16 @@
         "Ration Card",
         "Aadhaar Card"
       ],
-      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
-      "nextActionEn": "Visit nearest application center",
-      "portal": "",
+      "nextActionHi": "निकटतम उचित मूल्य दुकान (FPS) पर राशन कार्ड दिखाकर राशन प्राप्त करें",
+      "nextActionEn": "Show ration card at nearest Fair Price Shop (FPS) to collect ration",
+      "portal": "https://nfsa.gov.in/",
       "tags": [
         "central",
         "food_security",
         "ration"
       ],
-      "priorityScore": 88
+      "priorityScore": 88,
+      "needCategory": "food_nutrition"
     },
     {
       "id": "central-pmjdy",
@@ -347,34 +358,41 @@
       "nameEn": "Pradhan Mantri Jan Dhan Yojana",
       "level": "central",
       "departmentHi": "वित्त मंत्रालय",
-      "annualValueInr": 0,
-      "benefitDescriptionHi": "शून्य बैलेंस खाता + रुपे कार्ड + ₹2L दुर्घटना बीमा + ₹30K जीवन बीमा",
-      "benefitDescriptionEn": "Zero balance account + RuPay card + ₹2L accident + ₹30K life cover",
-      "benefitFrequency": "one_time",
-      "benefitAmount": null,
+      "annualValueInr": 10000,
+      "benefitDescriptionHi": "शून्य बैलेंस बचत खाता + RuPay डेबिट कार्ड + ₹2 लाख दुर्घटना बीमा + ₹10,000 ओवरड्राफ्ट + ₹30,000 मृत्यु लाभ",
+      "benefitDescriptionEn": "Zero-balance savings account + RuPay card + ₹2L accident insurance + ₹10K overdraft + ₹30K death benefit",
+      "benefitFrequency": "continuous",
+      "benefitAmount": 10000,
       "rules": [
         {
           "field": "age",
           "operator": "gte",
-          "value": 10,
-          "labelHi": "आयु 10+ वर्ष",
-          "labelEn": "Age 10+ years"
+          "value": 18,
+          "labelHi": "आयु 18+",
+          "labelEn": "Age 18+"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "falsy",
+          "labelHi": "बैंक खाता नहीं",
+          "labelEn": "No existing bank account"
         }
       ],
       "exclusions": [],
       "documentsRequired": [
-        "Aadhaar Card",
+        "Aadhaar Card (or any OVD)",
         "Passport Photo"
       ],
-      "nextActionHi": "आवेदन करें: https://pmjdy.gov.in/",
-      "nextActionEn": "Apply at: https://pmjdy.gov.in/",
-      "portal": "https://pmjdy.gov.in/",
+      "nextActionHi": "किसी भी बैंक शाखा या बैंक मित्र से खाता खोलें",
+      "nextActionEn": "Open account at any bank branch or Bank Mitra",
+      "portal": "https://www.pmjdy.gov.in/",
       "tags": [
         "central",
         "financial_inclusion",
         "banking"
       ],
-      "priorityScore": 80
+      "priorityScore": 80,
+      "needCategory": "financial_inclusion"
     },
     {
       "id": "central-sukanya-samriddhi",
@@ -383,33 +401,41 @@
       "level": "central",
       "departmentHi": "वित्त मंत्रालय",
       "annualValueInr": 0,
-      "benefitDescriptionHi": "बेटी के लिए 8.2% ब्याज बचत खाता; 80C कर-मुक्त",
-      "benefitDescriptionEn": "8.2% savings for girl child; tax-free under 80C",
-      "benefitFrequency": "one_time",
+      "benefitDescriptionHi": "बालिकाओं (0-10 वर्ष) के लिए 8.2% ब्याज पर बचत; ₹250 से ₹1.5 लाख/वर्ष जमा; 21 वर्ष में परिपक्व; टैक्स-फ्री (EEE)",
+      "benefitDescriptionEn": "8.2% interest savings for girls (0-10yr); deposit ₹250-₹1.5L/year; matures at 21; fully tax-free (EEE)",
+      "benefitFrequency": "annual",
       "benefitAmount": null,
       "rules": [
         {
           "field": "hasGirlChild",
           "operator": "truthy",
-          "labelHi": "बेटी है",
-          "labelEn": "Has girl child"
+          "labelHi": "बालिका है (0-10 वर्ष)",
+          "labelEn": "Has girl child (0-10 years)"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक/पोस्ट ऑफिस खाता",
+          "labelEn": "Bank/Post office account"
         }
       ],
       "exclusions": [],
       "documentsRequired": [
-        "Girl's Birth Certificate",
+        "Girl Child Birth Certificate",
         "Parent Aadhaar",
+        "Parent PAN Card",
         "Address Proof"
       ],
-      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
-      "nextActionEn": "Visit nearest application center",
-      "portal": "",
+      "nextActionHi": "किसी भी बैंक शाखा या डाकघर में SSY खाता खोलें",
+      "nextActionEn": "Open SSY account at any bank branch or Post Office",
+      "portal": "https://www.india.gov.in/sukanya-samriddhi-yojna",
       "tags": [
         "central",
         "girl_child",
         "savings"
       ],
-      "priorityScore": 82
+      "priorityScore": 82,
+      "needCategory": "girl_child_education"
     },
     {
       "id": "central-pmsby",
@@ -457,7 +483,8 @@
         "insurance",
         "accident"
       ],
-      "priorityScore": 75
+      "priorityScore": 75,
+      "needCategory": "health"
     },
     {
       "id": "central-pmjjby",
@@ -505,7 +532,8 @@
         "insurance",
         "life"
       ],
-      "priorityScore": 75
+      "priorityScore": 75,
+      "needCategory": "health"
     },
     {
       "id": "central-lakhpati-didi",
@@ -513,41 +541,42 @@
       "nameEn": "Lakhpati Didi Yojana",
       "level": "central",
       "departmentHi": "ग्रामीण विकास मंत्रालय",
-      "annualValueInr": 0,
-      "benefitDescriptionHi": "SHG महिलाओं को ₹1 लाख+ आय के लिए कौशल प्रशिक्षण",
-      "benefitDescriptionEn": "Skill training for SHG women to earn ₹1L+/year",
-      "benefitFrequency": "one_time",
+      "annualValueInr": 100000,
+      "benefitDescriptionHi": "SHG महिलाओं को कौशल प्रशिक्षण + बैंक लिंकेज + बाजार पहुंच — लक्ष्य ₹1 लाख+ वार्षिक आय",
+      "benefitDescriptionEn": "Skill training + bank linkage + market access for SHG women — target ₹1L+ annual income",
+      "benefitFrequency": "continuous",
       "benefitAmount": null,
       "rules": [
-        {
-          "field": "age",
-          "operator": "gte",
-          "value": 18,
-          "labelHi": "आयु 18+ वर्ष",
-          "labelEn": "Age 18+ years"
-        },
         {
           "field": "isShgMember",
           "operator": "truthy",
           "labelHi": "SHG सदस्य",
           "labelEn": "SHG member"
+        },
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
         }
       ],
       "exclusions": [],
       "documentsRequired": [
         "Aadhaar Card",
-        "SHG Membership Proof",
+        "SHG Membership Card",
         "Bank Account"
       ],
-      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
-      "nextActionEn": "Visit nearest application center",
-      "portal": "",
+      "nextActionHi": "NRLM/BIHAN ब्लॉक मिशन कार्यालय से संपर्क करें",
+      "nextActionEn": "Contact NRLM/BIHAN Block Mission office",
+      "portal": "https://nrlm.gov.in/",
       "tags": [
         "central",
         "shg",
         "livelihood"
       ],
-      "priorityScore": 78
+      "priorityScore": 78,
+      "needCategory": "livelihood"
     },
     {
       "id": "central-pm-kisan",
@@ -608,7 +637,8 @@
         "farmer",
         "land"
       ],
-      "priorityScore": 77
+      "priorityScore": 77,
+      "needCategory": "agriculture"
     },
     {
       "id": "central-mgnrega",
@@ -653,7 +683,8 @@
         "rural",
         "guaranteed"
       ],
-      "priorityScore": 83
+      "priorityScore": 83,
+      "needCategory": "housing"
     },
     {
       "id": "central-atal-pension",
@@ -709,7 +740,8 @@
         "pension",
         "unorganized_sector"
       ],
-      "priorityScore": 72
+      "priorityScore": 72,
+      "needCategory": "pension"
     },
     {
       "id": "central-pm-vishwakarma",
@@ -754,7 +786,8 @@
         "craft",
         "loan"
       ],
-      "priorityScore": 70
+      "priorityScore": 70,
+      "needCategory": "enterprise"
     },
     {
       "id": "central-standup-india",
@@ -799,7 +832,8 @@
         "loan",
         "women"
       ],
-      "priorityScore": 68
+      "priorityScore": 68,
+      "needCategory": "enterprise"
     },
     {
       "id": "cg-widow-pension",
@@ -860,7 +894,8 @@
         "pension",
         "monthly_cash"
       ],
-      "priorityScore": 92
+      "priorityScore": 92,
+      "needCategory": "pension"
     },
     {
       "id": "cg-disability-pension",
@@ -910,7 +945,8 @@
         "disability",
         "pension"
       ],
-      "priorityScore": 87
+      "priorityScore": 87,
+      "needCategory": "pension"
     },
     {
       "id": "cg-kaushalya-matritva",
@@ -962,7 +998,8 @@
         "girl_child",
         "maternity"
       ],
-      "priorityScore": 80
+      "priorityScore": 80,
+      "needCategory": "maternity"
     },
     {
       "id": "cg-kanya-vivah",
@@ -1022,7 +1059,8 @@
         "marriage",
         "bpl"
       ],
-      "priorityScore": 73
+      "priorityScore": 73,
+      "needCategory": "general_welfare"
     },
     {
       "id": "cg-noni-suraksha",
@@ -1030,25 +1068,1253 @@
       "nameEn": "Noni Suraksha Yojana",
       "level": "state",
       "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
-      "annualValueInr": 0,
-      "benefitDescriptionHi": "बेटी के जन्म पर FD; 18 वर्ष पूर्ण होने पर परिपक्वता राशि",
-      "benefitDescriptionEn": "FD on girl's birth; maturity amount on turning 18",
+      "annualValueInr": 100000,
+      "benefitDescriptionHi": "BPL परिवारों की बालिकाओं के लिए ₹1 लाख का बीमा कवर — 18 वर्ष + 12वीं पास पर एकमुश्त राशि",
+      "benefitDescriptionEn": "₹1 lakh insurance cover for BPL girls — lump sum at 18 years + 12th pass if unmarried",
       "benefitFrequency": "one_time",
-      "benefitAmount": null,
+      "benefitAmount": 100000,
       "rules": [
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "बालिका है",
+          "labelEn": "Has girl child"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL परिवार",
+          "labelEn": "BPL family"
+        },
         {
           "field": "stateDomicile",
           "operator": "eq",
           "value": "Chhattisgarh",
           "labelHi": "छत्तीसगढ़ निवासी",
-          "labelEn": "Chhattisgarh resident"
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Girl Child Birth Certificate",
+        "Parent Aadhaar",
+        "BPL Certificate",
+        "Bank Account",
+        "12th Mark Sheet (at claim)"
+      ],
+      "nextActionHi": "आंगनबाड़ी केंद्र या महिला बाल विकास कार्यालय में पंजीकरण करें",
+      "nextActionEn": "Register at Anganwadi centre or WCD office",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "girl_child",
+        "savings",
+        "protection"
+      ],
+      "priorityScore": 76,
+      "needCategory": "girl_child_education"
+    },
+    {
+      "id": "cg-khadyann-sahayata",
+      "nameHi": "मुख्यमंत्री खाद्यान्न सहायता योजना",
+      "nameEn": "Mukhyamantri Khadyann Sahayata Yojana",
+      "level": "state",
+      "departmentHi": "खाद्य विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "BPL/AAY परिवारों को ₹1/kg चावल (35 kg/परिवार/माह) — छत्तीसगढ़ PDS",
+      "benefitDescriptionEn": "Rice at ₹1/kg (35 kg/family/month) for BPL/AAY families — CG PDS",
+      "benefitFrequency": "monthly",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL/AAY राशन कार्ड",
+          "labelEn": "BPL/AAY ration card"
+        },
+        {
+          "field": "hasRationCard",
+          "operator": "truthy",
+          "labelHi": "राशन कार्ड है",
+          "labelEn": "Has ration card"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Ration Card",
+        "Aadhaar Card"
+      ],
+      "nextActionHi": "निकटतम उचित मूल्य दुकान (FPS) से राशन प्राप्त करें",
+      "nextActionEn": "Collect ration from nearest Fair Price Shop",
+      "portal": "https://khadya.cg.nic.in/",
+      "tags": [
+        "cg_state",
+        "food_security",
+        "ration"
+      ],
+      "priorityScore": 85,
+      "needCategory": "food_nutrition"
+    },
+    {
+      "id": "cg-shakti-swarupa",
+      "nameHi": "शक्ति स्वरूपा योजना",
+      "nameEn": "Shakti Swarupa Yojana",
+      "level": "state",
+      "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
+      "annualValueInr": 30000,
+      "benefitDescriptionHi": "विधवा/तलाकशुदा महिलाओं को व्यवसाय के लिए ₹30,000 सब्सिडी + शिक्षा के लिए ₹25,000-₹1,00,000",
+      "benefitDescriptionEn": "₹30,000 business subsidy + ₹25K-₹1L education grant for widows/divorced women",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 30000,
+      "rules": [
+        {
+          "field": "maritalStatus",
+          "operator": "in",
+          "value": [
+            "widowed",
+            "divorced",
+            "deserted"
+          ],
+          "labelHi": "विधवा/तलाकशुदा/परित्यक्ता",
+          "labelEn": "Widow/divorced/deserted"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "CG resident"
         },
         {
           "field": "isBpl",
           "operator": "truthy",
-          "labelHi": "बीपीएल परिवार",
-          "labelEn": "BPL household"
+          "labelHi": "बीपीएल",
+          "labelEn": "BPL"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Death Certificate/Divorce Decree",
+        "BPL Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "जिला प्रोबेशन अधिकारी कार्यालय में आवेदन करें",
+      "nextActionEn": "Apply at District Probation Officer office",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "widow",
+        "divorced",
+        "business",
+        "education"
+      ],
+      "priorityScore": 88,
+      "needCategory": "girl_child_education"
+    },
+    {
+      "id": "cg-saksham-suraksha",
+      "nameHi": "मुख्यमंत्री सक्षम सुरक्षा योजना",
+      "nameEn": "Mukhyamantri Saksham Suraksha Yojana",
+      "level": "state",
+      "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
+      "annualValueInr": 100000,
+      "benefitDescriptionHi": "महिलाओं को स्वरोजगार के लिए ₹1 लाख तक का ऋण 5% ब्याज दर पर",
+      "benefitDescriptionEn": "Loan up to ₹1 lakh at 5% interest for women self-employment",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 100000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+",
+          "labelEn": "Age 18+"
         },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "CG resident"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल",
+          "labelEn": "BPL"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Income Certificate",
+        "Bank Account",
+        "Business Plan"
+      ],
+      "nextActionHi": "WCD कार्यालय में आवेदन करें",
+      "nextActionEn": "Apply at WCD office",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "women",
+        "loan",
+        "self_employment"
+      ],
+      "priorityScore": 82,
+      "needCategory": "enterprise"
+    },
+    {
+      "id": "cg-mahtari-shakti-loan",
+      "nameHi": "महतारी शक्ति लोन योजना",
+      "nameEn": "Mahtari Shakti Loan Yojana",
+      "level": "state",
+      "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
+      "annualValueInr": 25000,
+      "benefitDescriptionHi": "महतारी वंदन लाभार्थी महिलाओं को ₹10,000-₹25,000 का स्वरोजगार ऋण",
+      "benefitDescriptionEn": "₹10K-₹25K self-employment loan for Mahtari Vandan beneficiaries",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 25000,
+      "rules": [
+        {
+          "field": "maritalStatus",
+          "operator": "in",
+          "value": [
+            "married",
+            "widowed",
+            "divorced",
+            "deserted"
+          ],
+          "labelHi": "विवाहित/विधवा/तलाकशुदा",
+          "labelEn": "Married/widow/divorced"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "CG resident"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Bank account"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "familyIsTaxpayer",
+          "value": true,
+          "ruleHi": "परिवार आयकर दाता",
+          "ruleEn": "Family is taxpayer"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account",
+        "Mahtari Vandan Registration"
+      ],
+      "nextActionHi": "बैंक शाखा या CSC में आवेदन करें",
+      "nextActionEn": "Apply at bank branch or CSC",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "women",
+        "loan",
+        "mahtari_vandan"
+      ],
+      "priorityScore": 84,
+      "needCategory": "enterprise"
+    },
+    {
+      "id": "cg-dhan-lakshmi",
+      "nameHi": "छत्तीसगढ़ धनलक्ष्मी योजना",
+      "nameEn": "Chhattisgarh Dhan Lakshmi Yojana",
+      "level": "state",
+      "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
+      "annualValueInr": 100000,
+      "benefitDescriptionHi": "बालिका जन्म से 18 वर्ष तक विभिन्न किस्तों में ₹1,00,000 तक",
+      "benefitDescriptionEn": "Up to ₹1,00,000 in installments from birth to age 18 for girl child",
+      "benefitFrequency": "one_time_installments",
+      "benefitAmount": 100000,
+      "rules": [
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "बेटी है",
+          "labelEn": "Has girl child"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "CG resident"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल",
+          "labelEn": "BPL"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Girl Child Birth Certificate",
+        "Parent Aadhaar",
+        "BPL Certificate"
+      ],
+      "nextActionHi": "आंगनबाड़ी या WCD कार्यालय में पंजीकरण करें",
+      "nextActionEn": "Register at Anganwadi or WCD office",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "girl_child",
+        "education"
+      ],
+      "priorityScore": 79,
+      "needCategory": "girl_child_education"
+    },
+    {
+      "id": "cg-noni-sashaktikaran",
+      "nameHi": "मुख्यमंत्री नोनी सशक्तिकरण सहायता योजना",
+      "nameEn": "Mukhyamantri Noni Sashaktikaran Sahayata Yojana",
+      "level": "state",
+      "departmentHi": "श्रम विभाग, छ.ग.",
+      "annualValueInr": 20000,
+      "benefitDescriptionHi": "पंजीकृत श्रमिकों की पहली दो बेटियों को ₹20,000 की सहायता",
+      "benefitDescriptionEn": "₹20,000 for first two daughters of registered construction workers",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 20000,
+      "rules": [
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "बेटी है",
+          "labelEn": "Has girl child"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Parent Aadhaar",
+        "Labour Registration Card",
+        "Girl Child Birth Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "छत्तीसगढ़ श्रम विभाग पोर्टल पर आवेदन करें",
+      "nextActionEn": "Apply at CG Labour Department portal",
+      "portal": "https://cglabour.nic.in/",
+      "tags": [
+        "cg_state",
+        "girl_child",
+        "construction_worker"
+      ],
+      "priorityScore": 74,
+      "needCategory": "girl_child_education"
+    },
+    {
+      "id": "cg-mahtari-jatan",
+      "nameHi": "महतारी जतन योजना",
+      "nameEn": "Mahtari Jatan Yojana",
+      "level": "state",
+      "departmentHi": "श्रम विभाग, छ.ग.",
+      "annualValueInr": 20000,
+      "benefitDescriptionHi": "पंजीकृत महिला श्रमिकों को गर्भावस्था में ₹20,000 की सहायता",
+      "benefitDescriptionEn": "₹20,000 maternity assistance for registered women construction workers",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 20000,
+      "rules": [
+        {
+          "field": "isPregnant",
+          "operator": "truthy",
+          "labelHi": "गर्भवती",
+          "labelEn": "Pregnant"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Labour Registration Card",
+        "Pregnancy Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "श्रम विभाग पोर्टल पर आवेदन करें",
+      "nextActionEn": "Apply at Labour Department portal",
+      "portal": "https://cglabour.nic.in/",
+      "tags": [
+        "cg_state",
+        "maternity",
+        "construction_worker"
+      ],
+      "priorityScore": 81,
+      "needCategory": "maternity"
+    },
+    {
+      "id": "cg-minimata-sahayata",
+      "nameHi": "मिनीमाता महतारी जतन योजना",
+      "nameEn": "Minimata Mahtari Jatan Yojana",
+      "level": "state",
+      "departmentHi": "श्रम विभाग, छ.ग.",
+      "annualValueInr": 1000,
+      "benefitDescriptionHi": "असंगठित क्षेत्र की गर्भवती श्रमिक महिलाओं को मातृत्व सहायता",
+      "benefitDescriptionEn": "Maternity assistance for unorganized sector pregnant women workers",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 1000,
+      "rules": [
+        {
+          "field": "isPregnant",
+          "operator": "truthy",
+          "labelHi": "गर्भवती",
+          "labelEn": "Pregnant"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "CG resident"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल",
+          "labelEn": "BPL"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL Certificate",
+        "Pregnancy Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "आंगनबाड़ी केंद्र से संपर्क करें",
+      "nextActionEn": "Contact Anganwadi centre",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "maternity",
+        "unorganized_worker"
+      ],
+      "priorityScore": 71,
+      "needCategory": "maternity"
+    },
+    {
+      "id": "cg-bijli-sakhi",
+      "nameHi": "बिजली सखी योजना",
+      "nameEn": "Bijli Sakhi Yojana",
+      "level": "state",
+      "departmentHi": "ऊर्जा विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "SHG महिलाओं को बिजली मीटर रीडिंग और बिल संग्रह का रोजगार",
+      "benefitDescriptionEn": "Employment for SHG women in electricity meter reading and bill collection",
+      "benefitFrequency": "monthly",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+",
+          "labelEn": "Age 18+"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छत्तीसगढ़ निवासी",
+          "labelEn": "CG resident"
+        },
+        {
+          "field": "isShgMember",
+          "operator": "truthy",
+          "labelHi": "SHG सदस्य",
+          "labelEn": "SHG member"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "SHG Membership Card",
+        "10th Pass Certificate",
+        "Bank Account",
+        "Domicile Certificate"
+      ],
+      "nextActionHi": "जिला ऊर्जा विभाग कार्यालय में आवेदन करें",
+      "nextActionEn": "Apply at district energy department",
+      "portal": "https://cspdcl.co.in/",
+      "tags": [
+        "cg_state",
+        "employment",
+        "shg",
+        "women"
+      ],
+      "priorityScore": 69,
+      "needCategory": "skill_employment"
+    },
+    {
+      "id": "cg-gramin-awas-nyay",
+      "nameHi": "छत्तीसगढ़ ग्रामीण आवास न्याय योजना",
+      "nameEn": "CG Gramin Awas Nyay Yojana",
+      "level": "state",
+      "departmentHi": "आवास विभाग, छ.ग.",
+      "annualValueInr": 120000,
+      "benefitDescriptionHi": "ग्रामीण गरीब परिवारों को ₹1,20,000 आवास निर्माण सहायता",
+      "benefitDescriptionEn": "₹1,20,000 housing construction assistance for rural poor",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 120000,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
+        },
+        {
+          "field": "ownsPuccaHouse",
+          "operator": "falsy",
+          "labelHi": "पक्का मकान नहीं",
+          "labelEn": "No pucca house"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL",
+          "labelEn": "BPL"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "ownsPuccaHouse",
+          "value": true,
+          "ruleHi": "पक्का मकान है",
+          "ruleEn": "Has pucca house"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL Certificate",
+        "Bank Account",
+        "Land Document"
+      ],
+      "nextActionHi": "ग्राम पंचायत में आवेदन करें",
+      "nextActionEn": "Apply at Gram Panchayat",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "housing",
+        "rural",
+        "bpl"
+      ],
+      "priorityScore": 84,
+      "needCategory": "housing"
+    },
+    {
+      "id": "cg-suposhan-abhiyan",
+      "nameHi": "मुख्यमंत्री सुपोषण अभियान",
+      "nameEn": "Mukhyamantri Suposhan Abhiyan",
+      "level": "state",
+      "departmentHi": "महिला एवं बाल विकास विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "कुपोषित बच्चों और गर्भवती/स्तनपान कराने वाली महिलाओं को अंडे, दूध, गरम भोजन",
+      "benefitDescriptionEn": "Eggs, milk, hot meals for malnourished children and pregnant/lactating women",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isPregnant",
+          "operator": "truthy",
+          "labelHi": "गर्भवती/स्तनपान कराने वाली",
+          "labelEn": "Pregnant/lactating"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "MCP Card (for pregnant women)",
+        "Child Birth Certificate"
+      ],
+      "nextActionHi": "निकटतम आंगनबाड़ी केंद्र से संपर्क करें",
+      "nextActionEn": "Contact nearest Anganwadi centre",
+      "portal": "https://cgwcd.gov.in/",
+      "tags": [
+        "cg_state",
+        "nutrition",
+        "maternity",
+        "child"
+      ],
+      "priorityScore": 83,
+      "needCategory": "maternity"
+    },
+    {
+      "id": "cg-bal-sandarbh",
+      "nameHi": "मुख्यमंत्री बाल संदर्भ योजना",
+      "nameEn": "Mukhyamantri Bal Sandarbh Yojana",
+      "level": "state",
+      "departmentHi": "स्वास्थ्य विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "बच्चों को मुफ्त स्वास्थ्य जांच और दवाइयां",
+      "benefitDescriptionEn": "Free health checkups and medicines for children",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "बच्चे हैं",
+          "labelEn": "Has children"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Child Birth Certificate",
+        "Anganwadi Registration"
+      ],
+      "nextActionHi": "आंगनबाड़ी या PHC से संपर्क करें",
+      "nextActionEn": "Contact Anganwadi or PHC",
+      "portal": "https://cghealth.nic.in/",
+      "tags": [
+        "cg_state",
+        "child_health",
+        "free_medicines"
+      ],
+      "priorityScore": 75,
+      "needCategory": "child_welfare"
+    },
+    {
+      "id": "cg-tirth-yatra",
+      "nameHi": "मुख्यमंत्री तीर्थ यात्रा योजना",
+      "nameEn": "Mukhyamantri Tirth Yatra Yojana",
+      "level": "state",
+      "departmentHi": "समाज कल्याण विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "60+ वर्ष के वरिष्ठ नागरिकों को मुफ्त तीर्थ यात्रा (जीवन में एक बार)",
+      "benefitDescriptionEn": "Free pilgrimage for senior citizens 60+ (once in lifetime)",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 60,
+          "labelHi": "आयु 60+",
+          "labelEn": "Age 60+"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Age Proof (60+)",
+        "CG Domicile Certificate",
+        "Medical Fitness Certificate"
+      ],
+      "nextActionHi": "समाज कल्याण विभाग में आवेदन करें",
+      "nextActionEn": "Apply at Social Welfare department",
+      "portal": "https://sw.cg.gov.in/",
+      "tags": [
+        "cg_state",
+        "senior_citizen",
+        "pilgrimage"
+      ],
+      "priorityScore": 55,
+      "needCategory": "general_welfare"
+    },
+    {
+      "id": "central-ignoaps",
+      "nameHi": "इंदिरा गांधी राष्ट्रीय वृद्धावस्था पेंशन योजना",
+      "nameEn": "Indira Gandhi National Old Age Pension Scheme (IGNOAPS)",
+      "level": "central",
+      "departmentHi": "ग्रामीण विकास मंत्रालय",
+      "annualValueInr": 6000,
+      "benefitDescriptionHi": "60+ वर्ष के BPL व्यक्तियों को ₹200-₹500/माह पेंशन",
+      "benefitDescriptionEn": "₹200-₹500/month pension for BPL persons aged 60+",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 500,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 60,
+          "labelHi": "आयु 60+",
+          "labelEn": "Age 60+"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल",
+          "labelEn": "BPL"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Age Proof",
+        "BPL Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "ग्राम पंचायत या ब्लॉक कार्यालय में आवेदन करें",
+      "nextActionEn": "Apply at Gram Panchayat or Block office",
+      "portal": "https://nsap.nic.in/",
+      "tags": [
+        "central",
+        "pension",
+        "old_age",
+        "bpl"
+      ],
+      "priorityScore": 86,
+      "needCategory": "pension"
+    },
+    {
+      "id": "central-ignwps",
+      "nameHi": "इंदिरा गांधी राष्ट्रीय विधवा पेंशन योजना",
+      "nameEn": "Indira Gandhi National Widow Pension Scheme (IGNWPS)",
+      "level": "central",
+      "departmentHi": "ग्रामीण विकास मंत्रालय",
+      "annualValueInr": 3600,
+      "benefitDescriptionHi": "40-79 वर्ष की BPL विधवा महिलाओं को ₹300/माह पेंशन",
+      "benefitDescriptionEn": "₹300/month for BPL widows aged 40-79",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 300,
+      "rules": [
+        {
+          "field": "maritalStatus",
+          "operator": "eq",
+          "value": "widowed",
+          "labelHi": "विधवा",
+          "labelEn": "Widow"
+        },
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 40,
+          "labelHi": "आयु 40+",
+          "labelEn": "Age 40+"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल",
+          "labelEn": "BPL"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Husband Death Certificate",
+        "BPL Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "ग्राम पंचायत में आवेदन करें",
+      "nextActionEn": "Apply at Gram Panchayat",
+      "portal": "https://nsap.nic.in/",
+      "tags": [
+        "central",
+        "pension",
+        "widow",
+        "bpl"
+      ],
+      "priorityScore": 91,
+      "needCategory": "pension"
+    },
+    {
+      "id": "central-igndps",
+      "nameHi": "इंदिरा गांधी राष्ट्रीय विकलांगता पेंशन योजना",
+      "nameEn": "Indira Gandhi National Disability Pension Scheme (IGNDPS)",
+      "level": "central",
+      "departmentHi": "ग्रामीण विकास मंत्रालय",
+      "annualValueInr": 3600,
+      "benefitDescriptionHi": "80%+ विकलांगता वाले BPL व्यक्तियों (18-79) को ₹300/माह पेंशन",
+      "benefitDescriptionEn": "₹300/month for BPL persons aged 18-79 with 80%+ disability",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 300,
+      "rules": [
+        {
+          "field": "hasDisability",
+          "operator": "truthy",
+          "labelHi": "विकलांगता 80%+",
+          "labelEn": "Disability 80%+"
+        },
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+",
+          "labelEn": "Age 18+"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल",
+          "labelEn": "BPL"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Disability Certificate",
+        "BPL Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "ग्राम पंचायत में आवेदन करें",
+      "nextActionEn": "Apply at Gram Panchayat",
+      "portal": "https://nsap.nic.in/",
+      "tags": [
+        "central",
+        "pension",
+        "disability",
+        "bpl"
+      ],
+      "priorityScore": 87,
+      "needCategory": "pension"
+    },
+    {
+      "id": "central-pm-mudra",
+      "nameHi": "प्रधानमंत्री मुद्रा योजना",
+      "nameEn": "Pradhan Mantri MUDRA Yojana (PMMY)",
+      "level": "central",
+      "departmentHi": "वित्त मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "सूक्ष्म उद्यमियों को ₹50,000 से ₹10 लाख तक का ऋण बिना गारंटी",
+      "benefitDescriptionEn": "Collateral-free loans ₹50K to ₹10L for micro-entrepreneurs",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+",
+          "labelEn": "Age 18+"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Bank account"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "PAN Card",
+        "Business Plan",
+        "Bank Account"
+      ],
+      "nextActionHi": "किसी भी बैंक शाखा में आवेदन करें",
+      "nextActionEn": "Apply at any bank branch",
+      "portal": "https://www.mudra.org.in/",
+      "tags": [
+        "central",
+        "loan",
+        "micro_enterprise",
+        "women"
+      ],
+      "priorityScore": 71,
+      "needCategory": "enterprise"
+    },
+    {
+      "id": "central-one-stop-centre",
+      "nameHi": "वन स्टॉप सेंटर (सखी केंद्र)",
+      "nameEn": "One Stop Centre (Sakhi Centre)",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "हिंसा से प्रभावित महिलाओं को चिकित्सा, कानूनी, मनोवैज्ञानिक सहायता और अस्थायी आश्रय",
+      "benefitDescriptionEn": "Medical, legal, psychological support and shelter for violence-affected women",
+      "benefitFrequency": "on_demand",
+      "benefitAmount": null,
+      "rules": [],
+      "exclusions": [],
+      "documentsRequired": [
+        "No documents required for emergency services — walk in or call 181"
+      ],
+      "nextActionHi": "181 पर कॉल करें या निकटतम सखी केंद्र जाएं",
+      "nextActionEn": "Call 181 or visit nearest Sakhi Centre",
+      "portal": "https://missionshakti.wcd.gov.in/",
+      "tags": [
+        "central",
+        "violence",
+        "support",
+        "shelter",
+        "women"
+      ],
+      "priorityScore": 93,
+      "needCategory": "safety_protection"
+    },
+    {
+      "id": "central-swadhar-greh",
+      "nameHi": "स्वाधार गृह योजना",
+      "nameEn": "Swadhar Greh Scheme",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "कठिन परिस्थितियों में महिलाओं को आश्रय, भोजन, कौशल प्रशिक्षण, पुनर्वास",
+      "benefitDescriptionEn": "Shelter, food, skill training, rehabilitation for women in difficult circumstances",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "maritalStatus",
+          "operator": "in",
+          "value": [
+            "widowed",
+            "divorced",
+            "deserted"
+          ],
+          "labelHi": "विधवा/तलाकशुदा/परित्यक्ता/बेघर",
+          "labelEn": "Widow/divorced/deserted/homeless"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card (if available)",
+        "Police FIR (if applicable)",
+        "Medical Certificate (if applicable)"
+      ],
+      "nextActionHi": "181 हेल्पलाइन या जिला WCD कार्यालय से संपर्क करें",
+      "nextActionEn": "Call 181 or contact district WCD office",
+      "portal": "https://missionshakti.wcd.gov.in/",
+      "tags": [
+        "central",
+        "shelter",
+        "rehabilitation",
+        "women"
+      ],
+      "priorityScore": 86,
+      "needCategory": "safety_protection"
+    },
+    {
+      "id": "central-pmgkay",
+      "nameHi": "प्रधानमंत्री गरीब कल्याण अन्न योजना",
+      "nameEn": "Pradhan Mantri Garib Kalyan Anna Yojana (PMGKAY)",
+      "level": "central",
+      "departmentHi": "खाद्य मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "NFSA लाभार्थियों को प्रति व्यक्ति 5 किलो मुफ्त खाद्यान्न प्रति माह",
+      "benefitDescriptionEn": "5 kg free foodgrains per person per month for NFSA beneficiaries",
+      "benefitFrequency": "monthly",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "NFSA/BPL राशन कार्ड",
+          "labelEn": "NFSA/BPL ration card"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Ration Card (NFSA)",
+        "Aadhaar Card"
+      ],
+      "nextActionHi": "निकटतम उचित मूल्य दुकान से राशन प्राप्त करें",
+      "nextActionEn": "Collect ration from nearest Fair Price Shop",
+      "portal": "https://nfsa.gov.in/",
+      "tags": [
+        "central",
+        "food_security",
+        "free_ration",
+        "bpl"
+      ],
+      "priorityScore": 90,
+      "needCategory": "food_nutrition"
+    },
+    {
+      "id": "central-pmfby",
+      "nameHi": "प्रधानमंत्री फसल बीमा योजना",
+      "nameEn": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+      "level": "central",
+      "departmentHi": "कृषि मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "किसानों को फसल नुकसान पर बीमा कवर",
+      "benefitDescriptionEn": "Crop insurance cover for farmers",
+      "benefitFrequency": "seasonal",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "ownsLand",
+          "operator": "truthy",
+          "labelHi": "कृषि भूमि",
+          "labelEn": "Owns farmland"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Land Records / Khasra",
+        "Bank Account",
+        "Sowing Certificate from Patwari"
+      ],
+      "nextActionHi": "बैंक या CSC में आवेदन करें",
+      "nextActionEn": "Apply at bank or CSC",
+      "portal": "https://pmfby.gov.in/",
+      "tags": [
+        "central",
+        "farmer",
+        "insurance"
+      ],
+      "priorityScore": 67,
+      "needCategory": "health"
+    },
+    {
+      "id": "central-jjm",
+      "nameHi": "जल जीवन मिशन (हर घर जल)",
+      "nameEn": "Jal Jeevan Mission (Har Ghar Jal)",
+      "level": "central",
+      "departmentHi": "जल शक्ति मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "हर ग्रामीण घर को नल से जल कनेक्शन",
+      "benefitDescriptionEn": "Tap water connection to every rural household",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Ration Card",
+        "House Ownership / Residence Proof"
+      ],
+      "nextActionHi": "ग्राम पंचायत से संपर्क करें",
+      "nextActionEn": "Contact Gram Panchayat",
+      "portal": "https://jaljeevanmission.gov.in/",
+      "tags": [
+        "central",
+        "water",
+        "rural"
+      ],
+      "priorityScore": 72,
+      "needCategory": "housing"
+    },
+    {
+      "id": "central-ab-pmjay",
+      "nameHi": "आयुष्मान भारत – प्रधानमंत्री जन आरोग्य योजना",
+      "nameEn": "Ayushman Bharat – PMJAY",
+      "level": "central",
+      "departmentHi": "स्वास्थ्य मंत्रालय",
+      "annualValueInr": 500000,
+      "benefitDescriptionHi": "BPL परिवारों को ₹5 लाख/वर्ष का स्वास्थ्य बीमा (कैशलेस)",
+      "benefitDescriptionEn": "₹5 lakh/year health insurance for BPL families",
+      "benefitFrequency": "annual",
+      "benefitAmount": 500000,
+      "rules": [
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "SECC/BPL सूची",
+          "labelEn": "SECC/BPL list"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Ration Card",
+        "Ayushman Card"
+      ],
+      "nextActionHi": "mera.pmjay.gov.in पर पात्रता जांचें या 14555 पर कॉल करें",
+      "nextActionEn": "Check eligibility at mera.pmjay.gov.in or call 14555",
+      "portal": "https://pmjay.gov.in/",
+      "tags": [
+        "central",
+        "health",
+        "insurance",
+        "bpl"
+      ],
+      "priorityScore": 94,
+      "needCategory": "health"
+    },
+    {
+      "id": "central-jssk",
+      "nameHi": "जननी शिशु सुरक्षा कार्यक्रम",
+      "nameEn": "Janani Shishu Suraksha Karyakram (JSSK)",
+      "level": "central",
+      "departmentHi": "स्वास्थ्य मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "गर्भवती महिलाओं और नवजात को सरकारी अस्पतालों में मुफ्त प्रसव, दवाई, भोजन, परिवहन",
+      "benefitDescriptionEn": "Free delivery, medicines, food, transport for pregnant women at govt hospitals",
+      "benefitFrequency": "on_event",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isPregnant",
+          "operator": "truthy",
+          "labelHi": "गर्भवती",
+          "labelEn": "Pregnant"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "MCP Card",
+        "ANC Registration",
+        "Hospital Referral (if needed)"
+      ],
+      "nextActionHi": "निकटतम सरकारी अस्पताल या PHC से संपर्क करें",
+      "nextActionEn": "Contact nearest government hospital or PHC",
+      "portal": "https://nhm.gov.in/",
+      "tags": [
+        "central",
+        "maternity",
+        "health",
+        "free_delivery"
+      ],
+      "priorityScore": 89,
+      "needCategory": "maternity"
+    },
+    {
+      "id": "central-jsy",
+      "nameHi": "जननी सुरक्षा योजना",
+      "nameEn": "Janani Suraksha Yojana (JSY)",
+      "level": "central",
+      "departmentHi": "स्वास्थ्य मंत्रालय",
+      "annualValueInr": 1400,
+      "benefitDescriptionHi": "BPL गर्भवती महिलाओं को संस्थागत प्रसव पर ₹1,400 (ग्रामीण) / ₹1,000 (शहरी)",
+      "benefitDescriptionEn": "₹1,400 (rural) / ₹1,000 (urban) cash for institutional delivery",
+      "benefitFrequency": "on_event",
+      "benefitAmount": 1400,
+      "rules": [
+        {
+          "field": "isPregnant",
+          "operator": "truthy",
+          "labelHi": "गर्भवती",
+          "labelEn": "Pregnant"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल",
+          "labelEn": "BPL"
+        },
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 19,
+          "labelHi": "आयु 19+",
+          "labelEn": "Age 19+"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL Certificate",
+        "MCP Card",
+        "Bank Account"
+      ],
+      "nextActionHi": "आशा कार्यकर्ता या ANM से संपर्क करें",
+      "nextActionEn": "Contact ASHA worker or ANM",
+      "portal": "",
+      "tags": [
+        "central",
+        "maternity",
+        "institutional_delivery",
+        "bpl"
+      ],
+      "priorityScore": 85,
+      "needCategory": "maternity"
+    },
+    {
+      "id": "central-icds",
+      "nameHi": "एकीकृत बाल विकास सेवा / पोषण अभियान",
+      "nameEn": "ICDS / POSHAN Abhiyan",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "गर्भवती/स्तनपान कराने वाली महिलाओं और 6 वर्ष तक के बच्चों को पूरक पोषण, स्वास्थ्य जांच",
+      "benefitDescriptionEn": "Supplementary nutrition, health checkups for pregnant/lactating women and children up to 6 years",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "MCP Card (pregnant women)",
+        "Child Birth Certificate"
+      ],
+      "nextActionHi": "निकटतम आंगनबाड़ी केंद्र से संपर्क करें",
+      "nextActionEn": "Contact nearest Anganwadi Centre",
+      "portal": "https://icds-wcd.nic.in/",
+      "tags": [
+        "central",
+        "nutrition",
+        "child",
+        "maternity",
+        "anganwadi"
+      ],
+      "priorityScore": 83,
+      "needCategory": "maternity"
+    },
+    {
+      "id": "central-bbbp",
+      "nameHi": "बेटी बचाओ बेटी पढ़ाओ",
+      "nameEn": "Beti Bachao Beti Padhao (BBBP)",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "बालिका शिक्षा, लिंगानुपात सुधार और सशक्तिकरण अभियान",
+      "benefitDescriptionEn": "Girl child education, sex ratio improvement and empowerment campaign",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
         {
           "field": "hasGirlChild",
           "operator": "truthy",
@@ -1058,56 +2324,3841 @@
       ],
       "exclusions": [],
       "documentsRequired": [
-        "Girl's Birth Certificate",
+        "Girl Child Birth Certificate",
         "Parent Aadhaar",
-        "BPL Certificate",
-        "CG Domicile"
+        "School Enrollment Proof"
       ],
-      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
-      "nextActionEn": "Visit nearest application center",
-      "portal": "",
+      "nextActionHi": "निकटतम आंगनबाड़ी/स्कूल में जानकारी लें",
+      "nextActionEn": "Inquire at nearest Anganwadi/school",
+      "portal": "https://wcd.nic.in/bbbp-schemes",
+      "tags": [
+        "central",
+        "girl_child",
+        "education",
+        "awareness"
+      ],
+      "priorityScore": 76,
+      "needCategory": "girl_child_education"
+    },
+    {
+      "id": "central-women-helpline",
+      "nameHi": "महिला हेल्पलाइन 181",
+      "nameEn": "Women Helpline (181-WHL)",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "24/7 टोल-फ्री हेल्पलाइन — कानूनी सलाह, पुलिस सहायता, आश्रय जानकारी",
+      "benefitDescriptionEn": "24/7 toll-free helpline — legal advice, police support, shelter info",
+      "benefitFrequency": "on_demand",
+      "benefitAmount": null,
+      "rules": [],
+      "exclusions": [],
+      "documentsRequired": [
+        "No documents needed — dial 181 from any phone, available 24/7"
+      ],
+      "nextActionHi": "181 पर कॉल करें (24/7)",
+      "nextActionEn": "Call 181 (24/7)",
+      "portal": "https://missionshakti.wcd.gov.in/",
+      "tags": [
+        "central",
+        "helpline",
+        "violence",
+        "safety",
+        "women"
+      ],
+      "priorityScore": 95,
+      "needCategory": "safety_protection"
+    },
+    {
+      "id": "central-nari-adalat",
+      "nameHi": "नारी अदालत",
+      "nameEn": "Nari Adalat",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "ग्राम पंचायत स्तर पर महिला विवाद निवारण",
+      "benefitDescriptionEn": "Women dispute resolution at Gram Panchayat level",
+      "benefitFrequency": "on_demand",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Description of grievance/dispute"
+      ],
+      "nextActionHi": "ग्राम पंचायत में नारी अदालत के बारे में पूछें",
+      "nextActionEn": "Ask about Nari Adalat at Gram Panchayat",
+      "portal": "https://missionshakti.wcd.gov.in/",
+      "tags": [
+        "central",
+        "dispute_resolution",
+        "justice",
+        "women"
+      ],
+      "priorityScore": 65,
+      "needCategory": "safety_protection"
+    },
+    {
+      "id": "central-working-women-hostel",
+      "nameHi": "कामकाजी महिला छात्रावास",
+      "nameEn": "Working Women Hostel Scheme",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "कामकाजी महिलाओं के लिए सुरक्षित और सस्ता आवास + डे-केयर",
+      "benefitDescriptionEn": "Safe affordable accommodation for working women + childcare",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "कामकाजी महिला 18+",
+          "labelEn": "Working woman 18+"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Employment Proof / Appointment Letter",
+        "Income Certificate (below ₹50K/month metro, ₹35K/month others)",
+        "2 Passport Photos"
+      ],
+      "nextActionHi": "जिला WCD कार्यालय में जानकारी लें",
+      "nextActionEn": "Inquire at district WCD office",
+      "portal": "https://missionshakti.wcd.gov.in/",
+      "tags": [
+        "central",
+        "hostel",
+        "working_women"
+      ],
+      "priorityScore": 62,
+      "needCategory": "general_welfare"
+    },
+    {
+      "id": "central-ujjwala-antitrafficking",
+      "nameHi": "उज्ज्वला योजना (तस्करी रोकथाम)",
+      "nameEn": "Ujjwala Scheme (Anti-Trafficking)",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "तस्करी से बचाई गई महिलाओं/बालिकाओं को आश्रय, परामर्श, पुनर्वास",
+      "benefitDescriptionEn": "Shelter, counseling, rehabilitation for trafficked women/girls",
+      "benefitFrequency": "on_demand",
+      "benefitAmount": null,
+      "rules": [],
+      "exclusions": [],
+      "documentsRequired": [
+        "No documents required for rescue — any police station or call 181"
+      ],
+      "nextActionHi": "181 या निकटतम पुलिस स्टेशन से संपर्क करें",
+      "nextActionEn": "Contact 181 or nearest police station",
+      "portal": "https://missionshakti.wcd.gov.in/",
+      "tags": [
+        "central",
+        "trafficking",
+        "rescue",
+        "women"
+      ],
+      "priorityScore": 88,
+      "needCategory": "safety_protection"
+    },
+    {
+      "id": "central-palna",
+      "nameHi": "पालना — राष्ट्रीय क्रेच योजना",
+      "nameEn": "Palna – National Creche Scheme",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "कामकाजी माताओं के बच्चों (6 माह-6 वर्ष) के लिए डे-केयर",
+      "benefitDescriptionEn": "Day care for children (6m-6yr) of working mothers",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "बच्चे हैं",
+          "labelEn": "Has children"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Child Birth Certificate",
+        "Parent Employment Proof"
+      ],
+      "nextActionHi": "निकटतम आंगनबाड़ी या पालना केंद्र से संपर्क करें",
+      "nextActionEn": "Contact nearest Anganwadi or Palna centre",
+      "portal": "https://missionshakti.wcd.gov.in/",
+      "tags": [
+        "central",
+        "childcare",
+        "working_mothers"
+      ],
+      "priorityScore": 70,
+      "needCategory": "child_welfare"
+    },
+    {
+      "id": "central-gap-funding",
+      "nameHi": "आर्थिक सशक्तिकरण गैप फंडिंग",
+      "nameEn": "Gap Funding for Economic Empowerment",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "SHG महिलाओं को उद्यम विस्तार और कौशल प्रशिक्षण के लिए गैप फंडिंग",
+      "benefitDescriptionEn": "Gap funding for SHG women for enterprise scaling and skill training",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isShgMember",
+          "operator": "truthy",
+          "labelHi": "SHG सदस्य",
+          "labelEn": "SHG member"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "SHG Registration + Bank Linkage Proof",
+        "Business Plan / Proposal"
+      ],
+      "nextActionHi": "NRLM/BIHAN ब्लॉक से संपर्क करें",
+      "nextActionEn": "Contact NRLM/BIHAN block office",
+      "portal": "https://missionshakti.wcd.gov.in/",
+      "tags": [
+        "central",
+        "shg",
+        "enterprise",
+        "gap_funding"
+      ],
+      "priorityScore": 68,
+      "needCategory": "enterprise"
+    },
+    {
+      "id": "central-mission-indradhanush",
+      "nameHi": "मिशन इंद्रधनुष",
+      "nameEn": "Mission Indradhanush",
+      "level": "central",
+      "departmentHi": "स्वास्थ्य मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "गर्भवती महिलाओं और शिशुओं का पूर्ण टीकाकरण (मुफ्त)",
+      "benefitDescriptionEn": "Full immunization of pregnant women and infants (free)",
+      "benefitFrequency": "on_event",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isPregnant",
+          "operator": "truthy",
+          "labelHi": "गर्भवती/स्तनपान",
+          "labelEn": "Pregnant/lactating"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "MCP Card",
+        "Aadhaar Card",
+        "Child's birth record"
+      ],
+      "nextActionHi": "निकटतम PHC या आशा कार्यकर्ता से संपर्क करें",
+      "nextActionEn": "Contact nearest PHC or ASHA worker",
+      "portal": "https://nhm.gov.in/index1.php?lang=1&level=3&sublinkid=1352&lid=690",
+      "tags": [
+        "central",
+        "health",
+        "immunization",
+        "pregnancy"
+      ],
+      "priorityScore": 82,
+      "needCategory": "maternity"
+    },
+    {
+      "id": "central-nikshay-poshan",
+      "nameHi": "निक्षय पोषण योजना",
+      "nameEn": "Nikshay Poshan Yojana",
+      "level": "central",
+      "departmentHi": "स्वास्थ्य मंत्रालय",
+      "annualValueInr": 6000,
+      "benefitDescriptionHi": "टीबी रोगियों को ₹500/माह पोषण सहायता",
+      "benefitDescriptionEn": "₹500/month nutritional support for TB patients",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 500,
+      "rules": [
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता + टीबी उपचार",
+          "labelEn": "Bank account + TB treatment"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Nikshay ID",
+        "Bank Account"
+      ],
+      "nextActionHi": "DOTS केंद्र या PHC से Nikshay ID प्राप्त करें",
+      "nextActionEn": "Get Nikshay ID from DOTS centre",
+      "portal": "https://nikshay.in/",
+      "tags": [
+        "central",
+        "health",
+        "tb",
+        "nutrition"
+      ],
+      "priorityScore": 66,
+      "needCategory": "health"
+    },
+    {
+      "id": "central-mahila-samman-savings",
+      "nameHi": "महिला सम्मान बचत पत्र",
+      "nameEn": "Mahila Samman Savings Certificate",
+      "level": "central",
+      "departmentHi": "वित्त मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "महिलाओं के लिए 7.5% ब्याज पर 2 वर्षीय बचत (अधिकतम ₹2 लाख)",
+      "benefitDescriptionEn": "2-year savings at 7.5% for women (max ₹2 lakh deposit)",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक/पोस्ट ऑफिस खाता",
+          "labelEn": "Bank/Post office account"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "PAN Card",
+        "Bank/Post Office Account",
+        "Passport Photo"
+      ],
+      "nextActionHi": "किसी भी डाकघर या बैंक में आवेदन करें",
+      "nextActionEn": "Apply at any Post Office or bank",
+      "portal": "https://www.indiapost.gov.in/",
+      "tags": [
+        "central",
+        "savings",
+        "women",
+        "financial_inclusion"
+      ],
+      "priorityScore": 73,
+      "needCategory": "financial_inclusion"
+    },
+    {
+      "id": "central-didi-drone",
+      "nameHi": "नमो ड्रोन दीदी योजना",
+      "nameEn": "Namo Drone Didi Yojana",
+      "level": "central",
+      "departmentHi": "कृषि मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "SHG महिलाओं को ड्रोन पायलट प्रशिक्षण + 80% सब्सिडी (₹8 लाख तक)",
+      "benefitDescriptionEn": "Drone pilot training for SHG women + 80% subsidy (up to ₹8L)",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isShgMember",
+          "operator": "truthy",
+          "labelHi": "SHG सदस्य",
+          "labelEn": "SHG member"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "SHG Membership Certificate",
+        "10th Pass Certificate",
+        "Bank Account",
+        "Drone Pilot Training Application"
+      ],
+      "nextActionHi": "NRLM/BIHAN या कृषि विभाग से संपर्क करें",
+      "nextActionEn": "Contact NRLM/BIHAN or Agriculture dept",
+      "portal": "https://agricoop.gov.in/",
+      "tags": [
+        "central",
+        "drone",
+        "shg",
+        "agriculture",
+        "women"
+      ],
+      "priorityScore": 64,
+      "needCategory": "livelihood"
+    },
+    {
+      "id": "central-mahila-ehaat",
+      "nameHi": "महिला ई-हाट",
+      "nameEn": "Mahila E-Haat",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "महिला उद्यमियों/SHG को शून्य कमीशन ऑनलाइन मार्केटप्लेस",
+      "benefitDescriptionEn": "Zero-commission online marketplace for women entrepreneurs/SHGs",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isShgMember",
+          "operator": "truthy",
+          "labelHi": "महिला उद्यमी/SHG",
+          "labelEn": "Woman entrepreneur/SHG"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Product Catalog / Photos",
+        "Bank Account",
+        "SHG/Enterprise Registration"
+      ],
+      "nextActionHi": "mahilaehaat.wcd.gov.in पर पंजीकरण करें",
+      "nextActionEn": "Register at mahilaehaat.wcd.gov.in",
+      "portal": "https://mahilaehaat.wcd.gov.in/",
+      "tags": [
+        "central",
+        "marketplace",
+        "shg",
+        "enterprise"
+      ],
+      "priorityScore": 60,
+      "needCategory": "enterprise"
+    },
+    {
+      "id": "central-step",
+      "nameHi": "STEP — महिला प्रशिक्षण कार्यक्रम",
+      "nameEn": "Support to Training and Employment Programme (STEP)",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "16+ महिलाओं को कौशल प्रशिक्षण — कृषि, डेयरी, हस्तशिल्प, सिलाई",
+      "benefitDescriptionEn": "Skill training for women 16+ in agriculture, dairy, handicraft, tailoring",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 16,
+          "labelHi": "आयु 16+",
+          "labelEn": "Age 16+"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Age Proof (16+)",
+        "Bank Account"
+      ],
+      "nextActionHi": "जिला WCD या NRLM कार्यालय से संपर्क करें",
+      "nextActionEn": "Contact district WCD or NRLM office",
+      "portal": "https://wcd.nic.in/",
+      "tags": [
+        "central",
+        "skill_training",
+        "employment",
+        "women"
+      ],
+      "priorityScore": 63,
+      "needCategory": "skill_employment"
+    },
+    {
+      "id": "central-pmkvy",
+      "nameHi": "प्रधानमंत्री कौशल विकास योजना",
+      "nameEn": "Pradhan Mantri Kaushal Vikas Yojana (PMKVY)",
+      "level": "central",
+      "departmentHi": "कौशल विकास मंत्रालय",
+      "annualValueInr": 8000,
+      "benefitDescriptionHi": "मुफ्त कौशल प्रशिक्षण + प्रमाणन + ₹8,000 तक पुरस्कार",
+      "benefitDescriptionEn": "Free skill training + certification + up to ₹8,000 reward",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 8000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 15,
+          "labelHi": "आयु 15+",
+          "labelEn": "Age 15+"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account"
+      ],
+      "nextActionHi": "pmkvyofficial.org पर पंजीकरण करें",
+      "nextActionEn": "Register at pmkvyofficial.org",
+      "portal": "https://pmkvyofficial.org/",
+      "tags": [
+        "central",
+        "skill_training",
+        "certification"
+      ],
+      "priorityScore": 72,
+      "needCategory": "skill_employment"
+    },
+    {
+      "id": "central-nrlm",
+      "nameHi": "दीनदयाल अंत्योदय योजना — NRLM",
+      "nameEn": "DAY-NRLM (National Rural Livelihood Mission)",
+      "level": "central",
+      "departmentHi": "ग्रामीण विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "ग्रामीण महिलाओं को SHG गठन, बैंक लिंकेज, कौशल प्रशिक्षण, आजीविका सहायता",
+      "benefitDescriptionEn": "SHG formation, bank linkage, skill training, livelihood support for rural women",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL/गरीब",
+          "labelEn": "BPL/poor"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account"
+      ],
+      "nextActionHi": "BMMU या BIHAN कार्यालय से संपर्क करें",
+      "nextActionEn": "Contact BMMU or BIHAN office",
+      "portal": "https://nrlm.gov.in/",
+      "tags": [
+        "central",
+        "shg",
+        "livelihood",
+        "rural",
+        "women"
+      ],
+      "priorityScore": 80,
+      "needCategory": "housing"
+    },
+    {
+      "id": "cg-shramik-pension",
+      "nameHi": "मुख्यमंत्री निर्माण श्रमिक पेंशन सहायता योजना",
+      "nameEn": "CM Nirman Shramik Pension Sahayata Yojana",
+      "level": "state",
+      "departmentHi": "श्रम विभाग, छ.ग.",
+      "annualValueInr": 18000,
+      "benefitDescriptionHi": "60+ वर्ष के पंजीकृत निर्माण श्रमिकों को ₹1,500/माह पेंशन; विधवा को ₹700/माह",
+      "benefitDescriptionEn": "₹1,500/month pension for registered construction workers 60+; ₹700/month for widow",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 1500,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 60,
+          "labelHi": "आयु 60+",
+          "labelEn": "Age 60+"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Labour Registration Card (10yr membership)",
+        "Bank Account",
+        "Survival Certificate"
+      ],
+      "nextActionHi": "श्रम विभाग पोर्टल पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at Labour Department portal",
+      "portal": "https://cglabour.nic.in/",
       "tags": [
         "cg_state",
-        "girl_child",
-        "savings",
-        "protection"
+        "pension",
+        "construction_worker",
+        "labour"
       ],
+      "needCategory": "pension",
+      "priorityScore": 78
+    },
+    {
+      "id": "cg-shramik-awas",
+      "nameHi": "मुख्यमंत्री निर्माण श्रमिक आवास सहायता योजना",
+      "nameEn": "CM Nirman Shramik Awas Sahayata Yojana",
+      "level": "state",
+      "departmentHi": "श्रम विभाग, छ.ग.",
+      "annualValueInr": 50000,
+      "benefitDescriptionHi": "पंजीकृत निर्माण श्रमिकों को आवास ऋण पर ₹50,000 तक सब्सिडी",
+      "benefitDescriptionEn": "Up to ₹50,000 subsidy on housing loan for registered construction workers",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 50000,
+      "rules": [
+        {
+          "field": "ownsPuccaHouse",
+          "operator": "falsy",
+          "labelHi": "पक्का मकान नहीं",
+          "labelEn": "No pucca house"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "ownsPuccaHouse",
+          "value": true,
+          "ruleHi": "पक्का मकान है",
+          "ruleEn": "Has pucca house"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Labour Registration Card (3yr)",
+        "Housing Loan Sanction Letter",
+        "Land Documents",
+        "Bank Account"
+      ],
+      "nextActionHi": "श्रम विभाग पोर्टल पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at Labour Department portal",
+      "portal": "https://cglabour.nic.in/",
+      "tags": [
+        "cg_state",
+        "housing",
+        "construction_worker",
+        "labour"
+      ],
+      "needCategory": "housing",
       "priorityScore": 76
     },
     {
-      "id": "cg-khadyann-sahayata",
-      "nameHi": "मुख्यमंत्री खाद्यान्न सहायता योजना",
-      "nameEn": "Mukhyamantri Khadyann Sahayata Yojana",
+      "id": "cg-shramik-mrityu-divyang",
+      "nameHi": "मुख्यमंत्री श्रमिक मृत्यु एवं दिव्यांग सहायता योजना",
+      "nameEn": "CM Shramik Mrityu Evam Divyang Sahayata Yojana",
       "level": "state",
-      "departmentHi": "खाद्य विभाग, छ.ग.",
+      "departmentHi": "श्रम विभाग, छ.ग.",
       "annualValueInr": 0,
-      "benefitDescriptionHi": "राशन कार्ड धारकों को रियायती दर पर अतिरिक्त खाद्यान्न",
-      "benefitDescriptionEn": "Additional foodgrains at subsidized rates for ration card holders",
-      "benefitFrequency": "monthly",
+      "benefitDescriptionHi": "कार्य के दौरान मृत्यु पर ₹1 लाख, विकलांगता पर ₹50,000 (निर्माण + असंगठित श्रमिक)",
+      "benefitDescriptionEn": "₹1L on death during work, ₹50K on disability (construction + unorganized workers)",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 100000,
+      "rules": [
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Labour Registration Card",
+        "Death Certificate/Disability Certificate",
+        "FIR (if accident)",
+        "Bank Account of nominee"
+      ],
+      "nextActionHi": "श्रम विभाग या जिला कार्यालय में आवेदन करें",
+      "nextActionEn": "Apply at Labour Department or district office",
+      "portal": "https://cglabour.nic.in/",
+      "tags": [
+        "cg_state",
+        "death_benefit",
+        "disability",
+        "construction_worker",
+        "labour"
+      ],
+      "needCategory": "labour_welfare",
+      "priorityScore": 85
+    },
+    {
+      "id": "cg-shramik-medical",
+      "nameHi": "मुख्यमंत्री निर्माण श्रमिक दीर्घायु सहायता योजना",
+      "nameEn": "CM Nirman Shramik Dirghayu Sahayata Yojana",
+      "level": "state",
+      "departmentHi": "श्रम विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "दुर्घटना उपचार ₹20,000 + गंभीर बीमारी ₹20,000 + चश्मा ₹1,000 + श्रवण यंत्र ₹6,000",
+      "benefitDescriptionEn": "₹20K accident treatment + ₹20K serious illness + ₹1K glasses + ₹6K hearing aid",
+      "benefitFrequency": "on_event",
+      "benefitAmount": 20000,
+      "rules": [
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Labour Registration Card (3yr)",
+        "Hospital Certificate",
+        "Employer Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "श्रम विभाग पोर्टल पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at Labour Department portal",
+      "portal": "https://cglabour.nic.in/",
+      "tags": [
+        "cg_state",
+        "health",
+        "medical",
+        "construction_worker",
+        "labour"
+      ],
+      "needCategory": "health",
+      "priorityScore": 73
+    },
+    {
+      "id": "cg-shramik-shiksha",
+      "nameHi": "मुख्यमंत्री निर्माण श्रमिक शिक्षा सहायता योजना",
+      "nameEn": "CM Nirman Shramik Shiksha Sahayata Yojana",
+      "level": "state",
+      "departmentHi": "श्रम विभाग, छ.ग.",
+      "annualValueInr": 25000,
+      "benefitDescriptionHi": "पंजीकृत श्रमिकों के बच्चों को कक्षा 1 से PG तक ₹1,000-₹25,000 छात्रवृत्ति",
+      "benefitDescriptionEn": "₹1,000-₹25,000 scholarship for registered workers' children from class 1 to PG",
+      "benefitFrequency": "annual",
+      "benefitAmount": 25000,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "बच्चे हैं",
+          "labelEn": "Has children"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Labour Registration Card",
+        "Child School Enrollment Certificate",
+        "Previous Year Mark Sheet",
+        "Bank Account"
+      ],
+      "nextActionHi": "श्रम विभाग पोर्टल पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at Labour Department portal",
+      "portal": "https://cglabour.nic.in/",
+      "tags": [
+        "cg_state",
+        "education",
+        "scholarship",
+        "construction_worker",
+        "labour"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 72
+    },
+    {
+      "id": "cg-ucch-shiksha-rin",
+      "nameHi": "मुख्यमंत्री उच्च शिक्षा ऋण ब्याज अनुदान योजना",
+      "nameEn": "CM Ucch Shiksha Rin Byaj Anudan Yojana",
+      "level": "state",
+      "departmentHi": "शिक्षा विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "₹4 लाख तक ब्याज-मुक्त शिक्षा ऋण — उच्च शिक्षा के लिए",
+      "benefitDescriptionEn": "Interest-free education loan up to ₹4 lakh for higher education",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "उच्च शिक्षा छात्र",
+          "labelEn": "Higher education student"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL/आर्थिक रूप से कमजोर",
+          "labelEn": "BPL/economically weak"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Admission Letter",
+        "Family Income Certificate",
+        "Bank Account",
+        "Previous Mark Sheets"
+      ],
+      "nextActionHi": "शिक्षा विभाग या बैंक शाखा में आवेदन करें",
+      "nextActionEn": "Apply at Education department or bank branch",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "education",
+        "loan",
+        "higher_education"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 70
+    },
+    {
+      "id": "central-pmegp",
+      "nameHi": "प्रधानमंत्री रोजगार सृजन कार्यक्रम (PMEGP)",
+      "nameEn": "PM Employment Generation Programme (PMEGP)",
+      "level": "central",
+      "departmentHi": "सूक्ष्म, लघु एवं मध्यम उद्यम मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "सूक्ष्म उद्यम स्थापना पर 15-35% सब्सिडी (महिलाओं को 25-35%); ₹10-50 लाख परियोजना",
+      "benefitDescriptionEn": "15-35% subsidy on micro-enterprise setup (25-35% for women); ₹10-50L project cost",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+",
+          "labelEn": "Age 18+"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Bank account"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Business Plan/DPR",
+        "Bank Account",
+        "Address Proof",
+        "Caste Certificate (if SC/ST)"
+      ],
+      "nextActionHi": "kvic.gov.in या निकटतम KVIC/KVIB कार्यालय में आवेदन करें",
+      "nextActionEn": "Apply at kvic.gov.in or nearest KVIC/KVIB office",
+      "portal": "https://www.kviconline.gov.in/pmegpeportal/",
+      "tags": [
+        "central",
+        "enterprise",
+        "subsidy",
+        "micro_enterprise",
+        "women"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 74
+    },
+    {
+      "id": "central-pm-svanidhi",
+      "nameHi": "प्रधानमंत्री स्ट्रीट वेंडर्स आत्मनिर्भर निधि (SVANidhi)",
+      "nameEn": "PM SVANidhi (Street Vendor Loan)",
+      "level": "central",
+      "departmentHi": "आवासन एवं शहरी कार्य मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "स्ट्रीट वेंडर्स को ₹10,000-₹50,000 कार्यशील पूंजी ऋण + 7% ब्याज सब्सिडी + कैशबैक",
+      "benefitDescriptionEn": "₹10K-₹50K working capital loan for street vendors + 7% interest subsidy + cashback",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "स्ट्रीट वेंडर/फेरीवाला",
+          "labelEn": "Street vendor/hawker"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Vendor Certificate/Letter of Recommendation from ULB",
+        "Bank Account",
+        "Passport Photo"
+      ],
+      "nextActionHi": "pmsvanidhi.mohua.gov.in पर ऑनलाइन आवेदन करें या बैंक जाएं",
+      "nextActionEn": "Apply online at pmsvanidhi.mohua.gov.in or visit bank",
+      "portal": "https://pmsvanidhi.mohua.gov.in/",
+      "tags": [
+        "central",
+        "loan",
+        "street_vendor",
+        "micro_enterprise"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 69
+    },
+    {
+      "id": "central-swachh-bharat-g",
+      "nameHi": "स्वच्छ भारत मिशन (ग्रामीण) — शौचालय निर्माण",
+      "nameEn": "Swachh Bharat Mission Gramin (Toilet Construction)",
+      "level": "central",
+      "departmentHi": "जल शक्ति मंत्रालय",
+      "annualValueInr": 12000,
+      "benefitDescriptionHi": "ग्रामीण परिवारों को शौचालय निर्माण के लिए ₹12,000 सहायता",
+      "benefitDescriptionEn": "₹12,000 assistance for toilet construction in rural households",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 12000,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL/SECC Data",
+        "Bank Account",
+        "Photo of house (without toilet)"
+      ],
+      "nextActionHi": "ग्राम पंचायत में आवेदन करें",
+      "nextActionEn": "Apply at Gram Panchayat",
+      "portal": "https://swachhbharatmission.gov.in/",
+      "tags": [
+        "central",
+        "sanitation",
+        "toilet",
+        "rural"
+      ],
+      "needCategory": "basic_infrastructure",
+      "priorityScore": 73
+    },
+    {
+      "id": "central-saubhagya",
+      "nameHi": "प्रधानमंत्री सहज बिजली हर घर योजना (सौभाग्य)",
+      "nameEn": "PM Sahaj Bijli Har Ghar Yojana (Saubhagya)",
+      "level": "central",
+      "departmentHi": "ऊर्जा मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "सभी ग्रामीण और शहरी गरीब घरों को मुफ्त बिजली कनेक्शन",
+      "benefitDescriptionEn": "Free electricity connection to all rural and urban poor households",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल/गरीब परिवार",
+          "labelEn": "BPL/poor household"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL Certificate",
+        "Address Proof"
+      ],
+      "nextActionHi": "निकटतम बिजली कार्यालय या ग्राम पंचायत से संपर्क करें",
+      "nextActionEn": "Contact nearest electricity office or Gram Panchayat",
+      "portal": "https://saubhagya.gov.in/",
+      "tags": [
+        "central",
+        "electricity",
+        "rural",
+        "bpl"
+      ],
+      "needCategory": "basic_infrastructure",
+      "priorityScore": 71
+    },
+    {
+      "id": "central-ddu-gky",
+      "nameHi": "दीनदयाल उपाध्याय ग्रामीण कौशल्य योजना",
+      "nameEn": "DDU-GKY (Deen Dayal Upadhyaya Grameen Kaushalya Yojana)",
+      "level": "central",
+      "departmentHi": "ग्रामीण विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "15-35 वर्ष के ग्रामीण गरीब युवाओं को मुफ्त कौशल प्रशिक्षण + प्लेसमेंट (75% प्लेसमेंट अनिवार्य)",
+      "benefitDescriptionEn": "Free skill training + guaranteed placement for rural poor youth aged 15-35 (75% placement mandatory)",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 15,
+          "labelHi": "आयु 15-35",
+          "labelEn": "Age 15-35"
+        },
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL/SECC परिवार",
+          "labelEn": "BPL/SECC family"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL Certificate",
+        "Age Proof",
+        "Bank Account",
+        "Education Certificate"
+      ],
+      "nextActionHi": "BIHAN/NRLM ब्लॉक कार्यालय या DDU-GKY प्रशिक्षण केंद्र से संपर्क करें",
+      "nextActionEn": "Contact BIHAN/NRLM block office or DDU-GKY training centre",
+      "portal": "https://ddugky.gov.in/",
+      "tags": [
+        "central",
+        "skill_training",
+        "employment",
+        "rural",
+        "placement"
+      ],
+      "needCategory": "skill_employment",
+      "priorityScore": 76
+    },
+    {
+      "id": "central-nsap-family-benefit",
+      "nameHi": "राष्ट्रीय परिवार लाभ योजना (NFBS)",
+      "nameEn": "National Family Benefit Scheme (NFBS)",
+      "level": "central",
+      "departmentHi": "ग्रामीण विकास मंत्रालय",
+      "annualValueInr": 20000,
+      "benefitDescriptionHi": "BPL परिवार के कमाने वाले सदस्य (18-59 वर्ष) की मृत्यु पर ₹20,000 एकमुश्त सहायता",
+      "benefitDescriptionEn": "₹20,000 lump sum on death of earning member (18-59 years) in BPL family",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 20000,
+      "rules": [
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल परिवार",
+          "labelEn": "BPL family"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Death Certificate of breadwinner",
+        "BPL Certificate",
+        "Family Relationship Proof",
+        "Bank Account"
+      ],
+      "nextActionHi": "ग्राम पंचायत (ग्रामीण) या नगर निगम (शहरी) में आवेदन करें",
+      "nextActionEn": "Apply at Gram Panchayat (rural) or Municipal body (urban)",
+      "portal": "https://nsap.nic.in/",
+      "tags": [
+        "central",
+        "death_benefit",
+        "bpl",
+        "family"
+      ],
+      "needCategory": "general_welfare",
+      "priorityScore": 80
+    },
+    {
+      "id": "central-kgbv",
+      "nameHi": "कस्तूरबा गांधी बालिका विद्यालय",
+      "nameEn": "Kasturba Gandhi Balika Vidyalaya (KGBV)",
+      "level": "central",
+      "departmentHi": "शिक्षा मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "SC/ST/OBC/BPL/अल्पसंख्यक बालिकाओं के लिए मुफ्त आवासीय विद्यालय (कक्षा 6-12)",
+      "benefitDescriptionEn": "Free residential school (class 6-12) for SC/ST/OBC/BPL/minority girls",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "बालिका है",
+          "labelEn": "Has girl child"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL/SC/ST/OBC/अल्पसंख्यक",
+          "labelEn": "BPL/SC/ST/OBC/minority"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Girl Child Birth Certificate",
+        "Parent Aadhaar",
+        "Caste/BPL Certificate",
+        "School Transfer Certificate"
+      ],
+      "nextActionHi": "निकटतम KGBV विद्यालय या ब्लॉक शिक्षा कार्यालय में प्रवेश लें",
+      "nextActionEn": "Seek admission at nearest KGBV school or Block Education office",
+      "portal": "",
+      "tags": [
+        "central",
+        "education",
+        "girl_child",
+        "residential_school",
+        "sc_st"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 77
+    },
+    {
+      "id": "central-post-matric-scholarship",
+      "nameHi": "पोस्ट मैट्रिक छात्रवृत्ति (SC/ST)",
+      "nameEn": "Post Matric Scholarship for SC/ST",
+      "level": "central",
+      "departmentHi": "सामाजिक न्याय एवं अधिकारिता मंत्रालय",
+      "annualValueInr": 15000,
+      "benefitDescriptionHi": "SC/ST छात्रों को कक्षा 11 से PhD तक ₹230-₹1,200/माह छात्रवृत्ति + ट्यूशन फीस",
+      "benefitDescriptionEn": "₹230-₹1,200/month scholarship + tuition fee for SC/ST students from class 11 to PhD",
+      "benefitFrequency": "annual",
+      "benefitAmount": 15000,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "in",
+          "value": [
+            "sc",
+            "st"
+          ],
+          "labelHi": "SC/ST वर्ग",
+          "labelEn": "SC/ST category"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Caste Certificate",
+        "Previous Year Mark Sheet",
+        "Income Certificate",
+        "Bank Account",
+        "Admission Proof"
+      ],
+      "nextActionHi": "scholarships.gov.in पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at scholarships.gov.in",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "central",
+        "scholarship",
+        "education",
+        "sc_st"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 75
+    },
+    {
+      "id": "central-free-legal-aid",
+      "nameHi": "मुफ्त कानूनी सहायता (NALSA)",
+      "nameEn": "Free Legal Aid (NALSA)",
+      "level": "central",
+      "departmentHi": "विधि एवं न्याय मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "महिलाओं, SC/ST, BPL, विकलांग, आपदा पीड़ितों को निःशुल्क कानूनी सहायता",
+      "benefitDescriptionEn": "Free legal aid for women, SC/ST, BPL, disabled, disaster victims",
+      "benefitFrequency": "on_demand",
+      "benefitAmount": null,
+      "rules": [],
+      "exclusions": [],
+      "documentsRequired": [
+        "Any ID proof (Aadhaar/Voter ID)",
+        "Description of legal issue"
+      ],
+      "nextActionHi": "जिला विधिक सेवा प्राधिकरण (DLSA) में आवेदन करें या 15100 पर कॉल करें",
+      "nextActionEn": "Apply at District Legal Services Authority (DLSA) or call 15100",
+      "portal": "https://nalsa.gov.in/",
+      "tags": [
+        "central",
+        "legal_aid",
+        "free",
+        "women",
+        "sc_st",
+        "bpl"
+      ],
+      "needCategory": "safety_protection",
+      "priorityScore": 79
+    },
+    {
+      "id": "cg-dkbssy",
+      "nameHi": "डॉ. खूबचंद बघेल स्वास्थ्य सहायता योजना",
+      "nameEn": "Dr. Khubchand Baghel Swasthya Sahayata Yojana",
+      "level": "state",
+      "departmentHi": "स्वास्थ्य विभाग, छ.ग.",
+      "annualValueInr": 500000,
+      "benefitDescriptionHi": "BPL परिवारों को ₹5 लाख तक मुफ्त इलाज — सरकारी और empaneled निजी अस्पतालों में",
+      "benefitDescriptionEn": "Free treatment up to ₹5L for BPL families at govt and empaneled private hospitals",
+      "benefitFrequency": "annual",
+      "benefitAmount": 500000,
+      "rules": [
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL/राशन कार्ड धारक",
+          "labelEn": "BPL/ration card holder"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "BPL/Ration Card",
+        "Hospital Referral"
+      ],
+      "nextActionHi": "सरकारी अस्पताल में DKBSSY कार्ड दिखाएं",
+      "nextActionEn": "Show DKBSSY card at government hospital",
+      "portal": "https://dkbssy.cg.nic.in/",
+      "tags": [
+        "cg_state",
+        "health",
+        "free_treatment",
+        "bpl"
+      ],
+      "needCategory": "health",
+      "priorityScore": 90
+    },
+    {
+      "id": "cg-sanjeevani",
+      "nameHi": "हमर संजीवनी योजना (मुफ्त जेनेरिक दवाएं)",
+      "nameEn": "Hamar Sanjeevani Yojana (Free Generic Medicines)",
+      "level": "state",
+      "departmentHi": "स्वास्थ्य विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "सभी सरकारी अस्पतालों/PHC में मुफ्त जेनेरिक दवाइयां",
+      "benefitDescriptionEn": "Free generic medicines at all govt hospitals and PHCs in CG",
+      "benefitFrequency": "continuous",
       "benefitAmount": null,
       "rules": [
         {
           "field": "stateDomicile",
           "operator": "eq",
           "value": "Chhattisgarh",
-          "labelHi": "छत्तीसगढ़ निवासी",
-          "labelEn": "Chhattisgarh resident"
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
         }
       ],
       "exclusions": [],
       "documentsRequired": [
-        "Ration Card",
-        "Aadhaar Card"
+        "Aadhaar Card",
+        "OPD Slip"
       ],
-      "nextActionHi": "निकटतम आवेदन केंद्र पर जाएं",
-      "nextActionEn": "Visit nearest application center",
+      "nextActionHi": "किसी भी सरकारी अस्पताल/PHC में OPD में जाएं",
+      "nextActionEn": "Visit OPD at any govt hospital/PHC",
+      "portal": "https://cghealth.nic.in/",
+      "tags": [
+        "cg_state",
+        "health",
+        "free_medicines"
+      ],
+      "needCategory": "health",
+      "priorityScore": 82
+    },
+    {
+      "id": "cg-swami-atmanand",
+      "nameHi": "स्वामी आत्मानंद अंग्रेजी माध्यम विद्यालय",
+      "nameEn": "Swami Atmanand English Medium School",
+      "level": "state",
+      "departmentHi": "शिक्षा विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "ग्रामीण/शहरी गरीब बच्चों के लिए मुफ्त अंग्रेजी माध्यम शिक्षा (कक्षा 1-12)",
+      "benefitDescriptionEn": "Free English medium education (class 1-12) for poor rural/urban children",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "स्कूल जाने वाले बच्चे",
+          "labelEn": "School-going children"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Child Aadhaar",
+        "Previous School TC",
+        "Parent Aadhaar",
+        "Caste Certificate (if SC/ST/OBC)"
+      ],
+      "nextActionHi": "cgschool.in पर ऑनलाइन प्रवेश के लिए आवेदन करें",
+      "nextActionEn": "Apply online at cgschool.in for admission",
+      "portal": "https://cgschool.in/",
+      "tags": [
+        "cg_state",
+        "education",
+        "english_medium",
+        "free"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 78
+    },
+    {
+      "id": "cg-mahtari-dular",
+      "nameHi": "छत्तीसगढ़ महतारी दुलार योजना",
+      "nameEn": "CG Mahtari Dular Yojana",
+      "level": "state",
+      "departmentHi": "शिक्षा विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "COVID अनाथ बच्चों को मुफ्त शिक्षा + छात्रवृत्ति",
+      "benefitDescriptionEn": "Free education + scholarship for COVID orphan children",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "बच्चे हैं",
+          "labelEn": "Has children"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Child Aadhaar",
+        "Parent Death Certificate",
+        "School Enrollment"
+      ],
+      "nextActionHi": "जिला शिक्षा अधिकारी कार्यालय में आवेदन करें",
+      "nextActionEn": "Apply at District Education Officer office",
       "portal": "",
       "tags": [
         "cg_state",
-        "food_security",
-        "ration"
+        "education",
+        "orphan",
+        "scholarship"
       ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 80
+    },
+    {
+      "id": "cg-krishak-unnati",
+      "nameHi": "कृषक उन्नति योजना",
+      "nameEn": "Krishak Unnati Yojana",
+      "level": "state",
+      "departmentHi": "कृषि विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "किसानों को फसल उत्पादन आधारित प्रत्यक्ष आय सहायता — ₹10,000 करोड़ बजट",
+      "benefitDescriptionEn": "Direct income support to farmers based on crop production — ₹10,000 Cr budget",
+      "benefitFrequency": "annual",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "ownsLand",
+          "operator": "truthy",
+          "labelHi": "कृषि भूमि",
+          "labelEn": "Owns farmland"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Khasra/Land Records",
+        "Bank Account"
+      ],
+      "nextActionHi": "कृषि विभाग या ग्राम पंचायत में पंजीकरण करें",
+      "nextActionEn": "Register at Agriculture dept or Gram Panchayat",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "agriculture",
+        "farmer",
+        "income_support"
+      ],
+      "needCategory": "agriculture",
+      "priorityScore": 75
+    },
+    {
+      "id": "cg-krishi-majdoor-kalyan",
+      "nameHi": "दीनदयाल उपाध्याय भूमिहीन कृषि मजदूर कल्याण योजना",
+      "nameEn": "DDU Bhoomiheen Krishi Majdoor Kalyan Yojana",
+      "level": "state",
+      "departmentHi": "कृषि विभाग, छ.ग.",
+      "annualValueInr": 10000,
+      "benefitDescriptionHi": "भूमिहीन कृषि मजदूरों को ₹10,000 वार्षिक सहायता",
+      "benefitDescriptionEn": "₹10,000 annual assistance to landless agricultural labourers",
+      "benefitFrequency": "annual",
+      "benefitAmount": 10000,
+      "rules": [
+        {
+          "field": "ownsLand",
+          "operator": "falsy",
+          "labelHi": "भूमिहीन",
+          "labelEn": "Landless"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL",
+          "labelEn": "BPL"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "ownsLand",
+          "value": true,
+          "ruleHi": "भूमि स्वामी",
+          "ruleEn": "Land owner"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Landless Certificate from Patwari",
+        "Bank Account",
+        "Ration Card"
+      ],
+      "nextActionHi": "ग्राम पंचायत में पंजीकरण करें",
+      "nextActionEn": "Register at Gram Panchayat",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "agriculture",
+        "landless",
+        "labour"
+      ],
+      "needCategory": "agriculture",
+      "priorityScore": 77
+    },
+    {
+      "id": "central-pm-janman",
+      "nameHi": "प्रधानमंत्री जनजाति आदिवासी न्याय महा अभियान",
+      "nameEn": "PM JANMAN (Janjati Adivasi Nyaya Maha Abhiyan)",
+      "level": "central",
+      "departmentHi": "जनजातीय कार्य मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "PVTG परिवारों को आवास, पेयजल, शिक्षा, स्वास्थ्य, सड़क, बिजली — 11 हस्तक्षेप",
+      "benefitDescriptionEn": "Housing, water, education, health, roads, electricity for PVTG families — 11 interventions",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "eq",
+          "value": "st",
+          "labelHi": "अनुसूचित जनजाति (PVTG)",
+          "labelEn": "Scheduled Tribe (PVTG)"
+        },
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण/वन क्षेत्र",
+          "labelEn": "Rural/forest area"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Caste Certificate (ST)",
+        "Domicile Certificate"
+      ],
+      "nextActionHi": "ग्राम पंचायत या जिला जनजातीय कल्याण कार्यालय से संपर्क करें",
+      "nextActionEn": "Contact Gram Panchayat or district Tribal Welfare office",
+      "portal": "https://adiprasaran.tribal.gov.in/pm-janman/",
+      "tags": [
+        "central",
+        "tribal",
+        "pvtg",
+        "housing",
+        "education",
+        "health"
+      ],
+      "needCategory": "general_welfare",
+      "priorityScore": 82
+    },
+    {
+      "id": "central-pre-matric-scholarship-st",
+      "nameHi": "प्री-मैट्रिक छात्रवृत्ति (ST)",
+      "nameEn": "Pre-Matric Scholarship for ST Students",
+      "level": "central",
+      "departmentHi": "जनजातीय कार्य मंत्रालय",
+      "annualValueInr": 6000,
+      "benefitDescriptionHi": "ST छात्रों को कक्षा 9-10 में ₹150-₹350/माह छात्रवृत्ति + पुस्तक अनुदान",
+      "benefitDescriptionEn": "₹150-₹350/month scholarship + book grant for ST students in class 9-10",
+      "benefitFrequency": "annual",
+      "benefitAmount": 6000,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "eq",
+          "value": "st",
+          "labelHi": "अनुसूचित जनजाति",
+          "labelEn": "Scheduled Tribe"
+        },
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "बच्चे हैं (कक्षा 9-10)",
+          "labelEn": "Has children (class 9-10)"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Caste Certificate (ST)",
+        "School Enrollment",
+        "Income Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "scholarships.gov.in पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at scholarships.gov.in",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "central",
+        "scholarship",
+        "education",
+        "tribal",
+        "st"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 74
+    },
+    {
+      "id": "central-pm-yasasvi",
+      "nameHi": "PM-YASASVI छात्रवृत्ति (OBC/EBC/DNT)",
+      "nameEn": "PM-YASASVI Scholarship (OBC/EBC/DNT)",
+      "level": "central",
+      "departmentHi": "सामाजिक न्याय एवं अधिकारिता मंत्रालय",
+      "annualValueInr": 15000,
+      "benefitDescriptionHi": "OBC/EBC/DNT छात्रों को पोस्ट-मैट्रिक छात्रवृत्ति — ट्यूशन फीस + रहने का खर्च",
+      "benefitDescriptionEn": "Post-matric scholarship for OBC/EBC/DNT students — tuition + maintenance",
+      "benefitFrequency": "annual",
+      "benefitAmount": 15000,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "in",
+          "value": [
+            "obc"
+          ],
+          "labelHi": "OBC/EBC/DNT वर्ग",
+          "labelEn": "OBC/EBC/DNT category"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "OBC Certificate",
+        "Income Certificate",
+        "School/College Admission",
+        "Bank Account"
+      ],
+      "nextActionHi": "scholarships.gov.in पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at scholarships.gov.in",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "central",
+        "scholarship",
+        "education",
+        "obc"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 73
+    },
+    {
+      "id": "central-rashtriya-mahila-kosh",
+      "nameHi": "राष्ट्रीय महिला कोष (RMK)",
+      "nameEn": "Rashtriya Mahila Kosh (National Credit Fund for Women)",
+      "level": "central",
+      "departmentHi": "महिला एवं बाल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "SHG/NGO के माध्यम से गरीब महिलाओं को ₹5 लाख तक माइक्रो-क्रेडिट — कम ब्याज दर",
+      "benefitDescriptionEn": "Micro-credit up to ₹5L for poor women through SHG/NGO at low interest",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isShgMember",
+          "operator": "truthy",
+          "labelHi": "SHG/महिला समूह सदस्य",
+          "labelEn": "SHG/women's group member"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL/गरीब",
+          "labelEn": "BPL/poor"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "SHG Registration",
+        "Bank Account",
+        "Business Plan"
+      ],
+      "nextActionHi": "SHG/NGO के माध्यम से RMK से ऋण के लिए आवेदन करें",
+      "nextActionEn": "Apply for RMK loan through SHG/NGO intermediary",
+      "portal": "",
+      "tags": [
+        "central",
+        "micro_credit",
+        "women",
+        "shg",
+        "loan"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 67
+    },
+    {
+      "id": "central-nfbs-cg",
+      "nameHi": "राष्ट्रीय परिवार लाभ योजना (छ.ग.)",
+      "nameEn": "National Family Benefit Scheme – CG Implementation",
+      "level": "state",
+      "departmentHi": "समाज कल्याण विभाग, छ.ग.",
+      "annualValueInr": 20000,
+      "benefitDescriptionHi": "BPL परिवार के कमाने वाले सदस्य (18-59 वर्ष) की मृत्यु पर ₹20,000 एकमुश्त",
+      "benefitDescriptionEn": "₹20,000 lump sum on death of breadwinner (18-59yr) in BPL family — CG implementation",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 20000,
+      "rules": [
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "बीपीएल परिवार",
+          "labelEn": "BPL family"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Death Certificate",
+        "BPL Certificate",
+        "Family Relationship Proof",
+        "Bank Account"
+      ],
+      "nextActionHi": "ग्राम पंचायत (ग्रामीण) या नगर निगम (शहरी) में आवेदन करें",
+      "nextActionEn": "Apply at Gram Panchayat (rural) or Municipal body (urban)",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "death_benefit",
+        "bpl",
+        "family"
+      ],
+      "needCategory": "general_welfare",
+      "priorityScore": 80
+    },
+    {
+      "id": "cg-mukhyamantri-mitan",
+      "nameHi": "मुख्यमंत्री मितान योजना",
+      "nameEn": "Mukhyamantri Mitan Yojana (Doorstep Service Delivery)",
+      "level": "state",
+      "departmentHi": "सामान्य प्रशासन विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "100+ सरकारी सेवाएं (जन्म/मृत्यु/जाति/आय प्रमाण पत्र आदि) घर बैठे — ₹100 शुल्क",
+      "benefitDescriptionEn": "100+ govt services (birth/death/caste/income certificates etc.) at doorstep — ₹100 fee",
+      "benefitFrequency": "on_demand",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Mobile Number"
+      ],
+      "nextActionHi": "14545 पर कॉल करें या cgmitaan.in पर स्लॉट बुक करें",
+      "nextActionEn": "Call 14545 or book slot at cgmitaan.in",
+      "portal": "https://cgmitaan.in/",
+      "tags": [
+        "cg_state",
+        "doorstep_service",
+        "certificates",
+        "convenience"
+      ],
+      "needCategory": "general_welfare",
+      "priorityScore": 72
+    },
+    {
+      "id": "central-sickle-cell-mission",
+      "nameHi": "राष्ट्रीय सिकल सेल एनीमिया उन्मूलन मिशन",
+      "nameEn": "National Sickle Cell Anaemia Elimination Mission",
+      "level": "central",
+      "departmentHi": "स्वास्थ्य मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "सिकल सेल रोगियों (विशेषकर आदिवासी) की मुफ्त जांच, उपचार और परामर्श",
+      "benefitDescriptionEn": "Free screening, treatment and counseling for sickle cell patients (especially tribal)",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "in",
+          "value": [
+            "sc",
+            "st",
+            "obc"
+          ],
+          "labelHi": "SC/ST/OBC (सिकल सेल प्रभावित समुदाय)",
+          "labelEn": "SC/ST/OBC (sickle cell affected communities)"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Sickle Cell Test Report (if available)"
+      ],
+      "nextActionHi": "निकटतम PHC/CHC में मुफ्त सिकल सेल जांच करवाएं",
+      "nextActionEn": "Get free sickle cell screening at nearest PHC/CHC",
+      "portal": "",
+      "tags": [
+        "central",
+        "health",
+        "sickle_cell",
+        "tribal",
+        "screening"
+      ],
+      "needCategory": "health",
+      "priorityScore": 75
+    },
+    {
+      "id": "central-pm-vaya-vandana",
+      "nameHi": "प्रधानमंत्री वय वंदना योजना",
+      "nameEn": "PM Vaya Vandana Yojana (PMVVY)",
+      "level": "central",
+      "departmentHi": "वित्त मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "60+ वरिष्ठ नागरिकों के लिए ₹15 लाख तक निवेश पर गारंटीड 7.4% पेंशन (LIC)",
+      "benefitDescriptionEn": "Guaranteed 7.4% pension on up to ₹15L investment for 60+ seniors (via LIC)",
+      "benefitFrequency": "monthly",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 60,
+          "labelHi": "आयु 60+",
+          "labelEn": "Age 60+"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Age Proof",
+        "PAN Card",
+        "Bank Account"
+      ],
+      "nextActionHi": "LIC शाखा या LIC वेबसाइट पर आवेदन करें",
+      "nextActionEn": "Apply at LIC branch or LIC website",
+      "portal": "https://www.licindia.in/",
+      "tags": [
+        "central",
+        "pension",
+        "senior_citizen",
+        "investment"
+      ],
+      "needCategory": "pension",
+      "priorityScore": 68
+    },
+    {
+      "id": "cg-bijli-half",
+      "nameHi": "छत्तीसगढ़ बिजली बिल हाफ योजना",
+      "nameEn": "CG Bijli Bill Half Yojana (50% Electricity Discount)",
+      "level": "state",
+      "departmentHi": "ऊर्जा विभाग, छ.ग.",
+      "annualValueInr": 6000,
+      "benefitDescriptionHi": "घरेलू उपभोक्ताओं को बिजली बिल पर 50% छूट (400 यूनिट तक)",
+      "benefitDescriptionEn": "50% discount on electricity bills for domestic consumers (up to 400 units)",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 500,
+      "rules": [
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Electricity Connection/Bill",
+        "Bank Account"
+      ],
+      "nextActionHi": "बिजली बिल में स्वत: छूट लागू — CSPDCL से संपर्क करें",
+      "nextActionEn": "Discount applied automatically on bill — contact CSPDCL if not",
+      "portal": "https://cspdcl.co.in/",
+      "tags": [
+        "cg_state",
+        "electricity",
+        "subsidy",
+        "household"
+      ],
+      "needCategory": "basic_infrastructure",
+      "priorityScore": 76
+    },
+    {
+      "id": "cg-old-age-pension",
+      "nameHi": "छत्तीसगढ़ वृद्धावस्था पेंशन योजना (राज्य अंश)",
+      "nameEn": "CG Old Age Pension (State Top-up)",
+      "level": "state",
+      "departmentHi": "समाज कल्याण विभाग, छ.ग.",
+      "annualValueInr": 4200,
+      "benefitDescriptionHi": "60+ BPL वृद्ध व्यक्तियों को ₹350/माह राज्य पेंशन (IGNOAPS के ऊपर)",
+      "benefitDescriptionEn": "₹350/month state pension for BPL elderly 60+ (on top of IGNOAPS)",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 350,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 60,
+          "labelHi": "आयु 60+",
+          "labelEn": "Age 60+"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL",
+          "labelEn": "BPL"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Age Proof",
+        "BPL Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "ग्राम पंचायत या समाज कल्याण विभाग में आवेदन करें",
+      "nextActionEn": "Apply at Gram Panchayat or Social Welfare dept",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "pension",
+        "old_age",
+        "bpl"
+      ],
+      "needCategory": "pension",
+      "priorityScore": 84
+    },
+    {
+      "id": "central-pm-sym",
+      "nameHi": "प्रधानमंत्री श्रम योगी मानधन",
+      "nameEn": "PM Shram Yogi Maandhan (PM-SYM)",
+      "level": "central",
+      "departmentHi": "श्रम एवं रोजगार मंत्रालय",
+      "annualValueInr": 36000,
+      "benefitDescriptionHi": "असंगठित क्षेत्र के श्रमिकों (₹15K/माह से कम आय) को 60 वर्ष बाद ₹3,000/माह पेंशन; सरकार समान अंशदान",
+      "benefitDescriptionEn": "₹3,000/month pension after 60 for unorganized workers (income <₹15K/month); govt matches contribution",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 3000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18-40",
+          "labelEn": "Age 18-40"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "असंगठित श्रमिक (₹15K/माह से कम)",
+          "labelEn": "Unorganized worker (<₹15K/month)"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "familyIsTaxpayer",
+          "value": true,
+          "ruleHi": "आयकर दाता",
+          "ruleEn": "Income taxpayer"
+        },
+        {
+          "field": "isGovtPsuEmployee",
+          "value": true,
+          "ruleHi": "सरकारी/PSU कर्मचारी",
+          "ruleEn": "Govt/PSU employee"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank/Jan Dhan Account with IFSC",
+        "Mobile Number"
+      ],
+      "nextActionHi": "maandhan.in पर ऑनलाइन या CSC में पंजीकरण करें",
+      "nextActionEn": "Register online at maandhan.in or visit CSC",
+      "portal": "https://maandhan.in/",
+      "tags": [
+        "central",
+        "pension",
+        "unorganized_worker",
+        "labour"
+      ],
+      "needCategory": "pension",
+      "priorityScore": 83
+    },
+    {
+      "id": "central-pm-kisan-maandhan",
+      "nameHi": "प्रधानमंत्री किसान मानधन योजना",
+      "nameEn": "PM Kisan Maandhan Yojana (PM-KMY)",
+      "level": "central",
+      "departmentHi": "कृषि मंत्रालय",
+      "annualValueInr": 36000,
+      "benefitDescriptionHi": "छोटे/सीमांत किसानों (2 हेक्टेयर तक) को 60 वर्ष बाद ₹3,000/माह पेंशन",
+      "benefitDescriptionEn": "₹3,000/month pension after 60 for small/marginal farmers (up to 2 hectares)",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 3000,
+      "rules": [
+        {
+          "field": "ownsLand",
+          "operator": "truthy",
+          "labelHi": "2 हेक्टेयर तक कृषि भूमि",
+          "labelEn": "Farmland up to 2 hectares"
+        },
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18-40",
+          "labelEn": "Age 18-40"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "familyIsTaxpayer",
+          "value": true,
+          "ruleHi": "आयकर दाता",
+          "ruleEn": "Income taxpayer"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Land Records/Khasra",
+        "Bank Account",
+        "Mobile Number"
+      ],
+      "nextActionHi": "maandhan.in पर ऑनलाइन या CSC में पंजीकरण करें (PM-KISAN से अंशदान भी हो सकता है)",
+      "nextActionEn": "Register at maandhan.in or CSC (can use PM-KISAN funds for contribution)",
+      "portal": "https://maandhan.in/",
+      "tags": [
+        "central",
+        "pension",
+        "farmer",
+        "small_farmer"
+      ],
+      "needCategory": "pension",
+      "priorityScore": 74
+    },
+    {
+      "id": "central-eshram",
+      "nameHi": "ई-श्रम पोर्टल (असंगठित श्रमिक पंजीकरण)",
+      "nameEn": "e-Shram Portal (Unorganized Worker Registration)",
+      "level": "central",
+      "departmentHi": "श्रम एवं रोजगार मंत्रालय",
+      "annualValueInr": 200000,
+      "benefitDescriptionHi": "असंगठित श्रमिकों का केंद्रीय पंजीकरण — e-Shram कार्ड + ₹2 लाख दुर्घटना बीमा + सरकारी योजनाओं तक पहुंच",
+      "benefitDescriptionEn": "Central registration of unorganized workers — e-Shram card + ₹2L accident insurance + access to govt schemes",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 16,
+          "labelHi": "आयु 16-59",
+          "labelEn": "Age 16-59"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "isGovtPsuEmployee",
+          "value": true,
+          "ruleHi": "संगठित क्षेत्र/EPFO/ESIC सदस्य",
+          "ruleEn": "Organized sector/EPFO/ESIC member"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account",
+        "Mobile Number linked to Aadhaar"
+      ],
+      "nextActionHi": "eshram.gov.in पर ऑनलाइन या CSC में पंजीकरण करें",
+      "nextActionEn": "Register online at eshram.gov.in or visit CSC",
+      "portal": "https://eshram.gov.in/",
+      "tags": [
+        "central",
+        "registration",
+        "unorganized_worker",
+        "insurance"
+      ],
+      "needCategory": "labour_welfare",
+      "priorityScore": 87
+    },
+    {
+      "id": "central-pm-poshan",
+      "nameHi": "PM POSHAN (मध्याह्न भोजन योजना)",
+      "nameEn": "PM POSHAN (Mid Day Meal Scheme)",
+      "level": "central",
+      "departmentHi": "शिक्षा मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "सरकारी स्कूलों (कक्षा 1-8) में बच्चों को मुफ्त गरम भोजन — 450-700 कैलोरी/दिन",
+      "benefitDescriptionEn": "Free hot meal for children in govt schools (class 1-8) — 450-700 cal/day",
+      "benefitFrequency": "daily",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "सरकारी स्कूल में बच्चे",
+          "labelEn": "Children in govt school"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "School Enrollment"
+      ],
+      "nextActionHi": "बच्चों को सरकारी/सहायता प्राप्त स्कूल में दाखिल करें — भोजन स्वत: मिलता है",
+      "nextActionEn": "Enroll children in govt/aided school — meals provided automatically",
+      "portal": "",
+      "tags": [
+        "central",
+        "nutrition",
+        "education",
+        "child",
+        "mid_day_meal"
+      ],
+      "needCategory": "food_nutrition",
+      "priorityScore": 81
+    },
+    {
+      "id": "central-samagra-shiksha",
+      "nameHi": "समग्र शिक्षा अभियान",
+      "nameEn": "Samagra Shiksha Abhiyan",
+      "level": "central",
+      "departmentHi": "शिक्षा मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "सरकारी स्कूलों में मुफ्त किताबें, वर्दी, बैग + बालिकाओं के लिए विशेष प्रोत्साहन",
+      "benefitDescriptionEn": "Free textbooks, uniforms, bags in govt schools + special incentives for girls",
+      "benefitFrequency": "annual",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "सरकारी स्कूल में बच्चे",
+          "labelEn": "Children in govt school"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "School Enrollment",
+        "Aadhaar Card"
+      ],
+      "nextActionHi": "सरकारी स्कूल में दाखिला — सामग्री स्वत: प्रदान होती है",
+      "nextActionEn": "Enrollment in govt school — materials provided automatically",
+      "portal": "",
+      "tags": [
+        "central",
+        "education",
+        "free_textbooks",
+        "uniforms",
+        "girls"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 77
+    },
+    {
+      "id": "central-pm-surakshit-matritva",
+      "nameHi": "प्रधानमंत्री सुरक्षित मातृत्व अभियान",
+      "nameEn": "PM Surakshit Matritva Abhiyan (PMSMA)",
+      "level": "central",
+      "departmentHi": "स्वास्थ्य मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "हर महीने 9 तारीख को गर्भवती महिलाओं को मुफ्त ANC चेकअप — सरकारी अस्पतालों में",
+      "benefitDescriptionEn": "Free antenatal checkup for pregnant women on 9th of every month at govt hospitals",
+      "benefitFrequency": "monthly",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "isPregnant",
+          "operator": "truthy",
+          "labelHi": "गर्भवती (दूसरी/तीसरी तिमाही)",
+          "labelEn": "Pregnant (2nd/3rd trimester)"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "MCP Card",
+        "Aadhaar Card"
+      ],
+      "nextActionHi": "हर महीने 9 तारीख को निकटतम सरकारी अस्पताल/PHC में जाएं",
+      "nextActionEn": "Visit nearest govt hospital/PHC on 9th of every month",
+      "portal": "https://pmsma.nhp.gov.in/",
+      "tags": [
+        "central",
+        "health",
+        "maternity",
+        "free_checkup",
+        "antenatal"
+      ],
+      "needCategory": "maternity",
+      "priorityScore": 84
+    },
+    {
+      "id": "central-rbsk",
+      "nameHi": "राष्ट्रीय बाल स्वास्थ्य कार्यक्रम (RBSK)",
+      "nameEn": "Rashtriya Bal Swasthya Karyakram (RBSK)",
+      "level": "central",
+      "departmentHi": "स्वास्थ्य मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "0-18 वर्ष के बच्चों की मुफ्त स्वास्थ्य जांच (4D: दोष, रोग, कमी, विकलांगता) + मुफ्त इलाज",
+      "benefitDescriptionEn": "Free health screening (4Ds: Defects, Diseases, Deficiencies, Disabilities) + free treatment for children 0-18",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "बच्चे हैं (0-18 वर्ष)",
+          "labelEn": "Has children (0-18 years)"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Child Birth Certificate",
+        "Aadhaar Card"
+      ],
+      "nextActionHi": "आंगनबाड़ी/स्कूल में RBSK टीम से जांच करवाएं या निकटतम DEIC से संपर्क करें",
+      "nextActionEn": "Get screening from RBSK team at Anganwadi/school or contact nearest DEIC",
+      "portal": "",
+      "tags": [
+        "central",
+        "health",
+        "child",
+        "screening",
+        "free_treatment"
+      ],
+      "needCategory": "child_welfare",
+      "priorityScore": 78
+    },
+    {
+      "id": "central-pmfme",
+      "nameHi": "PM सूक्ष्म खाद्य प्रसंस्करण उद्यम योजना (PMFME)",
+      "nameEn": "PM Formalisation of Micro Food Processing Enterprises (PMFME)",
+      "level": "central",
+      "departmentHi": "खाद्य प्रसंस्करण उद्योग मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "SHG/FPO/व्यक्तिगत खाद्य प्रसंस्करण इकाइयों को 35% सब्सिडी (₹10 लाख तक) + प्रशिक्षण",
+      "benefitDescriptionEn": "35% subsidy (up to ₹10L) for SHG/FPO/individual micro food processing units + training",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18+",
+          "labelEn": "Age 18+"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Business Plan/DPR",
+        "Bank Account",
+        "Udyam Registration",
+        "FSSAI License (or apply)"
+      ],
+      "nextActionHi": "pmfme.mofpi.gov.in पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at pmfme.mofpi.gov.in",
+      "portal": "https://pmfme.mofpi.gov.in/",
+      "tags": [
+        "central",
+        "enterprise",
+        "food_processing",
+        "shg",
+        "subsidy"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 70
+    },
+    {
+      "id": "central-pmgdisha",
+      "nameHi": "प्रधानमंत्री ग्रामीण डिजिटल साक्षरता अभियान",
+      "nameEn": "PM Gramin Digital Saksharta Abhiyan (PMGDISHA)",
+      "level": "central",
+      "departmentHi": "इलेक्ट्रॉनिक्स एवं सूचना प्रौद्योगिकी मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "ग्रामीण परिवारों (1 सदस्य/परिवार) को 20 घंटे मुफ्त डिजिटल साक्षरता प्रशिक्षण + प्रमाण पत्र",
+      "benefitDescriptionEn": "20-hour free digital literacy training + certificate for rural families (1 member/family)",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
+        },
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 14,
+          "labelHi": "आयु 14-60",
+          "labelEn": "Age 14-60"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card"
+      ],
+      "nextActionHi": "निकटतम CSC या PMGDISHA प्रशिक्षण केंद्र से संपर्क करें",
+      "nextActionEn": "Contact nearest CSC or PMGDISHA training centre",
+      "portal": "https://www.pmgdisha.in/",
+      "tags": [
+        "central",
+        "digital_literacy",
+        "training",
+        "rural"
+      ],
+      "needCategory": "skill_employment",
+      "priorityScore": 65
+    },
+    {
+      "id": "central-van-dhan",
+      "nameHi": "वन धन विकास कार्यक्रम",
+      "nameEn": "Van Dhan Vikas Karyakram",
+      "level": "central",
+      "departmentHi": "जनजातीय कार्य मंत्रालय (TRIFED)",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "आदिवासी महिलाओं/SHG को वनोपज (तेंदूपत्ता, शहद, गोंद आदि) का मूल्य संवर्धन, प्रसंस्करण, विपणन सहायता",
+      "benefitDescriptionEn": "Value addition, processing, marketing support for tribal women/SHGs for forest produce (tendu, honey, gum etc.)",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "in",
+          "value": [
+            "st"
+          ],
+          "labelHi": "अनुसूचित जनजाति",
+          "labelEn": "Scheduled Tribe"
+        },
+        {
+          "field": "isShgMember",
+          "operator": "truthy",
+          "labelHi": "SHG/वन धन केंद्र सदस्य",
+          "labelEn": "SHG/Van Dhan Kendra member"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Caste Certificate (ST)",
+        "SHG Membership"
+      ],
+      "nextActionHi": "निकटतम वन धन विकास केंद्र या TRIFED से संपर्क करें",
+      "nextActionEn": "Contact nearest Van Dhan Vikas Kendra or TRIFED",
+      "portal": "https://trifed.tribal.gov.in/",
+      "tags": [
+        "central",
+        "tribal",
+        "forest_produce",
+        "shg",
+        "value_addition"
+      ],
+      "needCategory": "livelihood",
+      "priorityScore": 73
+    },
+    {
+      "id": "central-fra",
+      "nameHi": "वन अधिकार अधिनियम (FRA) — भूमि पट्टा",
+      "nameEn": "Forest Rights Act (FRA) — Land Title",
+      "level": "central",
+      "departmentHi": "जनजातीय कार्य मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "वनवासी/आदिवासी परिवारों को वन भूमि पर व्यक्तिगत/सामुदायिक अधिकार का पट्टा",
+      "benefitDescriptionEn": "Individual/community forest land rights title for tribal/forest-dwelling families",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "in",
+          "value": [
+            "st"
+          ],
+          "labelHi": "अनुसूचित जनजाति/वन निवासी",
+          "labelEn": "ST/forest dweller"
+        },
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "वन क्षेत्र निवासी",
+          "labelEn": "Forest area resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Caste Certificate",
+        "Evidence of occupation on forest land (before 13 Dec 2005)",
+        "GPS coordinates of land",
+        "Village/Gram Sabha resolution"
+      ],
+      "nextActionHi": "ग्राम सभा में वन अधिकार दावा फॉर्म भरें",
+      "nextActionEn": "Fill Forest Rights claim form at Gram Sabha",
+      "portal": "",
+      "tags": [
+        "central",
+        "tribal",
+        "land_rights",
+        "forest",
+        "fra"
+      ],
+      "needCategory": "general_welfare",
+      "priorityScore": 80
+    },
+    {
+      "id": "central-pmay-urban",
+      "nameHi": "प्रधानमंत्री आवास योजना — शहरी",
+      "nameEn": "Pradhan Mantri Awas Yojana – Urban (PMAY-U)",
+      "level": "central",
+      "departmentHi": "आवासन एवं शहरी कार्य मंत्रालय",
+      "annualValueInr": 250000,
+      "benefitDescriptionHi": "शहरी EWS/LIG परिवारों को ₹2.5 लाख तक सब्सिडी (ब्याज दर 6.5%) — महिला स्वामित्व अनिवार्य",
+      "benefitDescriptionEn": "Up to ₹2.5L subsidy (6.5% interest) for urban EWS/LIG families — woman ownership mandatory",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 250000,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "urban",
+          "labelHi": "शहरी निवासी",
+          "labelEn": "Urban resident"
+        },
+        {
+          "field": "ownsPuccaHouse",
+          "operator": "falsy",
+          "labelHi": "पक्का मकान नहीं",
+          "labelEn": "No pucca house"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "EWS/LIG (₹3-6 लाख वार्षिक आय)",
+          "labelEn": "EWS/LIG (₹3-6L annual income)"
+        }
+      ],
+      "exclusions": [
+        {
+          "field": "ownsPuccaHouse",
+          "value": true,
+          "ruleHi": "पहले से पक्का मकान",
+          "ruleEn": "Already owns pucca house"
+        }
+      ],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Income Certificate",
+        "Bank Account",
+        "No-house declaration",
+        "Woman owner as co-owner mandatory"
+      ],
+      "nextActionHi": "pmaymis.gov.in पर ऑनलाइन या नगर निगम/CSC में आवेदन करें",
+      "nextActionEn": "Apply online at pmaymis.gov.in or at Municipal body/CSC",
+      "portal": "https://pmaymis.gov.in/",
+      "tags": [
+        "central",
+        "housing",
+        "urban",
+        "ews",
+        "women_ownership"
+      ],
+      "needCategory": "housing",
       "priorityScore": 85
+    },
+    {
+      "id": "cg-shramik-cycle",
+      "nameHi": "मुख्यमंत्री श्रमिक साइकिल सहायता योजना",
+      "nameEn": "CM Shramik Cycle Sahayata Yojana",
+      "level": "state",
+      "departmentHi": "श्रम विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "पंजीकृत श्रमिकों को मुफ्त साइकिल — कार्य स्थल आवागमन के लिए",
+      "benefitDescriptionEn": "Free bicycle for registered construction workers for commuting to work",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Labour Registration Card",
+        "Bank Account"
+      ],
+      "nextActionHi": "श्रम विभाग पोर्टल पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at Labour Department portal",
+      "portal": "https://cglabour.nic.in/",
+      "tags": [
+        "cg_state",
+        "labour",
+        "bicycle",
+        "construction_worker"
+      ],
+      "needCategory": "labour_welfare",
+      "priorityScore": 60
+    },
+    {
+      "id": "cg-shramik-aujaar",
+      "nameHi": "मुख्यमंत्री श्रमिक औजार सहायता योजना",
+      "nameEn": "CM Shramik Aujaar Sahayata Yojana (Free Tool Kit)",
+      "level": "state",
+      "departmentHi": "श्रम विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "पंजीकृत निर्माण श्रमिकों (राजमिस्त्री, बढ़ई, प्लम्बर, इलेक्ट्रीशियन) को मुफ्त औजार किट",
+      "benefitDescriptionEn": "Free tool kit for registered construction workers (mason, carpenter, plumber, electrician)",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "आयु 18-50",
+          "labelEn": "Age 18-50"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Labour Registration Card (90 days)",
+        "Bank Account"
+      ],
+      "nextActionHi": "श्रम विभाग पोर्टल पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at Labour Department portal",
+      "portal": "https://cglabour.nic.in/",
+      "tags": [
+        "cg_state",
+        "labour",
+        "tools",
+        "construction_worker"
+      ],
+      "needCategory": "labour_welfare",
+      "priorityScore": 62
+    },
+    {
+      "id": "cg-108-ambulance",
+      "nameHi": "108 एम्बुलेंस सेवा (छ.ग.)",
+      "nameEn": "108 Ambulance Service (CG)",
+      "level": "state",
+      "departmentHi": "स्वास्थ्य विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "मुफ्त आपातकालीन एम्बुलेंस सेवा — 108 डायल करें — 24/7 उपलब्ध",
+      "benefitDescriptionEn": "Free emergency ambulance service — dial 108 — available 24/7",
+      "benefitFrequency": "on_demand",
+      "benefitAmount": null,
+      "rules": [],
+      "exclusions": [],
+      "documentsRequired": [
+        "No documents needed — call 108"
+      ],
+      "nextActionHi": "आपातकाल में 108 पर कॉल करें (मुफ्त, 24/7)",
+      "nextActionEn": "Call 108 in emergency (free, 24/7)",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "health",
+        "ambulance",
+        "emergency",
+        "free"
+      ],
+      "needCategory": "health",
+      "priorityScore": 92
+    },
+    {
+      "id": "cg-tendupatta",
+      "nameHi": "तेंदूपत्ता संग्रहण योजना (न्यूनतम मजदूरी)",
+      "nameEn": "Tendupatta Collection Scheme (Minimum Wage)",
+      "level": "state",
+      "departmentHi": "वन विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "आदिवासी महिलाओं/परिवारों को तेंदूपत्ता संग्रहण पर सरकारी न्यूनतम मजदूरी + बोनस",
+      "benefitDescriptionEn": "Govt minimum wage + bonus for tendu leaf collection by tribal women/families",
+      "benefitFrequency": "seasonal",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "in",
+          "value": [
+            "st",
+            "sc"
+          ],
+          "labelHi": "आदिवासी/SC वन निवासी",
+          "labelEn": "Tribal/SC forest dweller"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        },
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "वन क्षेत्र",
+          "labelEn": "Forest area"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Phad Registration"
+      ],
+      "nextActionHi": "तेंदूपत्ता सीजन (मई-जून) में निकटतम फड़ मुंशी से पंजीकरण करें",
+      "nextActionEn": "Register with nearest Phad Munshi during tendu season (May-June)",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "tribal",
+        "forest_produce",
+        "seasonal_income"
+      ],
+      "needCategory": "livelihood",
+      "priorityScore": 72
+    },
+    {
+      "id": "cg-antyeshti-sahayata",
+      "nameHi": "छत्तीसगढ़ अंत्येष्टि/अंतिम संस्कार सहायता योजना",
+      "nameEn": "CG Antyeshti Sahayata Yojana (Funeral Assistance)",
+      "level": "state",
+      "departmentHi": "समाज कल्याण विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "BPL परिवारों को अंतिम संस्कार के लिए ₹5,000 सहायता",
+      "benefitDescriptionEn": "₹5,000 funeral assistance for BPL families",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 5000,
+      "rules": [
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "BPL परिवार",
+          "labelEn": "BPL family"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Death Certificate",
+        "BPL Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "नगर निगम/ग्राम पंचायत में आवेदन करें",
+      "nextActionEn": "Apply at Municipal body/Gram Panchayat",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "funeral",
+        "death_benefit",
+        "bpl"
+      ],
+      "needCategory": "general_welfare",
+      "priorityScore": 65
+    },
+    {
+      "id": "cg-bihan",
+      "nameHi": "छत्तीसगढ़ BIHAN (बिहान — राज्य ग्रामीण आजीविका मिशन)",
+      "nameEn": "CG BIHAN (State Rural Livelihood Mission)",
+      "level": "state",
+      "departmentHi": "पंचायत एवं ग्रामीण विकास विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "ग्रामीण गरीब महिलाओं को SHG गठन, रिवॉल्विंग फंड ₹15K, बैंक लिंकेज, कौशल प्रशिक्षण",
+      "benefitDescriptionEn": "SHG formation, ₹15K revolving fund, bank linkage, skill training for rural poor women",
+      "benefitFrequency": "continuous",
+      "benefitAmount": 15000,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
+        },
+        {
+          "field": "isBpl",
+          "operator": "truthy",
+          "labelHi": "गरीब परिवार",
+          "labelEn": "Poor household"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account",
+        "BPL/SECC list"
+      ],
+      "nextActionHi": "ग्राम पंचायत या BIHAN ब्लॉक मिशन कार्यालय से संपर्क करें",
+      "nextActionEn": "Contact Gram Panchayat or BIHAN Block Mission office",
+      "portal": "https://bihan.gov.in/",
+      "tags": [
+        "cg_state",
+        "shg",
+        "livelihood",
+        "rural",
+        "women"
+      ],
+      "needCategory": "livelihood",
+      "priorityScore": 83
+    },
+    {
+      "id": "cg-free-uniform",
+      "nameHi": "छत्तीसगढ़ निःशुल्क स्कूल यूनिफॉर्म योजना",
+      "nameEn": "CG Free School Uniform Scheme",
+      "level": "state",
+      "departmentHi": "शिक्षा विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "सरकारी स्कूलों में सभी बच्चों को 2 सेट मुफ्त यूनिफॉर्म + जूते + बैग",
+      "benefitDescriptionEn": "2 sets free uniform + shoes + bag for all children in govt schools",
+      "benefitFrequency": "annual",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "सरकारी स्कूल में बच्चे",
+          "labelEn": "Children in govt school"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "School Enrollment"
+      ],
+      "nextActionHi": "सरकारी स्कूल में दाखिला — यूनिफॉर्म स्वत: वितरित होती है",
+      "nextActionEn": "Enrollment in govt school — uniform distributed automatically",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "education",
+        "free_uniform",
+        "children"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 73
+    },
+    {
+      "id": "central-national-apprenticeship",
+      "nameHi": "राष्ट्रीय शिक्षुता प्रोत्साहन योजना (NAPS)",
+      "nameEn": "National Apprenticeship Promotion Scheme (NAPS)",
+      "level": "central",
+      "departmentHi": "कौशल विकास मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "युवाओं (14+) को उद्योगों में अप्रेंटिसशिप + ₹1,500/माह वजीफा — सरकार 25% वहन करती है",
+      "benefitDescriptionEn": "Industry apprenticeship for youth (14+) + ₹1,500/month stipend — govt shares 25%",
+      "benefitFrequency": "monthly",
+      "benefitAmount": 1500,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 14,
+          "labelHi": "आयु 14+",
+          "labelEn": "Age 14+"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Education Certificate",
+        "Bank Account"
+      ],
+      "nextActionHi": "apprenticeshipindia.gov.in पर ऑनलाइन पंजीकरण करें",
+      "nextActionEn": "Register online at apprenticeshipindia.gov.in",
+      "portal": "https://www.apprenticeshipindia.gov.in/",
+      "tags": [
+        "central",
+        "apprenticeship",
+        "skill_training",
+        "youth",
+        "stipend"
+      ],
+      "needCategory": "skill_employment",
+      "priorityScore": 67
+    },
+    {
+      "id": "central-pm-vishwakarma-toolkit",
+      "nameHi": "PM विश्वकर्मा टूलकिट ई-वाउचर",
+      "nameEn": "PM Vishwakarma Toolkit E-Voucher",
+      "level": "central",
+      "departmentHi": "सूक्ष्म, लघु एवं मध्यम उद्यम मंत्रालय",
+      "annualValueInr": 15000,
+      "benefitDescriptionHi": "18 पारंपरिक शिल्पकारों (कुम्हार, बढ़ई, लोहार, दर्जी आदि) को ₹15,000 टूलकिट ई-वाउचर + ₹3 लाख ऋण",
+      "benefitDescriptionEn": "₹15,000 toolkit e-voucher + ₹3L loan for 18 traditional artisans (potter, carpenter, blacksmith, tailor etc.)",
+      "benefitFrequency": "one_time",
+      "benefitAmount": 15000,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "पारंपरिक शिल्पकार 18+",
+          "labelEn": "Traditional artisan 18+"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Bank account"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account",
+        "Gram Panchayat Verification",
+        "Skill Certificate"
+      ],
+      "nextActionHi": "pmvishwakarma.gov.in पर ऑनलाइन या CSC में पंजीकरण करें",
+      "nextActionEn": "Register at pmvishwakarma.gov.in or visit CSC",
+      "portal": "https://pmvishwakarma.gov.in/",
+      "tags": [
+        "central",
+        "artisan",
+        "toolkit",
+        "loan",
+        "traditional_craft"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 73
+    },
+    {
+      "id": "central-startup-india",
+      "nameHi": "स्टार्टअप इंडिया (DPIIT मान्यता + लाभ)",
+      "nameEn": "Startup India (DPIIT Recognition + Benefits)",
+      "level": "central",
+      "departmentHi": "वाणिज्य एवं उद्योग मंत्रालय (DPIIT)",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "स्टार्टअप को DPIIT मान्यता + 3 वर्ष कर छूट + पेटेंट 80% छूट + स्व-प्रमाणन + बीज निधि पहुंच",
+      "benefitDescriptionEn": "DPIIT recognition + 3yr tax exemption + 80% patent rebate + self-certification + seed fund access",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "उद्यमी 18+",
+          "labelEn": "Entrepreneur 18+"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Company Registration (Pvt Ltd/LLP/Partnership)",
+        "PAN Card",
+        "Business Plan",
+        "Incorporation Certificate"
+      ],
+      "nextActionHi": "startupindia.gov.in पर DPIIT मान्यता के लिए पंजीकरण करें",
+      "nextActionEn": "Register for DPIIT recognition at startupindia.gov.in",
+      "portal": "https://www.startupindia.gov.in/",
+      "tags": [
+        "central",
+        "startup",
+        "tax_exemption",
+        "innovation",
+        "enterprise"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 72
+    },
+    {
+      "id": "central-sisfs",
+      "nameHi": "स्टार्टअप इंडिया बीज निधि योजना (SISFS)",
+      "nameEn": "Startup India Seed Fund Scheme (SISFS)",
+      "level": "central",
+      "departmentHi": "वाणिज्य एवं उद्योग मंत्रालय (DPIIT)",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "प्रारंभिक चरण स्टार्टअप को ₹20 लाख अनुदान (PoC) + ₹50 लाख निवेश — इन्क्यूबेटर के माध्यम से",
+      "benefitDescriptionEn": "₹20L grant (PoC) + ₹50L investment for early-stage startups — via approved incubators",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "DPIIT मान्यता प्राप्त स्टार्टअप (2 वर्ष से कम)",
+          "labelEn": "DPIIT recognized startup (<2 years old)"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "DPIIT Recognition Certificate",
+        "Business Plan/Pitch Deck",
+        "Company Registration",
+        "Bank Account",
+        "Product Demo/Prototype"
+      ],
+      "nextActionHi": "seedfund.startupindia.gov.in पर आवेदन करें (इन्क्यूबेटर चुनें)",
+      "nextActionEn": "Apply at seedfund.startupindia.gov.in (select incubator)",
+      "portal": "https://seedfund.startupindia.gov.in/",
+      "tags": [
+        "central",
+        "startup",
+        "seed_fund",
+        "grant",
+        "innovation"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 68
+    },
+    {
+      "id": "central-cgtmse",
+      "nameHi": "CGTMSE (सूक्ष्म उद्यम ऋण गारंटी)",
+      "nameEn": "Credit Guarantee Fund Trust for MSE (CGTMSE)",
+      "level": "central",
+      "departmentHi": "सूक्ष्म, लघु एवं मध्यम उद्यम मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "MSE को ₹2 करोड़ तक बिना गारंटी ऋण — महिलाओं को 85% गारंटी कवर (अन्य को 75%)",
+      "benefitDescriptionEn": "Collateral-free loans up to ₹2Cr for MSE — 85% guarantee cover for women (75% for others)",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "सूक्ष्म/लघु उद्यमी",
+          "labelEn": "Micro/small entrepreneur"
+        },
+        {
+          "field": "hasBankAccount",
+          "operator": "truthy",
+          "labelHi": "बैंक खाता",
+          "labelEn": "Bank account"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Udyam Registration",
+        "Business Plan/DPR",
+        "Bank Account",
+        "Income Tax Returns (if any)"
+      ],
+      "nextActionHi": "किसी भी बैंक शाखा में CGTMSE के तहत ऋण आवेदन करें",
+      "nextActionEn": "Apply for CGTMSE-backed loan at any bank branch",
+      "portal": "https://www.cgtmse.in/",
+      "tags": [
+        "central",
+        "loan",
+        "guarantee",
+        "mse",
+        "women_priority"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 74
+    },
+    {
+      "id": "central-udyam-registration",
+      "nameHi": "उद्यम पंजीकरण (MSME)",
+      "nameEn": "Udyam Registration (MSME Registration)",
+      "level": "central",
+      "departmentHi": "सूक्ष्म, लघु एवं मध्यम उद्यम मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "मुफ्त MSME पंजीकरण — सरकारी ऋण, सब्सिडी, GeM टेंडर, प्राथमिकता क्षेत्र ऋण तक पहुंच",
+      "benefitDescriptionEn": "Free MSME registration — access to govt loans, subsidies, GeM tenders, priority sector lending",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "उद्यमी/व्यापारी",
+          "labelEn": "Entrepreneur/business owner"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "PAN Card",
+        "Bank Account",
+        "Business Details"
+      ],
+      "nextActionHi": "udyamregistration.gov.in पर मुफ्त ऑनलाइन पंजीकरण करें",
+      "nextActionEn": "Register free at udyamregistration.gov.in",
+      "portal": "https://udyamregistration.gov.in/",
+      "tags": [
+        "central",
+        "msme",
+        "registration",
+        "free",
+        "enterprise"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 77
+    },
+    {
+      "id": "central-begum-hazrat-mahal",
+      "nameHi": "बेगम हज़रत महल राष्ट्रीय छात्रवृत्ति",
+      "nameEn": "Begum Hazrat Mahal National Scholarship",
+      "level": "central",
+      "departmentHi": "अल्पसंख्यक कार्य मंत्रालय",
+      "annualValueInr": 6000,
+      "benefitDescriptionHi": "अल्पसंख्यक समुदाय (मुस्लिम, ईसाई, सिख, बौद्ध, जैन, पारसी) की बालिकाओं को कक्षा 9-12 में ₹5,000-₹6,000/वर्ष",
+      "benefitDescriptionEn": "₹5,000-₹6,000/year for minority community girls (Muslim, Christian, Sikh, Buddhist, Jain, Parsi) in class 9-12",
+      "benefitFrequency": "annual",
+      "benefitAmount": 6000,
+      "rules": [
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "बालिका (कक्षा 9-12)",
+          "labelEn": "Girl student (class 9-12)"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Minority Community Certificate",
+        "Previous Year Mark Sheet (50%+)",
+        "Income Certificate (₹2L/year max)",
+        "Bank Account"
+      ],
+      "nextActionHi": "scholarships.gov.in (NSP) पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at scholarships.gov.in (NSP)",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "central",
+        "scholarship",
+        "minority",
+        "girls",
+        "education"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 74
+    },
+    {
+      "id": "central-pragati-scholarship",
+      "nameHi": "AICTE प्रगति छात्रवृत्ति (बालिकाओं के लिए)",
+      "nameEn": "AICTE Pragati Scholarship for Girls",
+      "level": "central",
+      "departmentHi": "शिक्षा मंत्रालय (AICTE)",
+      "annualValueInr": 50000,
+      "benefitDescriptionHi": "तकनीकी डिप्लोमा/डिग्री की बालिकाओं को ₹50,000/वर्ष (ट्यूशन ₹30K + ₹2,000/माह)",
+      "benefitDescriptionEn": "₹50,000/year for girls in technical diploma/degree (₹30K tuition + ₹2,000/month)",
+      "benefitFrequency": "annual",
+      "benefitAmount": 50000,
+      "rules": [
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "तकनीकी शिक्षा में बालिका",
+          "labelEn": "Girl in technical education"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "AICTE Institution Admission Letter",
+        "Previous Mark Sheet",
+        "Income Certificate (₹8L/year max)",
+        "Bank Account"
+      ],
+      "nextActionHi": "scholarships.gov.in पर ऑनलाइन आवेदन करें (सितम्बर-अक्टूबर)",
+      "nextActionEn": "Apply online at scholarships.gov.in (Sep-Oct window)",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "central",
+        "scholarship",
+        "girls",
+        "technical_education",
+        "aicte"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 76
+    },
+    {
+      "id": "central-ug-indira-gandhi-scholarship",
+      "nameHi": "इंदिरा गांधी एकल बालिका छात्रवृत्ति (UGC PG)",
+      "nameEn": "Indira Gandhi Scholarship for Single Girl Child (UGC PG)",
+      "level": "central",
+      "departmentHi": "शिक्षा मंत्रालय (UGC)",
+      "annualValueInr": 36200,
+      "benefitDescriptionHi": "एकल बालिका को PG (MA/MSc/MCom आदि) के लिए ₹36,200/वर्ष — 2 वर्ष तक",
+      "benefitDescriptionEn": "₹36,200/year for single girl child pursuing PG (MA/MSc/MCom etc.) — for 2 years",
+      "benefitFrequency": "annual",
+      "benefitAmount": 36200,
+      "rules": [
+        {
+          "field": "hasGirlChild",
+          "operator": "truthy",
+          "labelHi": "एकल बालिका (PG में)",
+          "labelEn": "Single girl child (in PG)"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Self-declaration of single girl child",
+        "PG Admission Letter",
+        "Previous Degree Mark Sheet",
+        "Bank Account"
+      ],
+      "nextActionHi": "scholarships.gov.in पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at scholarships.gov.in",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "central",
+        "scholarship",
+        "single_girl",
+        "post_graduate",
+        "ugc"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 70
+    },
+    {
+      "id": "central-pre-matric-sc",
+      "nameHi": "प्री-मैट्रिक छात्रवृत्ति (SC)",
+      "nameEn": "Pre-Matric Scholarship for SC Students",
+      "level": "central",
+      "departmentHi": "सामाजिक न्याय एवं अधिकारिता मंत्रालय",
+      "annualValueInr": 4500,
+      "benefitDescriptionHi": "SC छात्रों को कक्षा 9-10 में ₹150-₹350/माह छात्रवृत्ति + पुस्तक अनुदान",
+      "benefitDescriptionEn": "₹150-₹350/month scholarship + book grant for SC students in class 9-10",
+      "benefitFrequency": "annual",
+      "benefitAmount": 4500,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "eq",
+          "value": "sc",
+          "labelHi": "अनुसूचित जाति",
+          "labelEn": "Scheduled Caste"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Caste Certificate (SC)",
+        "School Enrollment",
+        "Income Certificate (₹2.5L/year max)",
+        "Bank Account"
+      ],
+      "nextActionHi": "scholarships.gov.in पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at scholarships.gov.in",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "central",
+        "scholarship",
+        "education",
+        "sc"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 73
+    },
+    {
+      "id": "central-post-matric-obc",
+      "nameHi": "पोस्ट-मैट्रिक छात्रवृत्ति (OBC)",
+      "nameEn": "Post-Matric Scholarship for OBC Students",
+      "level": "central",
+      "departmentHi": "सामाजिक न्याय एवं अधिकारिता मंत्रालय",
+      "annualValueInr": 10000,
+      "benefitDescriptionHi": "OBC छात्रों को कक्षा 11 से उच्च शिक्षा तक छात्रवृत्ति + ट्यूशन फीस",
+      "benefitDescriptionEn": "Scholarship + tuition fee for OBC students from class 11 to higher education",
+      "benefitFrequency": "annual",
+      "benefitAmount": 10000,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "eq",
+          "value": "obc",
+          "labelHi": "अन्य पिछड़ा वर्ग",
+          "labelEn": "OBC"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "OBC Certificate",
+        "Previous Mark Sheet",
+        "Income Certificate (₹1L/year max)",
+        "Bank Account",
+        "Admission Proof"
+      ],
+      "nextActionHi": "scholarships.gov.in पर ऑनलाइन आवेदन करें",
+      "nextActionEn": "Apply online at scholarships.gov.in",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "central",
+        "scholarship",
+        "education",
+        "obc"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 72
+    },
+    {
+      "id": "central-nmms",
+      "nameHi": "राष्ट्रीय साधन-सह-मेरिट छात्रवृत्ति (NMMS)",
+      "nameEn": "National Means cum Merit Scholarship (NMMS)",
+      "level": "central",
+      "departmentHi": "शिक्षा मंत्रालय",
+      "annualValueInr": 12000,
+      "benefitDescriptionHi": "कक्षा 9-12 के मेधावी छात्रों (सरकारी स्कूल, ₹3.5L/वर्ष आय) को ₹12,000/वर्ष",
+      "benefitDescriptionEn": "₹12,000/year for meritorious students (govt school, ₹3.5L/yr income) in class 9-12",
+      "benefitFrequency": "annual",
+      "benefitAmount": 12000,
+      "rules": [
+        {
+          "field": "numChildren",
+          "operator": "gte",
+          "value": 1,
+          "labelHi": "सरकारी स्कूल में मेधावी बच्चे",
+          "labelEn": "Meritorious children in govt school"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Previous Mark Sheet (55%+ for general, 50%+ for SC/ST)",
+        "Income Certificate (₹3.5L/year max)",
+        "School Enrollment",
+        "Bank Account"
+      ],
+      "nextActionHi": "scholarships.gov.in पर ऑनलाइन आवेदन करें — NMMS परीक्षा उत्तीर्ण करें",
+      "nextActionEn": "Apply at scholarships.gov.in — must clear NMMS exam",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "central",
+        "scholarship",
+        "merit",
+        "education",
+        "class_9_12"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 71
+    },
+    {
+      "id": "cg-post-matric-scholarship-sc-st",
+      "nameHi": "छत्तीसगढ़ पोस्ट-मैट्रिक छात्रवृत्ति (SC/ST)",
+      "nameEn": "CG Post-Matric Scholarship (SC/ST)",
+      "level": "state",
+      "departmentHi": "जनजातीय एवं अनुसूचित जाति विभाग, छ.ग.",
+      "annualValueInr": 15000,
+      "benefitDescriptionHi": "CG के SC/ST छात्रों को कक्षा 11 से उच्च शिक्षा तक छात्रवृत्ति + ट्यूशन फीस + हॉस्टल",
+      "benefitDescriptionEn": "Scholarship + tuition + hostel for CG SC/ST students from class 11 to higher education",
+      "benefitFrequency": "annual",
+      "benefitAmount": 15000,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "in",
+          "value": [
+            "sc",
+            "st"
+          ],
+          "labelHi": "SC/ST",
+          "labelEn": "SC/ST"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Caste Certificate",
+        "Previous Mark Sheet",
+        "Income Certificate",
+        "CG Domicile",
+        "Bank Account",
+        "Admission Proof"
+      ],
+      "nextActionHi": "scholarships.gov.in या छत्तीसगढ़ छात्रवृत्ति पोर्टल पर आवेदन करें",
+      "nextActionEn": "Apply at scholarships.gov.in or CG scholarship portal",
+      "portal": "https://scholarships.gov.in/",
+      "tags": [
+        "cg_state",
+        "scholarship",
+        "education",
+        "sc_st"
+      ],
+      "needCategory": "girl_child_education",
+      "priorityScore": 78
+    },
+    {
+      "id": "cg-rajiv-yuva-utthan",
+      "nameHi": "राजीव युवा उत्थान योजना (UPSC/CGPSC कोचिंग)",
+      "nameEn": "Rajiv Yuva Utthan Yojana (Free UPSC/CGPSC Coaching)",
+      "level": "state",
+      "departmentHi": "जनजातीय एवं अनुसूचित जाति विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "SC/ST/OBC युवाओं को UPSC/CGPSC की मुफ्त कोचिंग + छात्रवृत्ति",
+      "benefitDescriptionEn": "Free UPSC/CGPSC coaching + stipend for SC/ST/OBC youth",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "casteCategory",
+          "operator": "in",
+          "value": [
+            "sc",
+            "st",
+            "obc"
+          ],
+          "labelHi": "SC/ST/OBC",
+          "labelEn": "SC/ST/OBC"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        },
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "स्नातक/स्नातकोत्तर",
+          "labelEn": "Graduate/PG"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Graduation Mark Sheet",
+        "Caste Certificate",
+        "CG Domicile",
+        "Income Certificate"
+      ],
+      "nextActionHi": "जनजातीय विभाग या tribal.cg.gov.in पर आवेदन करें",
+      "nextActionEn": "Apply at Tribal department or tribal.cg.gov.in",
+      "portal": "https://tribal.cg.gov.in/",
+      "tags": [
+        "cg_state",
+        "coaching",
+        "upsc",
+        "education",
+        "sc_st_obc"
+      ],
+      "needCategory": "skill_employment",
+      "priorityScore": 72
+    },
+    {
+      "id": "central-mahila-coir",
+      "nameHi": "महिला कॉयर योजना",
+      "nameEn": "Mahila Coir Yojana",
+      "level": "central",
+      "departmentHi": "सूक्ष्म, लघु एवं मध्यम उद्यम मंत्रालय (कॉयर बोर्ड)",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "महिलाओं को कॉयर/नारियल रेशा उद्योग में 75% सब्सिडी पर यार्न कताई उपकरण + प्रशिक्षण",
+      "benefitDescriptionEn": "75% subsidy on yarn spinning equipment + training for women in coir industry",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "महिला 18+",
+          "labelEn": "Woman 18+"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Bank Account",
+        "Training Certificate (from Coir Board)"
+      ],
+      "nextActionHi": "निकटतम कॉयर बोर्ड कार्यालय से संपर्क करें",
+      "nextActionEn": "Contact nearest Coir Board office",
+      "portal": "https://coirboard.gov.in/",
+      "tags": [
+        "central",
+        "coir",
+        "women",
+        "equipment_subsidy",
+        "craft"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 55
+    },
+    {
+      "id": "central-tread",
+      "nameHi": "TREAD (महिला उद्यमिता विकास सहायता)",
+      "nameEn": "TREAD (Trade Related Entrepreneurship Assistance and Development)",
+      "level": "central",
+      "departmentHi": "सूक्ष्म, लघु एवं मध्यम उद्यम मंत्रालय",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "NGO के माध्यम से महिला उद्यमियों को ₹30 लाख तक ऋण पर 30% सरकारी अनुदान + प्रशिक्षण",
+      "benefitDescriptionEn": "30% govt grant on loans up to ₹30L for women entrepreneurs through NGOs + training",
+      "benefitFrequency": "one_time",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "age",
+          "operator": "gte",
+          "value": 18,
+          "labelHi": "महिला उद्यमी",
+          "labelEn": "Woman entrepreneur"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Business Plan",
+        "NGO Recommendation",
+        "Bank Account"
+      ],
+      "nextActionHi": "MSME-DI या जिला उद्योग केंद्र (DIC) से संपर्क करें",
+      "nextActionEn": "Contact MSME-DI or District Industries Centre (DIC)",
+      "portal": "",
+      "tags": [
+        "central",
+        "women",
+        "entrepreneur",
+        "grant",
+        "ngo"
+      ],
+      "needCategory": "enterprise",
+      "priorityScore": 60
+    },
+    {
+      "id": "cg-godhan-nyay",
+      "nameHi": "गोधन न्याय योजना",
+      "nameEn": "Godhan Nyay Yojana (Cow Dung Purchase)",
+      "level": "state",
+      "departmentHi": "पशुधन विकास विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "गौपालकों/SHG से ₹2/kg गोबर सरकारी खरीद — गौठान में वर्मीकम्पोस्ट निर्माण रोजगार",
+      "benefitDescriptionEn": "Govt buys cow dung at ₹2/kg from cattle rearers/SHGs — vermicompost employment at Gauthans",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण (पशुपालक/SHG)",
+          "labelEn": "Rural (cattle rearer/SHG)"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "Cattle Ownership/SHG Membership",
+        "Bank Account"
+      ],
+      "nextActionHi": "निकटतम गौठान में गोबर बेचें या SHG के माध्यम से जुड़ें",
+      "nextActionEn": "Sell cow dung at nearest Gauthan or join through SHG",
+      "portal": "https://godhannyay.cgstate.gov.in/",
+      "tags": [
+        "cg_state",
+        "cattle",
+        "cow_dung",
+        "shg",
+        "rural_employment"
+      ],
+      "needCategory": "livelihood",
+      "priorityScore": 70
+    },
+    {
+      "id": "cg-ripa",
+      "nameHi": "महात्मा गांधी ग्रामीण औद्योगिक पार्क (RIPA)",
+      "nameEn": "Mahatma Gandhi Rural Industrial Park (RIPA)",
+      "level": "state",
+      "departmentHi": "पंचायत एवं ग्रामीण विकास विभाग, छ.ग.",
+      "annualValueInr": 0,
+      "benefitDescriptionHi": "गौठानों को ग्रामीण औद्योगिक पार्क में बदलकर महिलाओं/SHG को आजीविका — मुर्गी पालन, मशरूम, दाल मिल आदि",
+      "benefitDescriptionEn": "Convert Gauthans into rural industrial parks for women/SHG livelihood — poultry, mushroom, dal mill etc.",
+      "benefitFrequency": "continuous",
+      "benefitAmount": null,
+      "rules": [
+        {
+          "field": "residenceType",
+          "operator": "eq",
+          "value": "rural",
+          "labelHi": "ग्रामीण",
+          "labelEn": "Rural"
+        },
+        {
+          "field": "isShgMember",
+          "operator": "truthy",
+          "labelHi": "SHG सदस्य",
+          "labelEn": "SHG member"
+        },
+        {
+          "field": "stateDomicile",
+          "operator": "eq",
+          "value": "Chhattisgarh",
+          "labelHi": "छ.ग. निवासी",
+          "labelEn": "CG resident"
+        }
+      ],
+      "exclusions": [],
+      "documentsRequired": [
+        "Aadhaar Card",
+        "SHG Membership",
+        "Bank Account"
+      ],
+      "nextActionHi": "ग्राम पंचायत या BIHAN ब्लॉक कार्यालय से RIPA के बारे में जानें",
+      "nextActionEn": "Learn about RIPA at Gram Panchayat or BIHAN Block office",
+      "portal": "",
+      "tags": [
+        "cg_state",
+        "rural_industrial_park",
+        "shg",
+        "women",
+        "livelihood"
+      ],
+      "needCategory": "livelihood",
+      "priorityScore": 72
     }
-  ]
+  ],
+  "needCategories": {
+    "maternity": {
+      "labelHi": "मातृत्व एवं गर्भावस्था",
+      "labelEn": "Maternity & Pregnancy",
+      "icon": "baby"
+    },
+    "pension": {
+      "labelHi": "पेंशन",
+      "labelEn": "Pension",
+      "icon": "piggy-bank"
+    },
+    "health": {
+      "labelHi": "स्वास्थ्य एवं बीमा",
+      "labelEn": "Health & Insurance",
+      "icon": "heart-pulse"
+    },
+    "housing": {
+      "labelHi": "आवास",
+      "labelEn": "Housing",
+      "icon": "home"
+    },
+    "food_nutrition": {
+      "labelHi": "खाद्य एवं पोषण",
+      "labelEn": "Food & Nutrition",
+      "icon": "utensils"
+    },
+    "enterprise": {
+      "labelHi": "उद्यम एवं ऋण",
+      "labelEn": "Enterprise & Loans",
+      "icon": "briefcase"
+    },
+    "skill_employment": {
+      "labelHi": "कौशल एवं रोजगार",
+      "labelEn": "Skill & Employment",
+      "icon": "graduation-cap"
+    },
+    "girl_child_education": {
+      "labelHi": "बालिका एवं शिक्षा",
+      "labelEn": "Girl Child & Education",
+      "icon": "book-open"
+    },
+    "safety_protection": {
+      "labelHi": "सुरक्षा एवं संरक्षण",
+      "labelEn": "Safety & Protection",
+      "icon": "shield"
+    },
+    "financial_inclusion": {
+      "labelHi": "वित्तीय समावेशन",
+      "labelEn": "Financial Inclusion",
+      "icon": "wallet"
+    },
+    "livelihood": {
+      "labelHi": "आजीविका एवं SHG",
+      "labelEn": "Livelihood & SHG",
+      "icon": "users"
+    },
+    "agriculture": {
+      "labelHi": "कृषि",
+      "labelEn": "Agriculture",
+      "icon": "sprout"
+    },
+    "child_welfare": {
+      "labelHi": "बाल कल्याण",
+      "labelEn": "Child Welfare",
+      "icon": "baby"
+    },
+    "disability": {
+      "labelHi": "दिव्यांगजन",
+      "labelEn": "Disability",
+      "icon": "accessibility"
+    },
+    "widow_destitute": {
+      "labelHi": "विधवा/निराश्रित",
+      "labelEn": "Widow/Destitute",
+      "icon": "hand-heart"
+    },
+    "labour_welfare": {
+      "labelHi": "श्रमिक कल्याण",
+      "labelEn": "Labour Welfare",
+      "icon": "hard-hat"
+    },
+    "basic_infrastructure": {
+      "labelHi": "बुनियादी सुविधाएं",
+      "labelEn": "Basic Infrastructure",
+      "icon": "droplet"
+    },
+    "general_welfare": {
+      "labelHi": "सामान्य कल्याण",
+      "labelEn": "General Welfare",
+      "icon": "star"
+    }
+  },
+  "departmentIndex": {
+    "महिला एवं बाल विकास विभाग, छ.ग.": [
+      "cg-mahtari-vandan",
+      "cg-kaushalya-matritva",
+      "cg-kanya-vivah",
+      "cg-noni-suraksha",
+      "cg-shakti-swarupa",
+      "cg-saksham-suraksha",
+      "cg-mahtari-shakti-loan",
+      "cg-dhan-lakshmi",
+      "cg-suposhan-abhiyan"
+    ],
+    "महिला एवं बाल विकास मंत्रालय": [
+      "central-pmmvy",
+      "central-one-stop-centre",
+      "central-swadhar-greh",
+      "central-icds",
+      "central-bbbp",
+      "central-women-helpline",
+      "central-nari-adalat",
+      "central-working-women-hostel",
+      "central-ujjwala-antitrafficking",
+      "central-palna",
+      "central-gap-funding",
+      "central-mahila-ehaat",
+      "central-step",
+      "central-rashtriya-mahila-kosh"
+    ],
+    "ग्रामीण विकास मंत्रालय": [
+      "central-pmay-g",
+      "central-lakhpati-didi",
+      "central-mgnrega",
+      "central-ignoaps",
+      "central-ignwps",
+      "central-igndps",
+      "central-nrlm",
+      "central-ddu-gky",
+      "central-nsap-family-benefit"
+    ],
+    "पेट्रोलियम एवं प्राकृतिक गैस मंत्रालय": [
+      "central-ujjwala"
+    ],
+    "उपभोक्ता मामले, खाद्य एवं सार्वजनिक वितरण मंत्रालय": [
+      "central-nfsa"
+    ],
+    "वित्त मंत्रालय": [
+      "central-pmjdy",
+      "central-sukanya-samriddhi",
+      "central-pmsby",
+      "central-pmjjby",
+      "central-atal-pension",
+      "central-standup-india",
+      "central-pm-mudra",
+      "central-mahila-samman-savings",
+      "central-pm-vaya-vandana"
+    ],
+    "कृषि मंत्रालय": [
+      "central-pm-kisan",
+      "central-pmfby",
+      "central-didi-drone",
+      "central-pm-kisan-maandhan"
+    ],
+    "सूक्ष्म, लघु और मध्यम उद्यम मंत्रालय": [
+      "central-pm-vishwakarma"
+    ],
+    "समाज कल्याण विभाग, छ.ग.": [
+      "cg-widow-pension",
+      "cg-disability-pension",
+      "cg-tirth-yatra",
+      "central-nfbs-cg",
+      "cg-old-age-pension",
+      "cg-antyeshti-sahayata"
+    ],
+    "खाद्य विभाग, छ.ग.": [
+      "cg-khadyann-sahayata"
+    ],
+    "श्रम विभाग, छ.ग.": [
+      "cg-noni-sashaktikaran",
+      "cg-mahtari-jatan",
+      "cg-minimata-sahayata",
+      "cg-shramik-pension",
+      "cg-shramik-awas",
+      "cg-shramik-mrityu-divyang",
+      "cg-shramik-medical",
+      "cg-shramik-shiksha",
+      "cg-shramik-cycle",
+      "cg-shramik-aujaar"
+    ],
+    "ऊर्जा विभाग, छ.ग.": [
+      "cg-bijli-sakhi",
+      "cg-bijli-half"
+    ],
+    "आवास विभाग, छ.ग.": [
+      "cg-gramin-awas-nyay"
+    ],
+    "स्वास्थ्य विभाग, छ.ग.": [
+      "cg-bal-sandarbh",
+      "cg-dkbssy",
+      "cg-sanjeevani",
+      "cg-108-ambulance"
+    ],
+    "खाद्य मंत्रालय": [
+      "central-pmgkay"
+    ],
+    "जल शक्ति मंत्रालय": [
+      "central-jjm",
+      "central-swachh-bharat-g"
+    ],
+    "स्वास्थ्य मंत्रालय": [
+      "central-ab-pmjay",
+      "central-jssk",
+      "central-jsy",
+      "central-mission-indradhanush",
+      "central-nikshay-poshan",
+      "central-sickle-cell-mission",
+      "central-pm-surakshit-matritva",
+      "central-rbsk"
+    ],
+    "कौशल विकास मंत्रालय": [
+      "central-pmkvy",
+      "central-national-apprenticeship"
+    ],
+    "शिक्षा विभाग, छ.ग.": [
+      "cg-ucch-shiksha-rin",
+      "cg-swami-atmanand",
+      "cg-mahtari-dular",
+      "cg-free-uniform"
+    ],
+    "सूक्ष्म, लघु एवं मध्यम उद्यम मंत्रालय": [
+      "central-pmegp",
+      "central-pm-vishwakarma-toolkit",
+      "central-cgtmse",
+      "central-udyam-registration",
+      "central-tread"
+    ],
+    "आवासन एवं शहरी कार्य मंत्रालय": [
+      "central-pm-svanidhi",
+      "central-pmay-urban"
+    ],
+    "ऊर्जा मंत्रालय": [
+      "central-saubhagya"
+    ],
+    "शिक्षा मंत्रालय": [
+      "central-kgbv",
+      "central-pm-poshan",
+      "central-samagra-shiksha",
+      "central-nmms"
+    ],
+    "सामाजिक न्याय एवं अधिकारिता मंत्रालय": [
+      "central-post-matric-scholarship",
+      "central-pm-yasasvi",
+      "central-pre-matric-sc",
+      "central-post-matric-obc"
+    ],
+    "विधि एवं न्याय मंत्रालय": [
+      "central-free-legal-aid"
+    ],
+    "कृषि विभाग, छ.ग.": [
+      "cg-krishak-unnati",
+      "cg-krishi-majdoor-kalyan"
+    ],
+    "जनजातीय कार्य मंत्रालय": [
+      "central-pm-janman",
+      "central-pre-matric-scholarship-st",
+      "central-fra"
+    ],
+    "सामान्य प्रशासन विभाग, छ.ग.": [
+      "cg-mukhyamantri-mitan"
+    ],
+    "श्रम एवं रोजगार मंत्रालय": [
+      "central-pm-sym",
+      "central-eshram"
+    ],
+    "खाद्य प्रसंस्करण उद्योग मंत्रालय": [
+      "central-pmfme"
+    ],
+    "इलेक्ट्रॉनिक्स एवं सूचना प्रौद्योगिकी मंत्रालय": [
+      "central-pmgdisha"
+    ],
+    "जनजातीय कार्य मंत्रालय (TRIFED)": [
+      "central-van-dhan"
+    ],
+    "वन विभाग, छ.ग.": [
+      "cg-tendupatta"
+    ],
+    "पंचायत एवं ग्रामीण विकास विभाग, छ.ग.": [
+      "cg-bihan",
+      "cg-ripa"
+    ],
+    "वाणिज्य एवं उद्योग मंत्रालय (DPIIT)": [
+      "central-startup-india",
+      "central-sisfs"
+    ],
+    "अल्पसंख्यक कार्य मंत्रालय": [
+      "central-begum-hazrat-mahal"
+    ],
+    "शिक्षा मंत्रालय (AICTE)": [
+      "central-pragati-scholarship"
+    ],
+    "शिक्षा मंत्रालय (UGC)": [
+      "central-ug-indira-gandhi-scholarship"
+    ],
+    "जनजातीय एवं अनुसूचित जाति विभाग, छ.ग.": [
+      "cg-post-matric-scholarship-sc-st",
+      "cg-rajiv-yuva-utthan"
+    ],
+    "सूक्ष्म, लघु एवं मध्यम उद्यम मंत्रालय (कॉयर बोर्ड)": [
+      "central-mahila-coir"
+    ],
+    "पशुधन विकास विभाग, छ.ग.": [
+      "cg-godhan-nyay"
+    ]
+  }
 }

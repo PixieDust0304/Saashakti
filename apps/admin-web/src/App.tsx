@@ -13,7 +13,7 @@ export default function App() {
   const [matches, setMatches] = useState<SchemeMatch[]>([])
   // Form state lives here so it survives route transitions (/register →
   // /results → /register via browser back). IntakePage owns the step
-  // counter and Aadhaar autofill state locally since those are UI-only
+  // counter locally since those are UI-only
   // and resetting them on navigation is the desired behavior.
   const [form, setForm] = useState<Partial<BeneficiaryProfile>>(createInitialForm)
 

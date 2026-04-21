@@ -1,6 +1,16 @@
-import type { AadhaarStatus, MatchResult } from '@saashakti/types';
+import type { MatchResult } from '@saashakti/types';
 
-export type { AadhaarStatus, MatchResult };
+// AadhaarStatus kept locally in api-client — @saashakti/types no longer
+// carries it since Aadhaar autofill is paused. Backend/client Aadhaar
+// modules remain dormant in the codebase for future re-enablement.
+export type AadhaarStatus =
+  | 'not_started'
+  | 'pending'
+  | 'verified'
+  | 'failed'
+  | 'mock_verified';
+
+export type { MatchResult };
 export type {
   BeneficiaryProfile as EngineProfile,
   MatchStatus,

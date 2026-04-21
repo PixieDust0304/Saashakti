@@ -1,22 +1,27 @@
-# Aadhaar Integration Plan
+# Aadhaar Integration — PAUSED
 
-## Current placeholder design
-- Aadhaar remains a dedicated service boundary.
-- Supported states: `not_started`, `pending`, `verified`, `failed`, `mock_verified`.
-- Launch mode can proceed with consent + `pending` / `mock_verified`.
+## Decision (April 2026)
 
-## Integration boundary
-- `AadhaarService` interface: start verification, fetch status, persist outcome.
-- No Aadhaar provider logic in UI screens.
-- API owns status transitions and audit logging.
+After meeting with Ministry directors, Aadhaar autofill has been **scratched entirely** for the current phase.
 
-## Compliance-sensitive handling notes
-- Do not store sensitive identifiers in plaintext.
-- Use tokenized references and audit trails.
-- Enforce least privilege access for Aadhaar-related endpoints.
+### Reason
+Rural Chhattisgarh has widespread stale Aadhaar data:
+- Addresses not updated since enrollment (2012-2015)
+- Names transliterated inconsistently
+- Phone numbers changed multiple times
+- Women who moved post-marriage never updated domicile
 
-## Future productionization steps
-1. Integrate approved provider through adapter implementation.
-2. Add webhook/callback handling.
-3. Add retry, timeout, and reconciliation jobs.
-4. Add compliance review and data retention controls.
+Autofilling stale data would be worse than empty fields — field workers would trust it and skip corrections.
+
+### Current Identity Model
+- **Mobile number** is the primary identifier
+- **Field worker** enters all profile data manually
+- **No Aadhaar dependency** at any point in the user journey
+
+### Future Consideration
+If Aadhaar data quality improves or the platform expands to urban areas, the following modules exist in the codebase (dormant):
+- `apps/api/src/aadhaar/` — provider abstraction (mock, Karza, UIDAI stubs)
+- `apps/admin-web/src/lib/aadhaar-qr.ts` — offline QR parser
+- `apps/admin-web/src/components/AadhaarScanModal.tsx` — UI modal
+
+These can be re-enabled without rebuilding. The decision to re-enable should come from field-level validation that Aadhaar data quality is sufficient for the target population.

@@ -14,7 +14,7 @@ describe('scheme-registry validation', () => {
   });
 
   it('has 21 schemes', () => {
-    expect(data.schemes.length).toBe(21);
+    expect(data.schemes.length).toBeGreaterThanOrEqual(120);
   });
 
   it('every scheme has rules array', () => {

@@ -1,9 +1,3 @@
-export type AadhaarStatus =
-  | 'not_started'
-  | 'pending'
-  | 'verified'
-  | 'failed'
-  | 'mock_verified';
 
 export interface BeneficiaryProfile {
   age: number;

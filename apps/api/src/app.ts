@@ -4,7 +4,7 @@ import { registerPlugins } from './plugins/index.js';
 import { registerAuthDecorator } from './auth/plugin.js';
 import { registerHealthRoutes } from './health/routes.js';
 import { registerOtpRoutes } from './otp/routes.js';
-import { registerAadhaarRoutes } from './aadhaar/routes.js';
+// REMOVED: Aadhaar autofill scratched per ministry directors decision
 import { registerBeneficiaryRoutes } from './beneficiary/routes.js';
 import { registerMatchingRoutes } from './matching/routes.js';
 import { registerDashboardRoutes } from './dashboard/routes.js';
@@ -32,7 +32,7 @@ export const buildApp = async (): Promise<FastifyInstance> => {
 
   await registerHealthRoutes(app);
   await registerOtpRoutes(app);
-  await registerAadhaarRoutes(app);
+  // await registerAadhaarRoutes(app); // Aadhaar removed
   await registerBeneficiaryRoutes(app);
   await registerMatchingRoutes(app);
   await registerDashboardRoutes(app);

@@ -4,15 +4,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useLang } from '../hooks/useLang'
 import { matchSchemes, calculateTotalBenefit } from '../engine/matchSchemes'
 import { saveBeneficiary, saveMatches } from '../lib/supabase'
-import { api, ApiError } from '../lib/api'
+import { api } from '../lib/api'
 import type { BeneficiaryProfile, FieldWorker, SchemeMatch, FormStep } from '../engine/types'
 import schemesData from '../data/schemes.json'
 import districts from '../data/districts-cg.json'
-import { ChevronRight, ChevronLeft, Heart, Wallet, Users, AlertTriangle, User, Sparkles, Camera } from 'lucide-react'
+import { ChevronRight, ChevronLeft, Heart, Wallet, Users, AlertTriangle, User, Sparkles } from 'lucide-react'
 import AnimatedBackground from '../components/3d/AnimatedBackground'
-import AadhaarScanModal from '../components/AadhaarScanModal'
-import Toast from '../components/ui/Toast'
-import type { AadhaarParsed } from '../lib/aadhaar-qr'
 
 interface Props {
   fieldWorker: FieldWorker | null
@@ -246,105 +243,11 @@ export default function IntakePage({ fieldWorker, form, setForm, onComplete }: P
   const [step, setStep] = useState<FormStep>(1)
   const [saving, setSaving] = useState(false)
 
-  // Aadhaar autofill state
-  const [aadhaarNumber, setAadhaarNumber] = useState('')
-  const [kycLoading, setKycLoading] = useState(false)
-  const [kycError, setKycError] = useState<string | null>(null)
-  const [kycFilled, setKycFilled] = useState(false)
-  const [autofilledFields, setAutofilledFields] = useState<Set<string>>(new Set())
-  const [scanModalOpen, setScanModalOpen] = useState(false)
-  const [toast, setToast] = useState<string | null>(null)
-
   const set = useCallback(
     (key: string, value: unknown) =>
       setForm((prev) => ({ ...prev, [key]: value })),
     [setForm],
   )
-
-  /**
-   * Shared autofill application — used by both the mock-API fetch path
-   * and the in-browser QR-scan path. Maps the Aadhaar district string
-   * onto the form's slug-based dropdown codes using a two-pass fuzzy
-   * match so post-2012 district splits (Surguja → Surajpur/Balrampur)
-   * still resolve when possible.
-   */
-  const applyAadhaarData = (src: {
-    name: string
-    age: number | null
-    mobileNumber?: string | null
-    district: string
-  }) => {
-    const qrDist = src.district.trim().toLowerCase()
-    const districtMatch = qrDist
-      ? districts.find((d) => {
-          const en = d.name_en.toLowerCase()
-          return en === qrDist || en.includes(qrDist) || qrDist.includes(en)
-        })
-      : undefined
-    const districtCode = districtMatch?.code
-
-    setForm((prev) => ({
-      ...prev,
-      name: src.name,
-      age: src.age ?? prev.age,
-      phone: src.mobileNumber?.replace(/^91/, '') ?? prev.phone,
-      district: districtCode ?? prev.district,
-      gender: 'female',
-      state: 'Chhattisgarh',
-    }))
-
-    const filled = new Set<string>(['name'])
-    if (src.age !== null) filled.add('age')
-    if (src.mobileNumber) filled.add('phone')
-    if (districtCode) filled.add('district')
-    setAutofilledFields(filled)
-    setKycFilled(true)
-    setKycError(null)
-  }
-
-  /**
-   * Pull a mock e-KYC record from the backend and prefill the form
-   * with everything Aadhaar actually carries (name, age from DOB,
-   * gender, district, mobile). Marital status, BPL, occupation, etc.
-   * are NOT in Aadhaar and still need manual input.
-   */
-  const fetchKyc = async () => {
-    const digits = aadhaarNumber.replace(/\D/g, '')
-    if (digits.length !== 12) {
-      setKycError(lang === 'hi' ? 'आधार 12 अंकों का होना चाहिए' : 'Aadhaar must be 12 digits')
-      return
-    }
-    setKycError(null)
-    setKycLoading(true)
-    try {
-      const { kyc } = await api.fetchAadhaarKyc(digits)
-      applyAadhaarData({
-        name: kyc.name,
-        age: kyc.age,
-        mobileNumber: kyc.mobileNumber ?? null,
-        district: kyc.address.district,
-      })
-    } catch {
-      // Don't leak raw fetch error strings into the UI. Show a friendly
-      // toast telling the user to enter details manually. The inline
-      // kycError red-text stays reserved for validation feedback only.
-      setToast(t('fetch_failed_manual_entry'))
-    } finally {
-      setKycLoading(false)
-    }
-  }
-
-  const handleScanParsed = (parsed: AadhaarParsed) => {
-    applyAadhaarData({
-      name: parsed.name,
-      age: parsed.age,
-      mobileNumber: null,
-      district: parsed.district,
-    })
-    setScanModalOpen(false)
-  }
-
-  const isAutofilled = (field: string) => autofilledFields.has(field)
 
   const canProceed = () => {
     if (step === 1) return form.name && form.age && form.district
@@ -467,74 +370,10 @@ export default function IntakePage({ fieldWorker, form, setForm, onComplete }: P
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="glass-card p-5 space-y-5"
               >
-                {/* Aadhaar autofill */}
-                <div className="rounded-lg border border-saffron-200 bg-saffron-50/60 p-4 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Sparkles size={16} className="text-saffron-600" />
-                    <label className="text-sm font-semibold text-slate-700">
-                      {lang === 'hi' ? 'आधार से ऑटो भरें' : 'Auto-fill from Aadhaar'}
-                    </label>
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={14}
-                      value={aadhaarNumber}
-                      onChange={(e) => {
-                        setAadhaarNumber(e.target.value)
-                        if (kycError) setKycError(null)
-                      }}
-                      className="input-3d flex-1 tracking-wider"
-                      placeholder="1234 5678 9012"
-                      disabled={kycLoading}
-                    />
-                    <button
-                      type="button"
-                      onClick={fetchKyc}
-                      disabled={kycLoading || aadhaarNumber.replace(/\D/g, '').length !== 12}
-                      className="toggle-3d toggle-3d-active px-4 py-2 text-sm whitespace-nowrap disabled:opacity-50"
-                    >
-                      {kycLoading
-                        ? lang === 'hi'
-                          ? 'खींच रहा है…'
-                          : 'Fetching…'
-                        : lang === 'hi'
-                          ? 'भरें'
-                          : 'Fetch'}
-                    </button>
-                  </div>
-                  {/* Camera scan fallback — in-browser, no upload */}
-                  <button
-                    type="button"
-                    onClick={() => setScanModalOpen(true)}
-                    disabled={kycLoading}
-                    className="w-full flex items-center justify-center gap-2 rounded-lg border border-saffron-300 bg-white/70 hover:bg-white/90 text-saffron-700 font-medium py-2.5 transition disabled:opacity-50"
-                  >
-                    <Camera size={16} />
-                    <span>{t('scan_card')}</span>
-                  </button>
-                  {kycError && (
-                    <p className="text-xs text-red-600">{kycError}</p>
-                  )}
-                  {kycFilled && !kycError && (
-                    <p className="text-xs text-green-700">
-                      {lang === 'hi'
-                        ? '✓ नाम, उम्र, पता, फ़ोन भर दिए गए। बाक़ी विवरण नीचे भरें।'
-                        : '✓ Name, age, address, phone filled. Complete the rest below.'}
-                    </p>
-                  )}
-                </div>
-
                 {/* Name */}
                 <div>
                   <label className="text-sm text-slate-600 mb-1.5 block font-medium">
                     {t('name')}
-                    {isAutofilled('name') && (
-                      <span className="ml-2 text-[10px] uppercase tracking-wide text-saffron-600">
-                        {lang === 'hi' ? 'आधार से' : 'from Aadhaar'}
-                      </span>
-                    )}
                   </label>
                   <input
                     value={form.name || ''}
@@ -980,18 +819,6 @@ export default function IntakePage({ fieldWorker, form, setForm, onComplete }: P
         )}
       </div>
 
-      {/* Aadhaar camera scan modal — mounts only when opened */}
-      <AnimatePresence>
-        {scanModalOpen && (
-          <AadhaarScanModal
-            onParsed={handleScanParsed}
-            onClose={() => setScanModalOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Transient error toast (Aadhaar fetch failure, etc.) */}
-      <Toast message={toast} onDismiss={() => setToast(null)} />
     </div>
   )
 }
