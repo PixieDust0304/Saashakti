@@ -81,7 +81,7 @@ jobs:
         run: pnpm --filter api build
 
       - name: Admin web typecheck
-        run: cd apps/admin-web && npx tsc --noEmit
+        run: pnpm --filter admin-web typecheck
 
       - name: Admin web build
         run: pnpm --filter admin-web build
