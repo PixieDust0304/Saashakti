@@ -16,12 +16,27 @@ const schema = z.object({
   DATABASE_URL: z.string().url(),
   REDIS_URL: z.string().url(),
 
+  // Kept for backwards compatibility with older deployments — if
+  // SMS_PROVIDER is unset but OTP_MODE === 'mock', the service still
+  // picks the mock provider. Prefer SMS_PROVIDER going forward.
   OTP_MODE: z.enum(['mock', 'sms']).default('mock'),
   OTP_TTL_SECONDS: z.coerce.number().int().positive().default(300),
   OTP_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
   OTP_COOLDOWN_SECONDS: z.coerce.number().int().nonnegative().default(30),
   OTP_HOURLY_LIMIT_PER_MOBILE: z.coerce.number().int().positive().default(5),
   OTP_HOURLY_LIMIT_PER_IP: z.coerce.number().int().positive().default(20),
+
+  // SMS provider selection + credentials. Production MUST NOT run
+  // with SMS_PROVIDER=mock — the factory throws at first use.
+  SMS_PROVIDER: z.enum(['mock', 'twilio', 'msg91', 'textlocal']).default('mock'),
+  SMS_TWILIO_ACCOUNT_SID: z.string().optional(),
+  SMS_TWILIO_AUTH_TOKEN: z.string().optional(),
+  SMS_TWILIO_FROM: z.string().optional(),
+  SMS_MSG91_AUTH_KEY: z.string().optional(),
+  SMS_MSG91_TEMPLATE_ID: z.string().optional(),
+  SMS_MSG91_SENDER_ID: z.string().optional(),
+  SMS_TEXTLOCAL_API_KEY: z.string().optional(),
+  SMS_TEXTLOCAL_SENDER: z.string().optional(),
 
   SESSION_TTL_SECONDS: z.coerce.number().int().positive().default(86400),
 

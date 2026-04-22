@@ -3,7 +3,7 @@ import { env } from '../config/env.js';
 import { sql } from '../db/client.js';
 import { redis, keys } from '../redis/client.js';
 import { HttpError } from '../plugins/error-handler.js';
-import { smsProvider } from './provider.js';
+import { getSmsProvider, SmsProviderError } from './providers/index.js';
 
 const HOUR_SECONDS = 3600;
 
@@ -62,14 +62,29 @@ export const requestOtp = async ({ mobileNumber, ip }: RequestArgs) => {
     VALUES (${mobile}, ${otpHash}, 'pending', 0, ${expiresAt})
   `;
 
-  await smsProvider.send(mobile, code);
+  const provider = getSmsProvider();
+  try {
+    await provider.send(mobile, code);
+  } catch (err) {
+    // Surface provider failures as 502 so the client knows the OTP
+    // wasn't dispatched. The pending otp_requests row remains — the
+    // user can retry after the cooldown. Don't leak provider internals.
+    if (err instanceof SmsProviderError) {
+      throw new HttpError(502, 'sms_dispatch_failed',
+        `SMS provider (${err.providerName}) failed to dispatch OTP`);
+    }
+    throw err;
+  }
   await redis.set(cooldownKey, '1', 'EX', env.OTP_COOLDOWN_SECONDS);
 
+  // mockCode is only exposed when the mock provider is actually used,
+  // which is locked to non-production by the factory's NODE_ENV guard.
+  const isMock = provider.name === 'mock';
   return {
     mobileNumber: mobile,
     expiresInSeconds: env.OTP_TTL_SECONDS,
     cooldownSeconds: env.OTP_COOLDOWN_SECONDS,
-    mockCode: env.OTP_MODE === 'mock' ? code : undefined,
+    mockCode: isMock ? code : undefined,
   };
 };
 
