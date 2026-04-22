@@ -93,6 +93,46 @@ export async function submitGrievance(grievance: {
   return data
 }
 
+export async function listGrievances(filter?: {
+  status?: string
+  priority?: string
+  district?: string
+  grievance_type?: string
+}) {
+  if (!isConfigured) return []
+  let q = supabase
+    .from('grievances')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(200)
+  if (filter?.status) q = q.eq('status', filter.status)
+  if (filter?.priority) q = q.eq('priority', filter.priority)
+  if (filter?.district) q = q.eq('district', filter.district)
+  if (filter?.grievance_type) q = q.eq('grievance_type', filter.grievance_type)
+  const { data, error } = await q
+  if (error) { console.warn('listGrievances failed:', error); return [] }
+  return data || []
+}
+
+export async function updateGrievanceStatus(
+  id: string,
+  next: { status?: string; priority?: string; resolution?: string; assigned_to?: string },
+) {
+  if (!isConfigured) return null
+  const patch: Record<string, unknown> = { ...next, updated_at: new Date().toISOString() }
+  if (next.status === 'resolved' || next.status === 'closed') {
+    patch.resolved_at = new Date().toISOString()
+  }
+  const { data, error } = await supabase
+    .from('grievances')
+    .update(patch)
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
 // ─── REAL-TIME DASHBOARD ──────────────────────────────────
 
 export function subscribeToDashboard(callback: (count: number) => void) {

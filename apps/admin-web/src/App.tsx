@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage'
 import IntakePage, { createInitialForm } from './pages/IntakePage'
 import ResultsPage from './pages/ResultsPage'
 import DashboardPage from './pages/DashboardPage'
+import GrievancePage from './pages/GrievancePage'
+import CoverageGapPage from './pages/CoverageGapPage'
 import Header from './components/layout/Header'
 
 export default function App() {
@@ -66,6 +68,22 @@ export default function App() {
         <Route
           path="/dashboard"
           element={<DashboardPage />}
+        />
+        <Route
+          path="/grievances"
+          element={
+            <div className="animate-fade-in">
+              <GrievancePage />
+            </div>
+          }
+        />
+        <Route
+          path="/coverage"
+          element={
+            <div className="animate-fade-in">
+              <CoverageGapPage />
+            </div>
+          }
         />
       </Routes>
     </div>
