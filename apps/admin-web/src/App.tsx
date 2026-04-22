@@ -7,6 +7,7 @@ import ResultsPage from './pages/ResultsPage'
 import DashboardPage from './pages/DashboardPage'
 import GrievancePage from './pages/GrievancePage'
 import CoverageGapPage from './pages/CoverageGapPage'
+import FollowUpPage from './pages/FollowUpPage'
 import Header from './components/layout/Header'
 
 export default function App() {
@@ -82,6 +83,14 @@ export default function App() {
           element={
             <div className="animate-fade-in">
               <CoverageGapPage />
+            </div>
+          }
+        />
+        <Route
+          path="/follow-up"
+          element={
+            <div className="animate-fade-in">
+              <FollowUpPage />
             </div>
           }
         />

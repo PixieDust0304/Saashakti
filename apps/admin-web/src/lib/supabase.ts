@@ -133,6 +133,82 @@ export async function updateGrievanceStatus(
   return data
 }
 
+// ─── APPLICATION STATUS TRACKING (matched_schemes) ───────
+
+export type ApplicationStatus =
+  | 'identified' | 'informed' | 'applied' | 'under_review'
+  | 'approved' | 'rejected' | 'receiving' | 'lapsed'
+
+export async function listMatchesForFollowUp(filter?: {
+  application_status?: ApplicationStatus | 'all'
+  district?: string
+  scheme_id?: string
+  overdue_only?: boolean
+}) {
+  if (!isConfigured) return []
+  // Pull matched rows + the beneficiary they belong to so the UI can
+  // show name/district/phone without a second fetch. beneficiaries(...)
+  // is PostgREST's foreign-key join syntax.
+  let q = supabase
+    .from('matched_schemes')
+    .select(`
+      id, scheme_id, scheme_name_hi, scheme_name_en, benefit_amount,
+      confidence, application_status, applied_at, applied_via,
+      status_updated_at, status_notes, follow_up_date, assisted_by,
+      created_at,
+      beneficiaries(id, name, district, phone, age, is_bpl, is_pregnant,
+                    marital_status, profile_completeness)
+    `)
+    .order('follow_up_date', { ascending: true, nullsFirst: false })
+    .limit(300)
+
+  if (filter?.application_status && filter.application_status !== 'all') {
+    q = q.eq('application_status', filter.application_status)
+  }
+  if (filter?.scheme_id) q = q.eq('scheme_id', filter.scheme_id)
+  if (filter?.overdue_only) {
+    q = q.lt('follow_up_date', new Date().toISOString().slice(0, 10))
+  }
+
+  const { data, error } = await q
+  if (error) { console.warn('listMatchesForFollowUp failed:', error); return [] }
+
+  // District filter runs client-side because it lives on the joined
+  // beneficiaries row — PostgREST's nested filter syntax is finicky
+  // and this list is already capped at 300 rows.
+  if (!filter?.district) return data || []
+  return (data || []).filter((r: any) => r.beneficiaries?.district === filter.district)
+}
+
+export async function updateMatchApplicationStatus(
+  id: string,
+  patch: {
+    application_status?: ApplicationStatus
+    applied_via?: string
+    status_notes?: string
+    follow_up_date?: string | null
+    assisted_by?: string | null
+  },
+) {
+  if (!isConfigured) return null
+  const now = new Date().toISOString()
+  const body: Record<string, unknown> = {
+    ...patch,
+    status_updated_at: now,
+  }
+  if (patch.application_status === 'applied' && !body.applied_at) {
+    body.applied_at = now
+  }
+  const { data, error } = await supabase
+    .from('matched_schemes')
+    .update(body)
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
 // ─── REAL-TIME DASHBOARD ──────────────────────────────────
 
 export function subscribeToDashboard(callback: (count: number) => void) {
